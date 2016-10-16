@@ -1,0 +1,229 @@
+
+<img id="grid" src="grid.png" width="200" height="200">
+<canvas id="myCanvas" width="200" height="200" style="border:1px solid #d3d3d3;"></canvas>
+<canvas id="results" width="200" height="200" style="border:1px solid #d3d3d3;"></canvas>
+<p id="asdf">a</p>
+<script>
+
+
+// Requires: Degree values that are multiples of 90
+// Effects: returns a pixel location right relative to its current orientation in degrees
+function moveRight(pixel, deg)
+{
+	if (deg % 360) // absolute up right orientation 
+		pixel.x += 1;
+	else if (deg % 450 == 0 || deg % 450 == 90) // rotated 90deg cw
+		pixel.y -= 1;
+	else if (deg % 540 == 0 || deg % 540 == 180) // rotated 180 deg cw
+		pixel.x -= 1;
+	else // rotated 270deg cw
+		pixel.y += 1; 
+	return pixel;
+}
+
+function moveUp(pixel, deg)
+{
+	if (deg % 360) // absolute up right orientation 
+		pixel.y += 1;
+	else if (deg % 450 == 0 || deg % 450 == 90) // rotated 90deg cw
+		pixel.x += 1;
+	else if (deg % 540 == 0 || deg % 540 == 180) // rotated 180 deg cw
+		pixel.y -= 1;
+	else // rotated 270deg cw
+		pixel.x -= 1; 
+	return pixel;
+}
+
+function moveLeft(pixel, deg)
+{
+	if (deg % 360) // absolute up right orientation 
+		pixel.x -= 1;
+	else if (deg % 450 == 0 || deg % 450 == 90) // rotated 90deg cw
+		pixel.y += 1;
+	else if (deg % 540 == 0 || deg % 540 == 180) // rotated 180 deg cw
+		pixel.x += 1;
+	else // rotated 270deg cw
+		pixel.y -= 1; 
+	return pixel;
+}
+
+
+class Pixel 
+{
+	constructor(inX, inY, inImgData)
+	{
+		this.x = inX;
+		this.y = inY;
+		this.imgData = inImgData;
+		
+	}
+
+	// Thanks to TIm Down on stackoverflow
+	componentToHex(c) 
+	{
+		var hex = c.toString(16);
+		return hex.length == 1 ? "0" + hex : hex;
+	}
+	rgbToHex(r, g, b) 
+	{
+		return "#" + this.componentToHex(r) + this.componentToHex(g) + this.componentToHex(b);
+	}
+
+
+
+	getHex()
+	{
+		var idx = (this.y * this.imgData.width + this.x) * 4;
+		return this.rgbToHex(this.imgData.data[idx], this.imgData.data[idx+1], this.imgData.data[idx+2]);
+	}
+
+	moveRight(deg)
+	{
+		
+		if (deg % 360 == 0) // absolute up right orientation 
+			this.x += 1;
+		else if (deg % 450 == 0 || deg % 450 == 90) // rotated 90deg cw
+			this.y += 1;
+		else if (deg % 540 == 0 || deg % 540 == 180) // rotated 180 deg cw
+			this.x -= 1;
+		else // rotated 270deg cw
+			this.y -= 1; 
+	}
+	moveUp(deg)
+	{
+		if (deg % 360 == 0) // absolute up right orientation 
+			this.y -= 1;
+		else if (deg % 450 == 0 || deg % 450 == 90) // rotated 90deg cw
+			this.x += 1;
+		else if (deg % 540 == 0 || deg % 540 == 180) // rotated 180 deg cw
+			this.y += 1;
+		else // rotated 270deg cw
+			this.x -= 1; 
+	}
+	moveLeft(deg)
+	{
+		if (deg % 360 == 0) // absolute up right orientation 
+			this.x -= 1;
+		else if (deg % 450 == 0 || deg % 450 == 90) // rotated 90deg cw
+			this.y += 1;
+		else if (deg % 540 == 0 || deg % 540 == 180) // rotated 180 deg cw
+			this.x += 1;
+		else // rotated 270deg cw
+			this.y -= 1; 
+	}
+}
+
+
+
+// Effects: Finds the perimiter of each grid cell and defines the coordinates
+function findAndDefine()
+{
+	// Alg: assumes left to right approach will be easiest, considering the polygon coords need to be stored starting at top left
+	// 1. start at top left of polygon (cell)
+	// 2. check an area that of the grid width (ie look in this box of pixes)
+	// 3. move to nearest pixel 
+	// store 
+
+	// step 2 optimization: if following polygon with right turns, you only check the pixel area of down and to the right (relative)
+
+
+	var c = document.getElementById("myCanvas");
+	var ctx = c.getContext("2d");
+	var img = document.getElementById("grid");
+	ctx.drawImage(img, 0, 0);
+	var imgData = ctx.getImageData(0, 0, c.width, c.height);
+	ctx.putImageData(imgData, 0, 0);
+	var startPixel = new Pixel(5, 5, imgData); //start pixel is top left of cell, where UpPixelCheck == true
+	var pixel = new Pixel(5, 5, imgData);
+	var criteria = "#000000"; //rgb values are not equal (ie are a color not black-white);
+	var cellCoords = [];
+	var movedUp = false;
+	var curDeg = 360;
+	var done = false;
+	var i = 0;
+	//document.getElementById('asdf').innerHTML = JSON.stringify(imgData.data);
+	do
+	{
+		if (pixel.x == startPixel.x && pixel.y == startPixel.y && i > 0)
+			done = true;
+		i +=1;
+		console.log(pixel.x + " " + pixel.y + " " + i);
+		var rightPixelCheck = new Pixel(pixel.x, pixel.y, imgData);
+		var upPixelCheck = new Pixel(pixel.x, pixel.y, imgData);
+		var leftPixelCheck = new Pixel(pixel.x, pixel.y, imgData);
+		rightPixelCheck.moveRight(curDeg);
+		upPixelCheck.moveUp(curDeg);
+		leftPixelCheck.moveLeft(curDeg);
+		var color_rightPixelCheck = rightPixelCheck.getHex();
+		var color_upPixelCheck = upPixelCheck.getHex();
+		var color_leftPixelCheck = leftPixelCheck.getHex();
+		
+		// Move right 1 pixel
+		if (color_rightPixelCheck != criteria && color_upPixelCheck == criteria)
+		{
+			pixel.moveRight(curDeg);
+			if (movedUp == true) // store pixel after going up then right
+			{
+				cellCoords.push(pixel.x);
+				cellCoords.push(pixel.y);
+				movedUp = false; // reset
+			}
+			var idx = (pixel.y * imgData.width + pixel.x) * 4;
+			imgData.data[idx] = 255;
+			imgData.data[idx+1] = 0;
+			imgData.data[idx+2] = 0;
+			imgData.data[idx+3] = 255;
+			ctx.putImageData(imgData, 0, 0);
+			continue;
+		}
+
+		// Move up 1 pixel
+		if (color_upPixelCheck != criteria)
+		{
+			pixel.moveUp(curDeg);
+			movedUp = true;
+			var idx = (pixel.y * imgData.width + pixel.x) * 4;
+			imgData.data[idx] = 255;
+			imgData.data[idx+1] = 0;
+			imgData.data[idx+2] = 0;
+			imgData.data[idx+3] = 255;
+			ctx.putImageData(imgData, 0, 0);
+			continue;
+		}
+
+		// Hit corner, rotate
+		if (color_upPixelCheck == criteria  && color_rightPixelCheck == criteria)
+		{	
+			curDeg += 90; //rotate 90deg cw
+			cellCoords.push(pixel.x);
+			cellCoords.push(pixel.y);
+			continue;
+		}
+
+		// Starting to move off curve, curve changed, rotate
+		if (color_upPixelCheck != critera && color_leftPixelCheck != criteria)
+		{	
+			curDeg -= 90; // rotate 90deg ccw
+			continue;
+		}
+	}
+	while (done == false);
+
+	alert(JSON.stringify(cellCoords));
+	var c2 = document.getElementById('results').getContext('2d');
+	c2.fillStyle = '#f00';
+	c2.beginPath();
+	c2.moveTo(startPixel.x, startPixel.y);
+	for (var i = 0; i < cellCoords.length - 1; ++i)
+	{
+		c2.lineTo(cellCoords[i], cellCoords[i+1]);
+	}
+	c2.closePath();
+	c2.fill();
+}
+document.getElementById('grid').onload = function()
+{
+findAndDefine();
+};
+
+</script>
