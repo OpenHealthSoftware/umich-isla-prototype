@@ -1,8 +1,13 @@
-
-<img id="grid" src="grid5.png" width="200" height="200">
-<canvas id="myCanvas" width="200" height="200" style="border:1px solid #d3d3d3;"></canvas>
-<canvas id="results" width="200" height="200" style="border:1px solid #d3d3d3;"></canvas>
+<!--
+<img id="grid" src="fullgrid1.png" width="490" height="419">
+<canvas id="myCanvas" width="490" height="419" style="border:1px solid #d3d3d3;"></canvas>
+<canvas id="results" width="490" height="419" style="border:1px solid #d3d3d3;"></canvas>
+-->
+<img id="grid" src="fullgrid2.png" width="455" height="305">
+<canvas id="myCanvas" width="455" height="305" style="border:1px solid #d3d3d3;"></canvas>
+<canvas id="results" width="455" height="305" style="border:1px solid #d3d3d3;"></canvas>
 <p id="asdf">a</p>
+<button onclick="run()">Run</button>
 <script>
 
 
@@ -85,12 +90,22 @@ class Pixel
 	}
 }
 
+class Coordinate
+{
+	constructor(inX, inY)
+	{
+		this.x = inX;
+		this.y = inY;
+	}
+}
 
 function sleep(ms) {
   return new Promise(resolve => setTimeout(resolve, ms));
 }
+
+// Requires: coordinates of starting pixel
 // Effects: Finds the perimiter of each grid cell and defines the coordinates
-function findAndDefine()
+function findAndDefine(x,y)
 {
 
 	var c = document.getElementById("myCanvas");
@@ -99,15 +114,16 @@ function findAndDefine()
 	ctx.drawImage(img, 0, 0);
 	var imgData = ctx.getImageData(0, 0, c.width, c.height);
 	ctx.putImageData(imgData, 0, 0);
-	var startPixel = new Pixel(77,55, imgData); //start pixel is top left of cell, where UpPixelCheck == true
-	var pixel = new Pixel(77,55, imgData);
+	var startPixel = new Pixel(x,y, imgData); //start pixel is top left of cell, where UpPixelCheck == true
+	var pixel = new Pixel(x,y, imgData);
 	var criteria = "#000000"; //rgb values are not equal (ie are a color not black-white);
 	var cellCoords = [];
 	var movedUp = false;
 	var curDeg = 360;
 	var done = false;
 	var i = 0;
-
+	var farRight = 0;
+	var farDown = 0;
 	
 	do
 	{
@@ -116,7 +132,10 @@ function findAndDefine()
 		else if (i > 1200)
 			done = true;
 		i +=1;
-		
+		if (pixel.x > farRight)
+			farRight = pixel.x;
+		if (pixel.y > farDown)
+			farDown = pixel.y;
 		
 		console.log(pixel.print() + " Deg: " + curDeg + " " + i);
 		
@@ -202,15 +221,72 @@ function findAndDefine()
 	}
 	c2.closePath();
 	c2.fill();
+	return new Coordinate(farRight + 1, farDown + 1);
 }
-document.getElementById('grid').onload = function()
+function run()
 {
 
 //start at top left of photo, find first pixel that doesnt meet criteria and upPixel does
+var c = document.getElementById("myCanvas");
+var ctx = c.getContext("2d");
+var img = document.getElementById("grid");
+ctx.drawImage(img, 0, 0);
+var imgData = ctx.getImageData(0, 0, c.width, c.height);
+ctx.putImageData(imgData, 0, 0);
+var x; var y;
+var criteria = "#000000";
+var itr = 0;
+var visited = [];
+var lastVisited = new Coordinate(0,0);
+var numRows = 2;
+var numCols = 3;
+while (visited.length < numRows * numCols + (numRows - 1)) //go through each cell, one cell is visited twice per row
+{
 
-findAndDefine();
+	for (var i = itr; i < imgData.data.length; i += 4) //find starting point in cell
+	{
+		var hex = rgbToHex(imgData.data[i], imgData.data[i+1], imgData.data[i+2]);
+		if (hex != criteria)
+		{
+			x = (i / 4) % imgData.width;
+			y = (i / 4) / imgData.width;
+			x = Math.floor(x);
+			y = Math.floor(y);
+			i = imgData.data.length; //break loop
+		}
+	}
+	
+
+	var resultsCoord = findAndDefine(x,y);
+	//alert(x + " " + y);
+	//alert("Res: " + resultsCoord.x + " " + resultsCoord.y);
+	itr = (y * imgData.width + resultsCoord.x) * 4; // search right
+	for (var i = 0; i < visited.length; i++)
+	{
+		if (visited[i].x == resultsCoord.x && visited[i].y == resultsCoord.y)
+		{
+			itr = (resultsCoord.y * imgData.width + resultsCoord.x) * 4; // search downwards
+			i = visited.length;
+		}
+	}
+
+	visited.push(resultsCoord);
+	document.getElementById('asdf').innerHTML = JSON.stringify(visited);
+}
 // to get starting pixel of new cell, take rightmost value of previous cell, go right
 // until right pixel != criteria, then startpixel = right pixel
 };
+
+
+// Thanks to TIm Down on stackoverflow
+function componentToHex(c) 
+{
+	var hex = c.toString(16);
+	return hex.length == 1 ? "0" + hex : hex;
+}
+function rgbToHex(r, g, b) 
+{
+	return "#" + componentToHex(r) + componentToHex(g) + componentToHex(b);
+}
 
 </script>
