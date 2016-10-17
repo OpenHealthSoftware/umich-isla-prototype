@@ -3,9 +3,9 @@
 <canvas id="myCanvas" width="490" height="419" style="border:1px solid #d3d3d3;"></canvas>
 <canvas id="results" width="490" height="419" style="border:1px solid #d3d3d3;"></canvas>
 -->
-<img id="grid" src="fullgrid2.png" width="455" height="305">
-<canvas id="myCanvas" width="455" height="305" style="border:1px solid #d3d3d3;"></canvas>
-<canvas id="results" width="455" height="305" style="border:1px solid #d3d3d3;"></canvas>
+<img id="grid" src="fullgrid4.png" width="483" height="483">
+<canvas id="myCanvas" width="483" height="483" style="border:1px solid #d3d3d3;"></canvas>
+<canvas id="results" width="483" height="483" style="border:1px solid #d3d3d3;"></canvas>
 <p id="asdf">a</p>
 <button onclick="run()">Run</button>
 <script>
@@ -210,7 +210,7 @@ function findAndDefine(x,y)
 	}
 	while (done == false);
 
-	alert(JSON.stringify(cellCoords));
+	//alert(JSON.stringify(cellCoords));
 	var c2 = document.getElementById('results').getContext('2d');
 	c2.fillStyle = '#f00';
 	c2.beginPath();
@@ -238,8 +238,8 @@ var criteria = "#000000";
 var itr = 0;
 var visited = [];
 var lastVisited = new Coordinate(0,0);
-var numRows = 2;
-var numCols = 3;
+var numRows = 5;
+var numCols = 5;
 while (visited.length < numRows * numCols + (numRows - 1)) //go through each cell, one cell is visited twice per row
 {
 
@@ -256,9 +256,9 @@ while (visited.length < numRows * numCols + (numRows - 1)) //go through each cel
 		}
 	}
 	
-
-	var resultsCoord = findAndDefine(x,y);
 	//alert(x + " " + y);
+	var resultsCoord = findAndDefine(x,y);
+	
 	//alert("Res: " + resultsCoord.x + " " + resultsCoord.y);
 	itr = (y * imgData.width + resultsCoord.x) * 4; // search right
 	for (var i = 0; i < visited.length; i++)
@@ -266,6 +266,7 @@ while (visited.length < numRows * numCols + (numRows - 1)) //go through each cel
 		if (visited[i].x == resultsCoord.x && visited[i].y == resultsCoord.y)
 		{
 			itr = (resultsCoord.y * imgData.width + resultsCoord.x) * 4; // search downwards
+			alert("Going down: " + x + " " + y);
 			i = visited.length;
 		}
 	}
