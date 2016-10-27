@@ -18,15 +18,17 @@
 <canvas id="myCanvas" width="455" height="305" style="border:1px solid #d3d3d3;"></canvas>
 <canvas id="results" width="455" height="305" style="border:1px solid #d3d3d3;"></canvas>
 
-
+<!--
+<img  usemap="#map" id="grid" src="largegrid(52x20).png" width="1302" height="502">
+<canvas id="myCanvas" width="1302" height="502" style="border:1px solid #d3d3d3;"></canvas>
+<canvas id="results" width="1302" height="502" style="border:1px solid #d3d3d3;"></canvas>
+-->
 <p id="asdf">a</p>
-<button onclick="run(2,3)">Run</button>
+<button onclick="run(5,5)">Run</button>
 
 <script>
 
 numCells = 0;
-
-
 
 class Pixel 
 {
@@ -144,7 +146,7 @@ function createCell(coordinates)
 	document.getElementById('gridMap').appendChild(el);
 }
 
-// Requires: coordinates of starting pixel
+// Requires: coordinates of starting pixel, color to check against, canvas context / imgData
 // Effects: Finds the perimiter of each grid cell and defines the coordinates
 // returns a coordinate pair where x = right most value of cell and y = bottom most point in cell
 function findAndDefine(x,y, criteria, ctx, imgData)
@@ -163,15 +165,15 @@ function findAndDefine(x,y, criteria, ctx, imgData)
 	{
 		if (pixel.x == startPixel.x && pixel.y == startPixel.y && i > 0)
 			done = true;
-		else if (i > 1200)
-			done = true;
+		//else if (i > 1200) 
+			//done = true;
 		i +=1;
 		if (pixel.x > farRight)
 			farRight = pixel.x;
 		if (pixel.y > farDown)
 			farDown = pixel.y;
 		
-		console.log(pixel.print() + " Deg: " + curDeg + " " + i);
+		//console.log(pixel.print() + " Deg: " + curDeg + " " + i);
 		
 		var rightPixelCheck = new Pixel(pixel.x, pixel.y, imgData);
 		var upPixelCheck = new Pixel(pixel.x, pixel.y, imgData);
@@ -238,7 +240,7 @@ function findAndDefine(x,y, criteria, ctx, imgData)
 		}
 	
 	}
-	while (done == false);
+	while (done == false); // while startPixel != endPixel
 
 	ctx.putImageData(imgData, 0, 0); //show traced cell
 
@@ -265,13 +267,12 @@ function findAndDefine(x,y, criteria, ctx, imgData)
 function mapAreaClick(num)
 {
 	alert("hey im cell #" + num);
+	//console.log("hey im cell #" + num);
 }
 
-function run(numRows, numCols)
+// Effects: Traces and maps 'cells' in an image
+function run(numCols, numRows)
 {
-
-	//start at top left of photo, find first pixel that doesnt meet criteria and upPixel does
-
 	var c = document.getElementById("myCanvas");
 	var ctx = c.getContext("2d");
 	var img = document.getElementById("grid");
@@ -287,8 +288,8 @@ function run(numRows, numCols)
 
 	while (visited.length < numRows * numCols + (numRows - 1)) //go through each cell, one cell is visited twice per row
 	{
-
-		for (var i = itr; i < imgData.data.length; i += 4) //find starting point in cell
+		//find starting point in cell
+		for (var i = itr; i < imgData.data.length; i += 4) 
 		{
 			var hex = rgbToHex(imgData.data[i], imgData.data[i+1], imgData.data[i+2]);
 			if (hex != criteria)
@@ -302,9 +303,12 @@ function run(numRows, numCols)
 		}
 		
 		//alert(x + " " + y);
+		// Trace cell
 		var resultsCoord = findAndDefine(x,y, criteria, ctx, imgData);
 		
 		//alert("Res: " + resultsCoord.x + " " + resultsCoord.y);
+
+		// Check if cell has been visited / decides to continue right or go down in image
 		itr = (y * imgData.width + resultsCoord.x) * 4; // search right
 		for (var i = 0; i < visited.length; i++)
 		{
@@ -315,14 +319,12 @@ function run(numRows, numCols)
 				i = visited.length; //break
 			}
 		}
-
 		visited.push(resultsCoord);
+
 		document.getElementById('asdf').innerHTML = JSON.stringify(visited);
 	} // end while
 }
 
-
-// Thanks to TIm Down on stackoverflow
 function componentToHex(c) 
 {
 	var hex = c.toString(16);

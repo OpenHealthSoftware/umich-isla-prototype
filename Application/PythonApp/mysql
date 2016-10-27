@@ -1,0 +1,8 @@
+CREATE DATABASE kellogg;
+USE DATABASE kellogg;
+
+CREATE TABLE images(
+	imgId CHAR(32) NOT NULL,
+	format CHAR(3) NOT NULL,
+	PRIMARY KEY(imgId)
+);

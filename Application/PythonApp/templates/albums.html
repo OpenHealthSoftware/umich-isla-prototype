@@ -1,0 +1,53 @@
+{% extends "base.html" %}
+{% block title %}Albums - Phlikr{% endblock %}
+{% block content %}
+    <h1>ALBUMS</h1>
+    <p class="important">
+      Welcome {{ user }}!
+    </p>
+   
+   {% if edit == False %}<a href="albums/edit">Edit Albums</a><br>{% endif %}
+   {% if edit == True %}
+    <a href="../albums">Back to View</a><br>
+    {% endif %}
+
+   {% if edit %}
+    <div id="newAlbum" class="preview">
+    	<form action="edit" method="POST">
+    	<input type="text" name="albumTitle" placeholder="Album Title">
+    	<input type="hidden" name="op" value="add">
+    	<input type="submit" value="Create">
+    	</form>
+    </div>
+    {% endif %}
+
+    {% for al in albums %}
+    	<a href="/album?albumid={{al['albumid']}}" class="preview">
+    	<div id="album_{{ al['albumid']}}" class="album">
+
+    		{% if edit %}
+    		<div class="deleteAlbum">
+    			<form action="edit" method="post">
+    				<input type="hidden" name="op" value="delete">
+    				<input type="hidden" name="albumid" value="{{al['albumid']}}">
+    				<input type="submit" value="Delete Album">
+    			</form>
+    		</div>
+    		<!-- <div>Change Name</div>
+    		<button class="edit">Edit</button> -->
+    		{% endif %}
+
+    		<div class="imagePreview">
+    			<img src="{{url_for('static', filename='images/' + al['imgName'])}}">
+    		</div>
+    		<div class="albumInfobar">
+    			<p>{{al['title']}}</p>
+    			<i>{{al['lastupdated']}}</i>
+    		</div>
+    	</div>
+    	</a>
+
+    {% endfor %}
+ 
+{% endblock %}
+

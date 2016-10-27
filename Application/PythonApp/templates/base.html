@@ -1,0 +1,26 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN">
+<html lang="en">
+<head>
+
+    <link rel="stylesheet" href="/static/css/style.css" />
+    {% block css %}{% endblock %}
+
+    <title>{% block title %}Phlikr{% endblock %}</title>
+</head>
+<body>
+	  <div id="fullwrap">
+	  	<div id ="headnav">
+	  		{% include "headnav.html" %}
+	  	</div>
+	  	<div id="content">
+	  		{% block content %}{% endblock %}
+	  	</div>
+	  	<div id="footer">
+	  		{% block footer %}{% endblock %}
+	  	</div>
+	  </div>
+  <script type="text/javascript" src="/static/js/main.js"></script>
+  {% block js %}{% endblock %}
+</body>
+
+</html>

@@ -1,0 +1,18 @@
+{% extends "base.html" %}
+{% block title %}Phlikr{% endblock %}
+{% block css %}
+<link rel="stylesheet" src="/static/css/index.css" />
+<link rel="text/javascript" src="{{url_for('static', filename='js/main.js')}}">
+{% endblock %}
+{% block content %}
+	
+	<map name="map" id="gridMap">
+	{% for i in coords %}
+		<area shape="poly" coords="{{i}}" onclick="cellClick({{loop.index}})">
+	{% endfor %}
+	</map>
+
+	
+	<img  style="position: absolute;"usemap="#map" src="{{url_for('static', filename='images/' + img['imgId'] + '.' + img['format'])}}">
+	<img src="{{grid}}" id="grid" style="position: absolute;pointer-events:none">
+{% endblock %}
