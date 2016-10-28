@@ -2,25 +2,28 @@
 <html lang="en">
 <head>
 
-    <link rel="stylesheet" href="/static/css/style.css" />
-    {% block css %}{% endblock %}
+	<link rel="stylesheet" href="/static/css/style.css" />
+	{% block css %}{% endblock %}
 
-    <title>{% block title %}Phlikr{% endblock %}</title>
+	<title>{% block title %}Phlikr{% endblock %}</title>
 </head>
 <body>
 	  <div id="fullwrap">
-	  	<div id ="headnav">
-	  		{% include "headnav.html" %}
-	  	</div>
-	  	<div id="content">
-	  		{% block content %}{% endblock %}
-	  	</div>
-	  	<div id="footer">
-	  		{% block footer %}{% endblock %}
-	  	</div>
+		<div id ="headnav">
+			{% include "headnav.html" %}
+		</div>
+		<div id="content">
+			{% block content %}{% endblock %}
+		</div>
+		<div id="footer">
+			{% block footer %}{% endblock %}
+		</div>
 	  </div>
-  <script type="text/javascript" src="/static/js/main.js"></script>
-  {% block js %}{% endblock %}
+
+  {% block js %}
+  <script src="{{url_for('static', filename='js/jquery-3.1.1.min.js')}}"></script>
+  <script src="{{url_for('static', filename='js/main.js')}}"></script>
+  {% endblock %}
 </body>
 
 </html>

@@ -1,13 +1,10 @@
-.login form  { display: table; }
-.login form p{ 
-	display: table-row;
-	height: 2em;
+.imgPrev
+{
+	width: 25%;
+	float: left;
 }
-.login label { 
-	display: table-cell; 
-	padding: 0em 1em 1em 1em;
-}
-.login input { 
-	display: table-cell;
-	height: 100%;
+
+.imgPrev img {
+	width: 100%;
+	height: auto;
 }

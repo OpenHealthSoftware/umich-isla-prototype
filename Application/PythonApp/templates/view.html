@@ -1,18 +1,33 @@
 {% extends "base.html" %}
 {% block title %}Phlikr{% endblock %}
 {% block css %}
-<link rel="stylesheet" src="/static/css/index.css" />
-<link rel="text/javascript" src="{{url_for('static', filename='js/main.js')}}">
+<link rel="stylesheet" src="/static/css/style.css" />
 {% endblock %}
 {% block content %}
-	
+	<button id="export">Export Grade</button>
 	<map name="map" id="gridMap">
 	{% for i in coords %}
-		<area shape="poly" coords="{{i}}" onclick="cellClick({{loop.index}})">
+		<area id="cell{{loop.index}}" shape="poly" coords="{{i}}" onclick="cellClick({{loop.index}})">
 	{% endfor %}
 	</map>
 
 	
-	<img  style="position: absolute;"usemap="#map" src="{{url_for('static', filename='images/' + img['imgId'] + '.' + img['format'])}}">
-	<img src="{{grid}}" id="grid" style="position: absolute;pointer-events:none">
+	<img  id="main" class="pic" usemap="#map" src="{{url_for('static', filename='images/normals/' + img['imgId'] + '.' + img['format'])}}">
+	<img src="{{grid}}" id="grid" class="pic">
+
+	<div id="gradeCell">
+		<div id="cellExpanded">
+			<canvas id="myCanvas"></canvas>
+		</div>
+		<form id="gradeForm">
+			<input type="radio" name="grade" value="perfused">Perfused<br>
+			<input type="radio" name="grade" value="non-perfused">Non-Perfused<br>
+		</form>
+		<button id="submitGrade">Submit Grade</button>
+		<div id="referenceImgs">
+			<img class="referenceImg" src="">
+		</div>
+		<input id="inputCell" type="hidden" value="0">
+	</div>
+	
 {% endblock %}

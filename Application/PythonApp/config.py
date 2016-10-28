@@ -17,5 +17,5 @@ sql = dict(
 )
 
 # For file uploads
-UPLOAD_FOLDER = './static/images'
-ALLOWED_EXTENSIONS = set(['png', 'jpg', 'bmp', 'gif'])
+UPLOAD_FOLDER = './static/images/uploads'
+ALLOWED_EXTENSIONS = set(['png', 'PNG','jpg', 'bmp', 'gif'])
