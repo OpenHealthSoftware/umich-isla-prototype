@@ -1,5 +1,4 @@
 {% extends "base.html" %}
-{% block title %}Phlikr{% endblock %}
 {% block css %}
 <link rel="stylesheet" href="/static/css/index.css" />
 {% endblock %}
@@ -16,7 +15,7 @@
 	{% for p in images %}
 		<a href="view?p={{p['imgId']}}" class="aPrev">
 		<div id="imgPrev{{loop.index}}" class="imgPrev">
-			<img src="{{url_for('static', filename='images/' + p['imgId'] + '.' + p['format'])}}">
+			<img src="{{url_for('static', filename='images/uploads/' + p['imgId'] + '.' + p['format'])}}">
 		</div>
 		</a>
 	{% endfor %}

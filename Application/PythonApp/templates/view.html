@@ -1,5 +1,4 @@
 {% extends "base.html" %}
-{% block title %}Phlikr{% endblock %}
 {% block css %}
 <link rel="stylesheet" src="/static/css/style.css" />
 {% endblock %}
@@ -11,13 +10,16 @@
 	{% endfor %}
 	</map>
 
-	
-	<img  id="main" class="pic" usemap="#map" src="{{url_for('static', filename='images/normals/' + img['imgId'] + '.' + img['format'])}}">
-	<img src="{{grid}}" id="grid" class="pic">
+
+	<div id="fullView">
+		<img  id="main" class="pic" usemap="#map" src="{{url_for('static', filename='images/uploads/' + img['imgId'] + '.' + img['format'])}}">
+		<img src="{{grid}}" id="grid" class="pic">
+		<canvas id="gridCanvas" class="pic"></canvas>
+	</div>
 
 	<div id="gradeCell">
 		<div id="cellExpanded">
-			<canvas id="myCanvas"></canvas>
+			<canvas id="cellViewCanvas"></canvas>
 		</div>
 		<form id="gradeForm">
 			<input type="radio" name="grade" value="perfused">Perfused<br>
@@ -29,5 +31,7 @@
 		</div>
 		<input id="inputCell" type="hidden" value="0">
 	</div>
+
+
 	
 {% endblock %}

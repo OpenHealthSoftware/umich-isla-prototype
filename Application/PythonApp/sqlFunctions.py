@@ -1,9 +1,9 @@
 from flask import *
+#import sqlite3
 from extensions import db
 
-
-
-# MySQL
+#conn = sqlite3.connect('database.db', check_same_thread=False)
+#cursor = conn.cursor()
 cursor = db.cursor()
 
 

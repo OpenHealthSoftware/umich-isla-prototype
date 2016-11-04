@@ -1,7 +1,7 @@
 from flask import Flask, render_template, session
-import extensions
 import controllers
 import config
+
 
 
 # Initialize Flask app with the template folder address

@@ -1,12 +1,11 @@
 from flask import *
-from flask_mysqldb import MySQL
-import MySQLdb
-from extensions import db
 from imageProcessing import *
 from sqlFunctions import *
 
+
+
 view = Blueprint('view', __name__, template_folder='templates', static_folder="static")
-GRID_PATH = './static/images/grid.png'
+GRID_PATH = './static/images/grid3.png'
 
 
 
