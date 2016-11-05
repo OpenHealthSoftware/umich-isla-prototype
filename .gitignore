@@ -1,2 +1,3 @@
 Application/PythonApp/static/images/normals/
 Application/PythonApp/static/images/uploads/
+*.pyc
