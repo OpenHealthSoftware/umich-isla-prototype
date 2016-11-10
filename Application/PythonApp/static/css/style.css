@@ -16,6 +16,7 @@ html, body, #fullwrap
 	position: relative;
 	top: 5%;
 	background-color: red;
+	overflow: hidden;
 }
 
 #main{
@@ -23,8 +24,8 @@ html, body, #fullwrap
 	height: auto;
 }
 .pic{position: absolute; width: 100%; height: auto;}
-#grid, #gridCanvas { pointer-events: none;}
-
+#gridCanvas { pointer-events: none;}
+#grid{display:none;}
 
 canvas{border: solid 1px black;}
 #gradeCell {

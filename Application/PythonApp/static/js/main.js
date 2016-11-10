@@ -1,3 +1,37 @@
+/*
+<div ng-app="kellogg">
+		<div ng-controller="appCtrl">
+			<p>[[greeting.text]], world </p>
+			<div drag-div>Drag me!</div>
+			<button ng-click="submitPositioning()">Click</button>
+		</div>
+
+	</div>
+var app = angular.module('kellogg', []);
+app.config(function($interpolateProvider) {
+	$interpolateProvider.startSymbol('[[');
+	$interpolateProvider.endSymbol(']]');
+});
+app.controller('appCtrl', ['$scope', function($scope) {
+	$scope.greeting = { text: 'Hello' };
+	$scope.origin = { x: 0, y: 0};
+	$scope.submitPositioning = function()
+	{
+		
+		origin.x = 
+	};
+}]);
+
+app.directive('dragDiv', function() {
+	return {
+		restrict: 'A',
+		link: function(scope, elem, attr, ctrl) {
+			elem.draggable();
+		}
+	};
+});
+*/
+
 // GLobals
 exportData = {};
 // For exporting to csv, give the key names => column names
@@ -11,11 +45,63 @@ endTime = 0;
 numCellsGraded = 0;
 numCells = 0;
 var origCoords = [];
+var xOffset = 0;
+var yOffset = 0;
 
 $('document').ready()
 {
-	numCells = $('area').length;
+	// Make user center grid
+	$('#fullView').height($('#main').height()); 
+	$('#focusRing').draggable({containment: "parent"});
+	$(window).keydown(function(e){
+		var deltaR = 0;
+		if (e.which == 38)
+			deltaR = 5;
+		else if (e.which == 40)
+			deltaR = -5;
 
+		var svX = parseInt($('#focusRing').attr('width'));
+		var svY = parseInt($('#focusRing').attr('height'));
+		var cx = parseInt($('#svgCirc').attr('cx'));
+		var cy = parseInt($('#svgCirc').attr('cy'));
+		var r = parseInt($('#svgCirc').attr('r'));
+		var strokeWidth = parseInt($('#svgCirc').attr('stroke-width'));
+
+		var newR = deltaR + r;
+		var cxy =  newR + (strokeWidth / 2);
+		var width = cxy * 2;
+
+		// Check bounds
+		var maxWidth = $('#main').width();
+		var maxHeight = $('#main').height();
+		if (width > maxWidth || width > maxHeight || width < 10) //square
+			return;
+		$('#focusRing').attr({'width' : width, 'height' : width});
+		$('#svgCirc').attr({'cx':  cxy, 'cy': cxy, 'r': newR});
+	});
+	$('#submitPosition').click(function()
+	{
+		var fr = $('#focusRing');
+		// center of focus ring
+		var x = fr.position().left + (fr.width() / 2);
+		var y =  fr.position().top + (fr.height() / 2);
+		// subtract for center of grid
+		x = x - ($('#grid').width() / 2);
+		y = y - ($('#grid').height() / 2);
+
+		$('#grid').css({left: x, top: y});
+		xOffset = x;
+		yOffset = y;
+
+		// Postioning is set, show normal view
+		$('#grid').show();
+		$('#focusRing').hide();
+		$(this).hide();
+	});
+
+
+	// Get the html mapped grid
+	numCells = $('area').length;
 	// Store the original coordinates
 	$('area').each(function(){
 		var coords = $(this).attr('coords');
@@ -31,7 +117,7 @@ $('document').ready()
 window.onresize = function(){remap();};
 
 var lastGridRatio = 0;
-// Changes area coordinates to match scaled grid
+// Changes area coordinates to match scaled grid / image
 function remap()
 {
 	var ar = $('area');
@@ -47,14 +133,14 @@ function remap()
 		ar.each(function()
 		{
 			var newCoords = [];
-			// update origCoords 
+			// calculate new coords
 			for (var i in origCoords[row])
 			{
 				var c = parseInt(origCoords[row][i]);
 				newCoords.push(parseInt(c*ratio));
 			}
 
-			// reset
+			// reset html
 			$(this).attr('coords', newCoords.toString());
 			row++;
 		});
@@ -121,6 +207,10 @@ function cellClick(id)
 	}
 	ctx.closePath();
 	ctx.clip();
+
+	// Account for grid position offset
+	minY += yOffset;
+	minX += xOffset;
 
 	ctx.drawImage(img, minX*diff, minY*diff, (cellWidth)*diff, (cellHeight)*diff, 0,0, c.width, c.height);
 

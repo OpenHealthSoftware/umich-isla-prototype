@@ -1,0 +1,7 @@
+# concepts
+https://docs.angularjs.org/guide/concepts
+
+https://scotch.io/tutorials/single-page-apps-with-angularjs-routing-and-templating
+
+# angular and canvas
+http://jsfiddle.net/r4TMq/11/
