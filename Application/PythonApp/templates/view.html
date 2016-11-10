@@ -3,6 +3,11 @@
 <link rel="stylesheet" src="/static/css/style.css" />
 {% endblock %}
 {% block content %}
+
+
+
+
+
 	<button id="export">Export Grade</button>
 	<button id="submitPosition">Position</button>
 	<map name="map" id="gridMap">
@@ -11,30 +16,45 @@
 	{% endfor %}
 	</map>
 
+	<main ng-app="angularResizable" style="height: 800px">
+		<div class="content" style="height: 800px">
+			<div class="row" resizable r-directions="['bottom']" r-flex="true" r-height="800">
+				<section id="one" r-height="800">
+					<div id="fullView">
+						<img  id="main" class="pic" src="{{url_for('static', filename='images/uploads/' + img['imgId'] + '.' + img['format'])}}">
+						<img src="{{grid}}" id="grid" class="pic" usemap="#map" >
+						<canvas id="gridCanvas" class="pic"></canvas>
+						<svg id="focusRing" width="106" height="106">
+							<circle id="svgCirc" cx="53" cy="53" r="50" stroke="green" stroke-width="6" fill-opacity="0"/>
+						</svg>
+					</div>
+				</section>
+				<section id="two" resizable r-directions="['left']" r-flex="true">
+					<div id="gradeCell">
+						<div id="cellExpanded">
+							<canvas id="cellViewCanvas"></canvas>
+						</div>
+						<form id="gradeForm">
+							<input type="radio" name="grade" value="perfused">Perfused<br>
+							<input type="radio" name="grade" value="non-perfused">Non-Perfused<br>
+						</form>
+						<button id="submitGrade">Submit Grade</button>
+						<div id="referenceImgs">
+							<img class="referenceImg" src="">
+						</div>
+						<input id="inputCell" type="hidden" value="0">
+					</div>
+				</section>
+			</div>
+			<div class="row">
+				<section id="four">4</section>
+			</div>
+		</div>
+	</main>
 	
-	<div id="fullView">
-		<img  id="main" class="pic" src="{{url_for('static', filename='images/uploads/' + img['imgId'] + '.' + img['format'])}}">
-		<img src="{{grid}}" id="grid" class="pic" usemap="#map" >
-		<canvas id="gridCanvas" class="pic"></canvas>
-		<svg id="focusRing" width="106" height="106">
-			<circle id="svgCirc" cx="53" cy="53" r="50" stroke="green" stroke-width="6" fill-opacity="0"/>
-		</svg>
-	</div>
+	
 
-	<div id="gradeCell">
-		<div id="cellExpanded">
-			<canvas id="cellViewCanvas"></canvas>
-		</div>
-		<form id="gradeForm">
-			<input type="radio" name="grade" value="perfused">Perfused<br>
-			<input type="radio" name="grade" value="non-perfused">Non-Perfused<br>
-		</form>
-		<button id="submitGrade">Submit Grade</button>
-		<div id="referenceImgs">
-			<img class="referenceImg" src="">
-		</div>
-		<input id="inputCell" type="hidden" value="0">
-	</div>
+	
 
 	
 {% endblock %}

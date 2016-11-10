@@ -51,7 +51,7 @@ var yOffset = 0;
 $('document').ready()
 {
 	// Make user center grid
-	$('#fullView').height($('#main').height()); 
+	//$('#fullView').height($('#main').height()); 
 	$('#focusRing').draggable({containment: "parent"});
 	$(window).keydown(function(e){
 		var deltaR = 0;

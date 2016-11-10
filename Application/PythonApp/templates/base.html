@@ -3,6 +3,7 @@
 <head>
 
 	<link rel="stylesheet" href="/static/css/style.css" />
+	<link rel="stylesheet" href="/static/css/resizable.css" />
 	{% block css %}{% endblock %}
 
 	<title>{% block title %}Kellogg{% endblock %}</title>
@@ -25,7 +26,9 @@
   <script src="{{url_for('static', filename='js/jquery-3.1.1.min.js')}}"></script>
   <script src="{{url_for('static', filename='js/jquery-ui.min.js')}}"></script>
     <script src="{{url_for('static', filename='js/angular.min.js')}}"></script>
+    <script src="{{url_for('static', filename='js/resizable.js')}}"></script>
   <script src="{{url_for('static', filename='js/main.js')}}"></script>
+  
   {% endblock %}
 </body>
 

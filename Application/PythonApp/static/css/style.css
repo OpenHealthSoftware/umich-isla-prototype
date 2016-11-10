@@ -12,28 +12,25 @@ html, body, #fullwrap
 }
 #fullView
 {
-	width: 75%;
+	width: 100%;
 	position: relative;
-	top: 5%;
 	background-color: red;
 	overflow: hidden;
+	height: 100%;
 }
 
 #main{
 	width: 100%;
 	height: auto;
 }
-.pic{position: absolute; width: 100%; height: auto;}
+.pic{position: relative; width: 100%; height: auto;}
 #gridCanvas { pointer-events: none;}
 #grid{display:none;}
 
 canvas{border: solid 1px black;}
 #gradeCell {
 	position: absolute;
-	
-	top: 25%;
-	right:0;
-	width: 25%;
+	width: 100%;
 	background-color: blue;
 }
 #cellExpanded
