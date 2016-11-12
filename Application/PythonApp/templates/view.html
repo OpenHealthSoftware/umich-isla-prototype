@@ -1,6 +1,6 @@
 {% extends "base.html" %}
 {% block css %}
-<link rel="stylesheet" src="/static/css/style.css" />
+<link rel="stylesheet" href="{{url_for('static', filename='css/carousel.css')}}"/>
 {% endblock %}
 {% block content %}
 	<button id="export">Export Grade</button>
@@ -36,5 +36,28 @@
 		<input id="inputCell" type="hidden" value="0">
 	</div>
 
-	
+	<div id="controlImgBar" class="carousel_container">
+		{% if controls|length > numPrev %}
+		<div id='left_scroll'> < </div>
+		{% endif %}
+		<div class='carousel_inner'>
+			<ul class='carousel_ul'>
+				{% for i in controls %}
+				<li>
+				<div id="control{{loop.index}}" class="controlPrevItem">
+					<img src="{{url_for('static', filename='images/normals/' +i)}}">
+				</div>
+				</li>
+			{% endfor %}
+		</div>
+		{% if controls|length > numPrev %}
+		<div id="right_scroll"> > </div>
+		{% endif %}
+	</div>
+
+
+{% endblock %}
+
+{% block js %}
+<script src="{{url_for('static', filename='js/carousel.js')}}"></script>
 {% endblock %}

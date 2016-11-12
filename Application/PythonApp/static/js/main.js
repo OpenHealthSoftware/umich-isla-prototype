@@ -97,6 +97,7 @@ $('document').ready()
 		$('#grid').show();
 		$('#focusRing').hide();
 		$(this).hide();
+		remap();
 	});
 
 
@@ -120,6 +121,7 @@ var lastGridRatio = 0;
 // Changes area coordinates to match scaled grid / image
 function remap()
 {
+	$('#fullView').height($('#main').height()); 
 	var ar = $('area');
 	var grid = document.getElementById('grid');
 	var gridWidth = grid.width;
