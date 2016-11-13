@@ -47,6 +47,7 @@ numCells = 0;
 var origCoords = [];
 var xOffset = 0;
 var yOffset = 0;
+var mainImg = $('#mainFA_image');
 
 // Effects: updates the containment bounds and cursor origin for focusring
 function updateFocusRing()
@@ -63,7 +64,7 @@ function updateFocusRing()
 $('document').ready()
 {
 	// Make user center grid
-	//$('#fullView').height($('#main').height()); 
+	//$('#fullView').height(mainImg.height()); 
 
 	$(window).keydown(function(e){
 		var deltaR = 0;
@@ -84,8 +85,8 @@ $('document').ready()
 		var width = cxy * 2;
 
 		// Check bounds
-		var maxWidth = $('#main').width();
-		var maxHeight = $('#main').height();
+		var maxWidth = mainImg.width();
+		var maxHeight = mainImg.height();
 		if (width > maxWidth || width > maxHeight || width < 10) //square
 			return;
 		$('#focusRing').attr({'width' : width, 'height' : width});
@@ -100,12 +101,39 @@ $('document').ready()
 		var x = fr.position().left + (fr.width() / 2);
 		var y =  fr.position().top - (fr.width() / 2);
 
+		// re-evaluate coordinates based on natural img size
+		var percentageDiff = mainImg.get(0).naturalWidth / mainImg.width();
+		x = Math.floor(x*percentageDiff);
+		y = Math.floor(y*percentageDiff);
+
+		/*
 		// convert to percentage
 		x = (x / $('#fullView').width()) * 100;
 		y = (y / $('#fullView').height()) * 100;
 		x -=50; //half of grid
 		y -=50;
-
+		*/
+		var arr = {};
+		arr['picName'] = gup("p");
+		arr['origin'] = [x,y];
+		$.ajax({
+			url: '/viewPositioned',
+			data: { 'picName' : gup("p"), 'x' : x, 'y' : y},
+			type: 'POST',
+			success: function(response) {
+				console.log(response);
+				$('#grid').src = response['newImgPath'];
+				$('#grid').show();
+				//$('#focusRing').hide();
+				$(this).hide();
+				remap();
+			},
+			error: function(error) {
+				console.log(error);
+			}
+		});
+		
+		/*
 		$('#grid').css({left: x + '%', top: y + '%'});
 		xOffset = x;
 		yOffset = y;
@@ -115,6 +143,7 @@ $('document').ready()
 		//$('#focusRing').hide();
 		//$(this).hide();
 		remap();
+		*/
 	});
 
 
@@ -134,11 +163,23 @@ $('document').ready()
 
 window.onresize = function(){remap();};
 
+// function for getting URL parameters
+function gup(name) {
+	name = name.replace(/[\[]/,"\\\[").replace(/[\]]/,"\\\]");
+	var regexS = "[\\?&]"+name+"=([^&#]*)";
+	var regex = new RegExp(regexS);
+	var results = regex.exec(window.location.href);
+	if(results == null)
+		return null;
+	else
+		return unescape(results[1]);
+}
+
 var lastGridRatio = 0;
 // Changes area coordinates to match scaled grid / image
 function remap()
 {
-	//$('#fullView').height($('#main').height()); 
+	//$('#fullView').height(mainImg.height()); 
 	var ar = $('area');
 	var grid = document.getElementById('grid');
 	var gridWidth = grid.width;
