@@ -1,6 +1,7 @@
 {% extends "base.html" %}
 {% block css %}
 <link rel="stylesheet" href="{{url_for('static', filename='css/carousel.css')}}"/>
+<link rel="stylesheet" href="{{url_for('static', filename='css/split.css')}}"/>
 {% endblock %}
 {% block content %}
 	<button id="export">Export Grade</button>
@@ -11,53 +12,85 @@
 	{% endfor %}
 	</map>
 
-	
-	<div id="fullView">
-		<img  id="main" class="pic" src="{{url_for('static', filename='images/uploads/' + img['imgId'] + '.' + img['format'])}}">
-		<img src="{{grid}}" id="grid" class="pic" usemap="#map" >
-		<canvas id="gridCanvas" class="pic"></canvas>
-		<svg id="focusRing" width="106" height="106">
-			<circle id="svgCirc" cx="53" cy="53" r="50" stroke="green" stroke-width="6" fill-opacity="0"/>
-		</svg>
-	</div>
+	<div id="topScreen" class="split split-vertical" >
+		<div id="leftScreen" class="split split-horizontal content" >
+			<div id="fullView">
+				<img  id="main" class="pic" src="{{url_for('static', filename='images/uploads/' + img['imgId'] + '.' + img['format'])}}">
+				<img src="{{grid}}" id="grid" class="pic overlay" usemap="#map" >
+				<svg id="focusRing" class="" width="106" height="106">
+					<circle id="svgCirc" cx="53" cy="53" r="50" stroke="green" stroke-width="6" fill-opacity="0"/>
+				</svg>
+			</div>
+		</div>
 
-	<div id="gradeCell">
+		<div id="rightScreen" class="split split-horizontal content" >
+				<div id="gradeCell">
 		<div id="cellExpanded">
-			<canvas id="cellViewCanvas"></canvas>
+			<canvas id="cellViewCanvas" width="0" height="0"></canvas>
+				</div>
+				<form id="gradeForm">
+					<input type="radio" name="grade" value="perfused">Perfused<br>
+					<input type="radio" name="grade" value="non-perfused">Non-Perfused<br>
+					<input type="radio" name="grade" value="blockage">Blockage<br>
+				</form>
+				<button id="submitGrade">Submit Grade</button>
+				<div id="referenceImgs">
+					<img class="referenceImg" src="">
+				</div>
+				<input id="inputCell" type="hidden" value="0">
+			</div>
 		</div>
-		<form id="gradeForm">
-			<input type="radio" name="grade" value="perfused">Perfused<br>
-			<input type="radio" name="grade" value="non-perfused">Non-Perfused<br>
-		</form>
-		<button id="submitGrade">Submit Grade</button>
-		<div id="referenceImgs">
-			<img class="referenceImg" src="">
+	</div>
+	<div id="bottomScreen" class="split split-vertical content" >
+		<div id="controlImgBar" class="carousel_container">
+			{% if controls|length > numPrev %}
+			<div id='left_scroll'> < </div>
+			{% endif %}
+			<div class='carousel_inner'>
+				<ul class='carousel_ul'>
+					{% for i in controls %}
+					<li>
+					<div id="control{{loop.index}}" class="controlPrevItem">
+						<img src="{{url_for('static', filename='images/normals/' +i)}}">
+					</div>
+					</li>
+				{% endfor %}
+			</div>
+			{% if controls|length > numPrev %}
+			<div id="right_scroll"> > </div>
+			{% endif %}
 		</div>
-		<input id="inputCell" type="hidden" value="0">
 	</div>
 
-	<div id="controlImgBar" class="carousel_container">
-		{% if controls|length > numPrev %}
-		<div id='left_scroll'> < </div>
-		{% endif %}
-		<div class='carousel_inner'>
-			<ul class='carousel_ul'>
-				{% for i in controls %}
-				<li>
-				<div id="control{{loop.index}}" class="controlPrevItem">
-					<img src="{{url_for('static', filename='images/normals/' +i)}}">
-				</div>
-				</li>
-			{% endfor %}
-		</div>
-		{% if controls|length > numPrev %}
-		<div id="right_scroll"> > </div>
-		{% endif %}
-	</div>
+	
+
+
+
+
+	
 
 
 {% endblock %}
 
 {% block js %}
 <script src="{{url_for('static', filename='js/carousel.js')}}"></script>
+<script src="{{url_for('static', filename='js/split.min.js')}}"></script>
+<script>
+$('document').ready()
+{
+	Split(['#topScreen', '#bottomScreen'], {
+			direction: 'vertical',
+			sizes : [75,25]
+	});
+
+	Split(['#leftScreen', '#rightScreen'], { 
+		sizes : [75,25], 
+		onDragEnd : function(){
+			updateFocusRing();
+		} 
+	});
+
+	updateFocusRing();
+}
+</script>
 {% endblock %}

@@ -48,11 +48,23 @@ var origCoords = [];
 var xOffset = 0;
 var yOffset = 0;
 
+// Effects: updates the containment bounds and cursor origin for focusring
+function updateFocusRing()
+{
+	var arr = [0, 0];
+	arr.push($('#fullView').width() - $('#focusRing').width());
+	arr.push($('#fullView').height() - $('#focusRing').height());
+
+	$('#focusRing').draggable({containment: arr,
+		cursor: 'move',
+		cursorAt: { top: $('#focusRing').width(), left: $('#focusRing').width() /2}
+	});
+}
 $('document').ready()
 {
 	// Make user center grid
 	//$('#fullView').height($('#main').height()); 
-	$('#focusRing').draggable({containment: "parent"});
+
 	$(window).keydown(function(e){
 		var deltaR = 0;
 		if (e.which == 38)
@@ -78,25 +90,30 @@ $('document').ready()
 			return;
 		$('#focusRing').attr({'width' : width, 'height' : width});
 		$('#svgCirc').attr({'cx':  cxy, 'cy': cxy, 'r': newR});
+
+		updateFocusRing();
 	});
 	$('#submitPosition').click(function()
 	{
 		var fr = $('#focusRing');
 		// center of focus ring
 		var x = fr.position().left + (fr.width() / 2);
-		var y =  fr.position().top + (fr.height() / 2);
-		// subtract for center of grid
-		x = x - ($('#grid').width() / 2);
-		y = y - ($('#grid').height() / 2);
+		var y =  fr.position().top - (fr.width() / 2);
 
-		$('#grid').css({left: x, top: y});
+		// convert to percentage
+		x = (x / $('#fullView').width()) * 100;
+		y = (y / $('#fullView').height()) * 100;
+		x -=50; //half of grid
+		y -=50;
+
+		$('#grid').css({left: x + '%', top: y + '%'});
 		xOffset = x;
 		yOffset = y;
 
 		// Postioning is set, show normal view
 		$('#grid').show();
-		$('#focusRing').hide();
-		$(this).hide();
+		//$('#focusRing').hide();
+		//$(this).hide();
 		remap();
 	});
 
@@ -121,7 +138,7 @@ var lastGridRatio = 0;
 // Changes area coordinates to match scaled grid / image
 function remap()
 {
-	$('#fullView').height($('#main').height()); 
+	//$('#fullView').height($('#main').height()); 
 	var ar = $('area');
 	var grid = document.getElementById('grid');
 	var gridWidth = grid.width;
@@ -222,8 +239,8 @@ function cellClick(id)
 	document.getElementById('gradeCell').style.display = "block";
 	$('#inputCell').val(id);
 
-	var c = document.getElementById("gridCanvas").getContext("2d");
-	c.clearRect(cellCoords[0], cellCoords[1], cellWidth, cellHeight);
+	//var c = document.getElementById("gridCanvas").getContext("2d");
+	//c.clearRect(cellCoords[0], cellCoords[1], cellWidth, cellHeight);
 }
 
 document.getElementById('submitGrade').onclick = function()

@@ -8,7 +8,7 @@ from os.path import isfile, join
 
 
 view = Blueprint('view', __name__, template_folder='templates', static_folder="static")
-GRID_PATH = './static/images/grid3.png'
+GRID_PATH = './static/images/grid3Cent.png'
 
 def getImageControls():
 	return [f for f in listdir('./static/images/normals/') if isfile(join('./static/images/normals/', f))]
