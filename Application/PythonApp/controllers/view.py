@@ -11,7 +11,7 @@ view = Blueprint('view', __name__, template_folder='templates', static_folder="s
 GRID_PATH = './static/images/grid3Cent.png'
 UPLOAD_PATH = './static/images/uploads/'
 
-def getImageControls():
+def getControlImages():
 	return [f for f in listdir('./static/images/normals/') if isfile(join('./static/images/normals/', f))]
 
 # Effects: forms list of data needs for a page
@@ -19,14 +19,15 @@ def getPageData(imgId):
 	
 	coords = processImageGrid(GRID_PATH)
 	image = getImageData(imgId)
-	controls = getImageControls()
-	
+	controls = getControlImages()
+
 	data = {
 		"coords" : coords,
 		"img" : image,
 		"grid" : GRID_PATH,
 		"controls" : controls,
-		"numPrev" : 5 #number of control images to show at once
+		"numPrev" : 5, #number of control images to show at once
+		"isGridded" : isfile(UPLOAD_PATH + 'gridded_' + imgId + '.' + image['format'])
 	}
 	return data
 
@@ -37,19 +38,14 @@ def createGriddedImage(originCoords, imgName):
 	grid = Image.open(GRID_PATH, 'r')
 	faImg = Image.open(UPLOAD_PATH + imgName, 'r')
 
-	# Create copy of faImg
-	img_w, img_h = faImg.size
-	newImg = Image.new("RGB", (img_w, img_h))
-	newImg.paste(faImg, (0,0))
-
 	# Calculate where grid goes and paste
 	grid_w, grid_h = grid.size
 	offset = (originCoords[0] - (grid_w  / 2) , originCoords[1] - (grid_h  / 2))
 	r, g, b, alpha = grid.split()
-	newImg.paste(grid, offset, mask=alpha)
+	faImg.paste(grid, offset, mask=alpha)
 
 	imgName = "gridded_" + imgName
-	newImg.save(UPLOAD_PATH + imgName)
+	faImg.save(UPLOAD_PATH + imgName)
 	return UPLOAD_PATH + imgName
 
 
@@ -67,7 +63,8 @@ def main_route():
 @view.route('/viewPositioned', methods=['GET', 'POST'])
 def positionGrid_route():
 	imgName = request.form['picName']
+	image = getImageData(imgName)
 	originCoords = [request.form['x'], request.form['y']]
 	originCoords = map(int, originCoords)
-	newImgPath = createGriddedImage(originCoords, imgName + '.PNG')
+	newImgPath = createGriddedImage(originCoords, imgName + '.' + image['format'])
 	return json.dumps({'newImgPath' : newImgPath})

@@ -48,6 +48,7 @@ var origCoords = [];
 var xOffset = 0;
 var yOffset = 0;
 var mainImg = $('#mainFA_image');
+var frX = 0, frY = 0;
 
 // Effects: updates the containment bounds and cursor origin for focusring
 function updateFocusRing()
@@ -58,7 +59,11 @@ function updateFocusRing()
 
 	$('#focusRing').draggable({containment: arr,
 		cursor: 'move',
-		cursorAt: { top: $('#focusRing').width(), left: $('#focusRing').width() /2}
+		cursorAt: { top: $('#focusRing').width(), left: $('#focusRing').width() /2},
+		stop: function(e, ui){
+			frX = ui.position.left;
+			frY = ui.position.top;
+		}
 	});
 }
 $('document').ready()
@@ -91,6 +96,8 @@ $('document').ready()
 			return;
 		$('#focusRing').attr({'width' : width, 'height' : width});
 		$('#svgCirc').attr({'cx':  cxy, 'cy': cxy, 'r': newR});
+		$('#svgCenter').attr({'cx':  cxy, 'cy': cxy});
+
 
 		updateFocusRing();
 	});
@@ -98,34 +105,26 @@ $('document').ready()
 	{
 		var fr = $('#focusRing');
 		// center of focus ring
-		var x = fr.position().left + (fr.width() / 2);
-		var y =  fr.position().top - (fr.width() / 2);
-
+		var x = frX + (fr.width() / 2);
+		var y =  frY + (fr.width() / 2);
+	
 		// re-evaluate coordinates based on natural img size
 		var percentageDiff = mainImg.get(0).naturalWidth / mainImg.width();
 		x = Math.floor(x*percentageDiff);
 		y = Math.floor(y*percentageDiff);
 
-		/*
-		// convert to percentage
-		x = (x / $('#fullView').width()) * 100;
-		y = (y / $('#fullView').height()) * 100;
-		x -=50; //half of grid
-		y -=50;
-		*/
-		var arr = {};
-		arr['picName'] = gup("p");
-		arr['origin'] = [x,y];
+		// Combine grid and fa Img
 		$.ajax({
 			url: '/viewPositioned',
 			data: { 'picName' : gup("p"), 'x' : x, 'y' : y},
 			type: 'POST',
 			success: function(response) {
-				console.log(response);
-				$('#grid').src = response['newImgPath'];
+				console.log($('#grid').attr('src') + '?r=' + new Date().getTime());
+				$('#grid').prop('src', $('#grid').attr('src') + '?r=' + new Date().getTime());
 				$('#grid').show();
-				//$('#focusRing').hide();
-				$(this).hide();
+				$('#focusRing').hide();
+				mainImg.hide();
+				$('#submitPosition').hide();
 				remap();
 			},
 			error: function(error) {
@@ -133,17 +132,6 @@ $('document').ready()
 			}
 		});
 		
-		/*
-		$('#grid').css({left: x + '%', top: y + '%'});
-		xOffset = x;
-		yOffset = y;
-
-		// Postioning is set, show normal view
-		$('#grid').show();
-		//$('#focusRing').hide();
-		//$(this).hide();
-		remap();
-		*/
 	});
 
 
