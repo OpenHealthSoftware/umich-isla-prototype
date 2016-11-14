@@ -8,8 +8,8 @@ from PIL import Image
 
 
 view = Blueprint('view', __name__, template_folder='templates', static_folder="static")
-GRID_PATH = './static/images/grid4.png'
-C_GRID_PATH = './static/images/grid4.jpg' #for contout need nonalpha
+GRID_PATH = './static/images/grid6.png'
+C_GRID_PATH = './static/images/grid6.jpg' #for contout need nonalpha
 UPLOAD_PATH = './static/images/uploads/'
 
 def getControlImages():
@@ -32,23 +32,6 @@ def getPageData(imgId):
 	}
 	return data
 
-# Requires: FA image and grid images are their proper sizes
-# Effects: puts the center of the grid on the specified location of the FA image
-def createGriddedImage(originCoords, imgName):
-	# Load images
-	grid = Image.open(GRID_PATH, 'r')
-	faImg = Image.open(UPLOAD_PATH + imgName, 'r')
-
-	# Calculate where grid goes and paste
-	grid_w, grid_h = grid.size
-	offset = (originCoords[0] - (grid_w  / 2) , originCoords[1] - (grid_h  / 2))
-	rgba = grid.split()
-	alpha = rgba[len(rgba)-1]
-	faImg.paste(grid, offset, mask=alpha)
-
-	imgName = "gridded_" + imgName
-	faImg.save(UPLOAD_PATH + imgName)
-	return UPLOAD_PATH + imgName
 
 
 @view.route('/view', methods=['GET', 'POST'])
@@ -62,6 +45,31 @@ def main_route():
 	return render_template("view.html", **data)
 
 
+
+# Requires: FA image and grid images are their proper sizes
+# Effects: puts the center of the grid on the specified location of the FA image
+def createGriddedImage(originCoords, imgName):
+	# Load images
+	grid = Image.open(GRID_PATH, 'r')
+	faImg = Image.open(UPLOAD_PATH + imgName, 'r')
+	fa_w, fa_h = faImg.size
+
+	# Calculate where grid goes and paste
+	grid_w, grid_h = grid.size
+	offset = (originCoords[0] - (grid_w  / 2) , originCoords[1] - (grid_h  / 2))
+	rgba = grid.split()
+	alpha = rgba[len(rgba)-1]
+
+	croppedGrid = Image.new('RGBA', (fa_w, fa_h))
+	croppedGrid.paste(grid, offset, mask=alpha)
+
+	imgName = "grid_" + imgName
+	png_info = grid.info
+	croppedGrid.save(UPLOAD_PATH + imgName, **png_info)
+	return UPLOAD_PATH + imgName
+
+
+
 @view.route('/viewPositioned', methods=['GET', 'POST'])
 def positionGrid_route():
 	imgName = request.form['picName']
@@ -69,4 +77,5 @@ def positionGrid_route():
 	originCoords = [request.form['x'], request.form['y']]
 	originCoords = map(int, originCoords)
 	newImgPath = createGriddedImage(originCoords, imgName + '.' + image['format'])
-	return json.dumps({'newImgPath' : newImgPath})
+	data = {'newImgPath' : newImgPath}
+	return jsonify(**data)

@@ -17,10 +17,10 @@
 		<div id="leftScreen" class="split split-horizontal content" >
 			<div id="fullView">
 				{% set faSrc = url_for('static', filename='images/uploads/' + img['imgId'] + '.' + img['format']) %}
-				{% set griddedFaSrc = url_for('static', filename='images/uploads/gridded_' + img['imgId'] + '.' + img['format']) %}
+				{% set gridSrc = url_for('static', filename='images/uploads/grid_' + img['imgId'] + '.' + img['format']) %}
 				
 				<img  id="mainFA_image" class="pic" src="{{faSrc}}">
-				<img src="{{grid}}" id="grid" class="pic overlay" usemap="#map" >
+				<img src="{{gridSrc}}" id="grid" class="pic overlay" usemap="#map" >
 
 				{% if isGridded == false %}
 				<svg id="focusRing" class="" width="106" height="106">

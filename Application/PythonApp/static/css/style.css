@@ -46,7 +46,11 @@ html, body, #fullwrap
 
 #gridCanvas { pointer-events: none;}
 
-#grid{display:none;}
+#grid{
+	display:none;
+	top: 0;
+	left: 0;
+}
 
 #focusRing
 {

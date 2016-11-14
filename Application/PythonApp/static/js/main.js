@@ -45,6 +45,7 @@ endTime = 0;
 numCellsGraded = 0;
 numCells = 0;
 var origCoords = [];
+var xOffsetPercent = 0, yOffsetPercent = 0;
 var xOffset = 0;
 var yOffset = 0;
 var mainImg = $('#mainFA_image');
@@ -67,8 +68,20 @@ function updateFocusRing()
 		}
 	});
 }
+
 $('document').ready()
 {
+	// Get the html mapped grid
+	numCells = $('area').length;
+	// Store the original coordinates
+	$('area').each(function(){
+		var coords = $(this).attr('coords');
+		coords = coords.split(','); // turn into array
+		for (var i in coords)
+			coords[i] = parseInt(coords[i]);
+		origCoords.push(coords);
+	});
+
 	// Make user center grid
 	//$('#fullView').height(mainImg.height()); 
 
@@ -108,41 +121,44 @@ $('document').ready()
 		// center of focus ring
 		var x = frX + (fr.width() / 2);
 		var y =  frY + (fr.width() / 2);
+
+		// Figure out the natural values for operation on full size image
+		xGridOffset = Math.floor(x * (mainImg.get(0).naturalWidth / mainImg.width()));
+		yGridOffset = Math.floor(y * (mainImg.get(0).naturalHeight / mainImg.height()));
 	
-
-		var gridW = $('#grid').width();
-		var gridH = $('#grid').height();
-
+		// Offset respective to current view scale
+		var gridW = mainImg.width();
+		var gridH = mainImg.height();
 		// Find coordinates for top-left corner of grid
 		x = x - (gridW  / 2);
 		y = y - (gridH  / 2);
-		xOffset =  x;
-		yOffset = y;
+		xOffsetPercent = x / mainImg.width();
+		yOffsetPercent = y / mainImg.height();
 
-		// Convert to percentage
-		x = (x / mainImg.width()) * 100;
-		y = (y / mainImg.height()) * 100;
-		// Combine grid and fa Img
-		$('#grid').css({left: x + '%', top: y + '%'});
+		$.ajax({
+			url: '/viewPositioned',
+			data: { 'picName' : gup("p"), 'x' : xGridOffset, 'y' : yGridOffset},
+			type: 'POST',
+			success: function(response) {
+				console.log(response);
+				$('#grid').prop('src', $('#grid').attr('src') + '?r=' + new Date().getTime())
+
+				// Convert to percentage
+				x = (x / mainImg.width()) * 100;
+				y = (y / mainImg.height()) * 100;
+				// Combine grid and fa Img
+				//$('#grid').css({left: x + '%', top: y + '%'});
+
+				$('#grid').show();
+				//$('#focusRing').hide();
+				$(this).hide();
+				remap();
+			},
+			error: function(error) {
+				console.log(error);
+			}
+		});
 		
-
-		// Postioning is set, show normal view
-		$('#grid').show();
-		$('#focusRing').hide();
-		$(this).hide();
-		remap();
-	});
-
-
-	// Get the html mapped grid
-	numCells = $('area').length;
-	// Store the original coordinates
-	$('area').each(function(){
-		var coords = $(this).attr('coords');
-		coords = coords.split(','); // turn into array
-		for (var i in coords)
-			coords[i] = parseInt(coords[i]);
-		origCoords.push(coords);
 	});
 
 	remap();
@@ -171,14 +187,14 @@ function remap()
 	var grid = document.getElementById('mainFA_image');
 	var gridWidth = grid.width;
 	var gridNatWidth = grid.naturalWidth;
+	var ratio = gridWidth / gridNatWidth;
 
-	// Image size has changed --- need to update this for cellClick()
-	xOffset = $('#grid').position().left;
-	yOffset = $('#grid').position().top;
+	xOffset = xOffsetPercent * mainImg.width();
+	yOffset = yOffsetPercent * mainImg.height();
 	
 	//if (gridWidth / gridNatWidth != lastGridRatio)
 	{
-		var ratio = gridWidth / gridNatWidth;
+		
 		var row = 0;
 		ar.each(function()
 		{
@@ -187,9 +203,10 @@ function remap()
 			for (var i in origCoords[row])
 			{
 				var c = parseInt(origCoords[row][i]);
-				if (i % 2)
-					newCoords.push(parseInt(c*ratio));
-				else newCoords.push(parseInt(c*ratio));
+				if (i%2)
+					newCoords.push(parseInt(c*ratio) + yOffset);
+				else newCoords.push(parseInt(c*ratio) + xOffset);
+				//newCoords.push(parseInt(c*ratio));
 			}
 
 			// reset html
@@ -271,8 +288,8 @@ function cellClick(id)
 	ctx.clip();
 
 	// Account for grid position offset
-	minY += yOffset;
-	minX += xOffset;
+	//minY += yOffset;
+	//minX += xOffset;
 
 	ctx.drawImage(img, minX*diff, minY*diff, (cellWidth)*diff, (cellHeight)*diff, 0,0, c.width, c.height);
 
