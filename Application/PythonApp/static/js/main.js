@@ -288,8 +288,8 @@ function cellClick(id)
 	ctx.clip();
 
 	// Account for grid position offset
-	//minY += yOffset;
-	//minX += xOffset;
+	minY += yOffset; // this is needed for scaling but the values are not perfect
+	minX += xOffset;
 
 	ctx.drawImage(img, minX*diff, minY*diff, (cellWidth)*diff, (cellHeight)*diff, 0,0, c.width, c.height);
 
