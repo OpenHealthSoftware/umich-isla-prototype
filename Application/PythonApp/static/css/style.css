@@ -48,11 +48,17 @@ html, body, #fullwrap
 }
 
 canvas{border: solid 1px black;}
+
+#rightScreen
+{
+	width: 100%;
+}
 #gradeCell {
 	position: relative;
-	width: 80%;
+	width: 50%;
 	height: 80%;
 	background-color: blue;
+	float: left;
 }
 #cellExpanded
 {
@@ -72,7 +78,7 @@ form input
 }
 input[type=button], input[type=submit], input[type=reset], button {
     background-color: #4CAF50;
-    width: 100%;
+    width: calc(100% - 4px);
     border: none;
     color: white;
     padding: 1em 2em;
@@ -88,9 +94,15 @@ input[type=button]:hover, input[type=submit]:hover, input[type=reset]:hover, but
 {
 	position: relative;
 	width: 100%;
-	height: 120px;
+	height: 100%;
 	background-color: #fff000;
 }
 
 
+#settings
+{
+	position: relative;
+	width: 50%;
+	float: left;
+}
 

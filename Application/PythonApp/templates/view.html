@@ -4,11 +4,9 @@
 <link rel="stylesheet" href="{{url_for('static', filename='css/split.css')}}"/>
 {% endblock %}
 {% block content %}
-	<button id="export">Export Grade</button>
+	
+	
 
-	{% if isGridded == false %}
-	<button id="submitPosition">Position</button>
-	{% endif %}
 	<map name="map" id="gridMap">
 	{% for i in coords %}
 		<area id="cell{{loop.index}}" shape="poly" coords="{{i}}" onclick="cellClick({{loop.index}})">
@@ -23,6 +21,7 @@
 				
 				<img  id="mainFA_image" class="pic" src="{{faSrc}}" {% if isGridded == true %} style='display:none'{%endif%}>
 				<img src="{{griddedFaSrc}}" id="grid" class="pic" usemap="#map" {% if isGridded == true %} style='display:block'{%endif%}>
+				
 				{% if isGridded == false %}
 				<svg id="focusRing" class="" width="106" height="106">
 					<circle id="svgCirc" cx="53" cy="53" r="50" stroke="green" stroke-width="6" fill-opacity="0"/>
@@ -33,9 +32,9 @@
 		</div>
 
 		<div id="rightScreen" class="split split-horizontal content" >
-				<div id="gradeCell">
-		<div id="cellExpanded">
-			<canvas id="cellViewCanvas" width="0" height="0"></canvas>
+			<div id="gradeCell">
+				<div id="cellExpanded">
+					<canvas id="cellViewCanvas" width="0" height="0"></canvas>
 				</div>
 				<form id="gradeForm">
 					<input type="radio" name="grade" value="perfused">Perfused<br>
@@ -48,6 +47,13 @@
 				</div>
 				<input id="inputCell" type="hidden" value="0">
 			</div>
+			<div id="settings">
+				<button id="export">Export Grade</button>
+
+				{% if isGridded == false %}
+				<button id="submitPosition">Position</button>
+				{% endif %}
+			</div><!-- END #settings -->
 		</div>
 	</div>
 	<div id="bottomScreen" class="split split-vertical content" >
@@ -93,7 +99,7 @@ $('document').ready()
 	});
 
 	Split(['#leftScreen', '#rightScreen'], { 
-		sizes : [75,25], 
+		sizes : [65,35], 
 		onDragEnd : function(){
 			updateFocusRing();
 		} 

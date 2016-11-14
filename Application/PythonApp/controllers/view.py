@@ -8,7 +8,7 @@ from PIL import Image
 
 
 view = Blueprint('view', __name__, template_folder='templates', static_folder="static")
-GRID_PATH = './static/images/grid3Cent.png'
+GRID_PATH = './static/images/grid3a.png'
 UPLOAD_PATH = './static/images/uploads/'
 
 def getControlImages():
@@ -41,7 +41,8 @@ def createGriddedImage(originCoords, imgName):
 	# Calculate where grid goes and paste
 	grid_w, grid_h = grid.size
 	offset = (originCoords[0] - (grid_w  / 2) , originCoords[1] - (grid_h  / 2))
-	r, g, b, alpha = grid.split()
+	rgba = grid.split()
+	alpha = rgba[len(rgba)-1]
 	faImg.paste(grid, offset, mask=alpha)
 
 	imgName = "gridded_" + imgName

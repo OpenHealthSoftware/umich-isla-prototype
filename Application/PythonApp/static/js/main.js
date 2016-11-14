@@ -119,19 +119,20 @@ $('document').ready()
 			data: { 'picName' : gup("p"), 'x' : x, 'y' : y},
 			type: 'POST',
 			success: function(response) {
-				console.log($('#grid').attr('src') + '?r=' + new Date().getTime());
-				$('#grid').prop('src', $('#grid').attr('src') + '?r=' + new Date().getTime());
+
+				$('#grid').prop('src', $('#grid').attr('src') + '?r=' + new Date().getTime()); //refresh image
 				$('#grid').show();
 				$('#focusRing').hide();
 				mainImg.hide();
 				$('#submitPosition').hide();
-				remap();
+
+				
 			},
 			error: function(error) {
 				console.log(error);
 			}
 		});
-		
+		remap();
 	});
 
 
@@ -235,7 +236,7 @@ function cellClick(id)
 	// Draw cell onto canvas
 	var c = document.getElementById("cellViewCanvas");
 	var ctx = c.getContext("2d");
-	var img = document.getElementById("main");
+	var img = document.getElementById("grid");
 	// Set canvas dimensions
 	ctx.canvas.width = document.getElementById('cellExpanded').offsetWidth;
 	var ratio = cellHeight / cellWidth;
