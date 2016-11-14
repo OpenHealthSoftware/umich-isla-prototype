@@ -47,12 +47,16 @@
 				</div>
 				<input id="inputCell" type="hidden" value="0">
 			</div>
-			<div id="settings">
+			<div id="settings" >
+				<div onclick="toggleSettings()">X</div>
 				<button id="export">Export Grade</button>
+				<button id="nextCell" onclick="nextCell()">Next Cell</button>
 
 				{% if isGridded == false %}
 				<button id="submitPosition">Position</button>
 				{% endif %}
+
+
 			</div><!-- END #settings -->
 		</div>
 	</div>
@@ -78,13 +82,6 @@
 	</div>
 
 	
-
-
-
-
-	
-
-
 {% endblock %}
 
 {% block js %}

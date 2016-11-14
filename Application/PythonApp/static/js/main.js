@@ -49,6 +49,7 @@ var xOffset = 0;
 var yOffset = 0;
 var mainImg = $('#mainFA_image');
 var frX = 0, frY = 0;
+var currentCell = 0;
 
 // Effects: updates the containment bounds and cursor origin for focusring
 function updateFocusRing()
@@ -283,6 +284,7 @@ function cellClick(id)
 
 	//var c = document.getElementById("gridCanvas").getContext("2d");
 	//c.clearRect(cellCoords[0], cellCoords[1], cellWidth, cellHeight);
+	currentCell = id;
 }
 
 document.getElementById('submitGrade').onclick = function()
@@ -377,4 +379,26 @@ function highlightUngradedCells()
 			c.closePath();
 		}
 	});
+}
+
+
+
+// Effects: handles the transition between settings and cell grade divs
+var settingsOpen = true;
+function toggleSettings()
+{
+	var s = $('#settings');
+	var openWidth =  '50%';
+
+	if (settingsOpen)
+		$('#settings').animate({width: '10%'});
+	else $('#settings').animate({width: openWidth});
+	settingsOpen = !settingsOpen;
+}
+
+
+function nextCell()
+{
+	currentCell++;
+	cellClick(currentCell);
 }
