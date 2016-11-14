@@ -108,30 +108,27 @@ $('document').ready()
 		var x = frX + (fr.width() / 2);
 		var y =  frY + (fr.width() / 2);
 	
-		// re-evaluate coordinates based on natural img size
-		var percentageDiff = mainImg.get(0).naturalWidth / mainImg.width();
-		x = Math.floor(x*percentageDiff);
-		y = Math.floor(y*percentageDiff);
 
+		var gridW = $('#grid').width();
+		var gridH = $('#grid').height();
+
+		// Find coordinates for top-left corner of grid
+		x = x - (gridW  / 2);
+		y = y - (gridH  / 2);
+		xOffset =  x;
+		yOffset = y;
+
+		// Convert to percentage
+		x = (x / mainImg.width()) * 100;
+		y = (y / mainImg.height()) * 100;
 		// Combine grid and fa Img
-		$.ajax({
-			url: '/viewPositioned',
-			data: { 'picName' : gup("p"), 'x' : x, 'y' : y},
-			type: 'POST',
-			success: function(response) {
+		$('#grid').css({left: x + '%', top: y + '%'});
+		
 
-				$('#grid').prop('src', $('#grid').attr('src') + '?r=' + new Date().getTime()); //refresh image
-				$('#grid').show();
-				$('#focusRing').hide();
-				mainImg.hide();
-				$('#submitPosition').hide();
-
-				
-			},
-			error: function(error) {
-				console.log(error);
-			}
-		});
+		// Postioning is set, show normal view
+		$('#grid').show();
+		$('#focusRing').hide();
+		$(this).hide();
 		remap();
 	});
 
@@ -170,12 +167,12 @@ function remap()
 {
 	//$('#fullView').height(mainImg.height()); 
 	var ar = $('area');
-	var grid = document.getElementById('grid');
+	var grid = document.getElementById('mainFA_image');
 	var gridWidth = grid.width;
 	var gridNatWidth = grid.naturalWidth;
 
 	
-	if (gridWidth / gridNatWidth != lastGridRatio)
+	//if (gridWidth / gridNatWidth != lastGridRatio)
 	{
 		var ratio = gridWidth / gridNatWidth;
 		var row = 0;
@@ -186,7 +183,9 @@ function remap()
 			for (var i in origCoords[row])
 			{
 				var c = parseInt(origCoords[row][i]);
-				newCoords.push(parseInt(c*ratio));
+				if (i % 2)
+					newCoords.push(parseInt(c*ratio));
+				else newCoords.push(parseInt(c*ratio));
 			}
 
 			// reset html
@@ -236,7 +235,7 @@ function cellClick(id)
 	// Draw cell onto canvas
 	var c = document.getElementById("cellViewCanvas");
 	var ctx = c.getContext("2d");
-	var img = document.getElementById("grid");
+	var img = document.getElementById("mainFA_image");
 	// Set canvas dimensions
 	ctx.canvas.width = document.getElementById('cellExpanded').offsetWidth;
 	var ratio = cellHeight / cellWidth;

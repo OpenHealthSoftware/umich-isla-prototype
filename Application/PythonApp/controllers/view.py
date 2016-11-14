@@ -8,7 +8,8 @@ from PIL import Image
 
 
 view = Blueprint('view', __name__, template_folder='templates', static_folder="static")
-GRID_PATH = './static/images/grid3a.png'
+GRID_PATH = './static/images/grid6.png'
+C_GRID_PATH = './static/images/grid6.jpg' #for contout need nonalpha
 UPLOAD_PATH = './static/images/uploads/'
 
 def getControlImages():
@@ -17,7 +18,7 @@ def getControlImages():
 # Effects: forms list of data needs for a page
 def getPageData(imgId):
 	
-	coords = processImageGrid(GRID_PATH)
+	coords = processImageGrid(C_GRID_PATH)
 	image = getImageData(imgId)
 	controls = getControlImages()
 

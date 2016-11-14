@@ -11,8 +11,13 @@ def processImageGrid(imgPath):
 	ret,thresh = cv2.threshold(imgray,127,255,0)
 	image, contours, hierarchy = cv2.findContours(thresh,cv2.RETR_TREE,cv2.CHAIN_APPROX_SIMPLE)
 
-	cnt = contours[4]
+	#cnt = contours[4]
 	im = cv2.drawContours(im, contours, -1, (0,255,0), 3)
+	#cv2.namedWindow("hello", cv2.WINDOW_NORMAL)
+	#cv2.imshow("hello", im)
+	#while True:
+	#	key = cv2.waitKey(1)
+	#	if key == 27: break
 	coordList = getCoordinateStrings(contours)
 	return coordList
 
