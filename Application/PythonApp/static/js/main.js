@@ -171,6 +171,9 @@ function remap()
 	var gridWidth = grid.width;
 	var gridNatWidth = grid.naturalWidth;
 
+	// Image size has changed --- need to update this for cellClick()
+	xOffset = $('#grid').position().left;
+	yOffset = $('#grid').position().top;
 	
 	//if (gridWidth / gridNatWidth != lastGridRatio)
 	{
@@ -194,8 +197,10 @@ function remap()
 		});
 		lastGridRatio = ratio;
 	}
+
 }
 
+// Effects: draws the clicked cell to a canvas
 function cellClick(id)
 {
 	console.log("Grading cell " + id);
@@ -240,6 +245,14 @@ function cellClick(id)
 	ctx.canvas.width = document.getElementById('cellExpanded').offsetWidth;
 	var ratio = cellHeight / cellWidth;
 	ctx.canvas.height = ctx.canvas.width * ratio;
+	// account for cells that are too high
+	var canvasAllocatedHeight = $('#gradeCell').height() 
+		- ($('#gradeForm').outerHeight() + $('#submitGrade').outerHeight());
+	while (ctx.canvas.height > canvasAllocatedHeight)
+	{
+		ctx.canvas.width -= 10;
+		ctx.canvas.height = ctx.canvas.width * ratio;
+	}
 	//Since canvas is pulling image data as native size use difference
 	var diff = img.naturalWidth / img.width;
 

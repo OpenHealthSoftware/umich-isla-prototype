@@ -8,8 +8,8 @@ from PIL import Image
 
 
 view = Blueprint('view', __name__, template_folder='templates', static_folder="static")
-GRID_PATH = './static/images/grid6.png'
-C_GRID_PATH = './static/images/grid6.jpg' #for contout need nonalpha
+GRID_PATH = './static/images/grid4.png'
+C_GRID_PATH = './static/images/grid4.jpg' #for contout need nonalpha
 UPLOAD_PATH = './static/images/uploads/'
 
 def getControlImages():

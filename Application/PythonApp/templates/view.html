@@ -94,14 +94,18 @@
 $('document').ready()
 {
 	Split(['#topScreen', '#bottomScreen'], {
-			direction: 'vertical',
-			sizes : [75,25]
+		direction: 'vertical',
+		sizes : [75,25],
+		onDragEnd : function(){
+			remap();
+		} 
 	});
 
 	Split(['#leftScreen', '#rightScreen'], { 
 		sizes : [65,35], 
 		onDragEnd : function(){
 			updateFocusRing();
+			remap();
 		} 
 	});
 
