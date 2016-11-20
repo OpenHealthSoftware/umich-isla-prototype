@@ -1,36 +1,3 @@
-/*
-<div ng-app="kellogg">
-		<div ng-controller="appCtrl">
-			<p>[[greeting.text]], world </p>
-			<div drag-div>Drag me!</div>
-			<button ng-click="submitPositioning()">Click</button>
-		</div>
-
-	</div>
-var app = angular.module('kellogg', []);
-app.config(function($interpolateProvider) {
-	$interpolateProvider.startSymbol('[[');
-	$interpolateProvider.endSymbol(']]');
-});
-app.controller('appCtrl', ['$scope', function($scope) {
-	$scope.greeting = { text: 'Hello' };
-	$scope.origin = { x: 0, y: 0};
-	$scope.submitPositioning = function()
-	{
-		
-		origin.x = 
-	};
-}]);
-
-app.directive('dragDiv', function() {
-	return {
-		restrict: 'A',
-		link: function(scope, elem, attr, ctrl) {
-			elem.draggable();
-		}
-	};
-});
-*/
 
 // GLobals
 exportData = {};
@@ -45,7 +12,6 @@ endTime = 0;
 numCellsGraded = 0;
 numCells = 0;
 var origCoords = [];
-var xOffsetPercent = 0, yOffsetPercent = 0;
 var xOffset = 0;
 var yOffset = 0;
 var mainImg = $('#mainFA_image');
@@ -81,7 +47,7 @@ $('document').ready()
 			coords[i] = parseInt(coords[i]);
 		origCoords.push(coords);
 	});
-
+	
 	// Make user center grid
 	//$('#fullView').height(mainImg.height()); 
 
@@ -121,6 +87,8 @@ $('document').ready()
 		// center of focus ring
 		var x = frX + (fr.width() / 2);
 		var y =  frY + (fr.width() / 2);
+		frY = y;
+		frX = x;
 
 		// Figure out the natural values for operation on full size image
 		xGridOffset = Math.floor(x * (mainImg.get(0).naturalWidth / mainImg.width()));
@@ -137,11 +105,11 @@ $('document').ready()
 
 		$.ajax({
 			url: '/viewPositioned',
-			data: { 'picName' : gup("p"), 'x' : xGridOffset, 'y' : yGridOffset},
+			data: { 'picName' : gup("p"), 'x' : xGridOffset, 'y' : yGridOffset, 'xPerc' : xOffsetPercent, 'yPerc': yOffsetPercent},
 			type: 'POST',
 			success: function(response) {
 				console.log(response);
-				$('#grid').prop('src', $('#grid').attr('src') + '?r=' + new Date().getTime())
+				//$('#grid').prop('src', $('#grid').attr('src') + '?r=' + new Date().getTime())
 
 				// Convert to percentage
 				x = (x / mainImg.width()) * 100;
@@ -149,8 +117,9 @@ $('document').ready()
 				// Combine grid and fa Img
 				//$('#grid').css({left: x + '%', top: y + '%'});
 
+				document.getElementById('grid').src = response['newImgPath'];
 				$('#grid').show();
-				//$('#focusRing').hide();
+				$('#focusRing').hide();
 				$(this).hide();
 				remap();
 			},
@@ -161,8 +130,8 @@ $('document').ready()
 		
 	});
 
-	remap();
 }
+
 
 window.onresize = function(){remap();};
 
@@ -182,7 +151,7 @@ var lastGridRatio = 0;
 // Changes area coordinates to match scaled grid / image
 function remap()
 {
-	//$('#fullView').height(mainImg.height()); 
+	console.log("Remap called");
 	var ar = $('area');
 	var grid = document.getElementById('mainFA_image');
 	var gridWidth = grid.width;
@@ -286,10 +255,6 @@ function cellClick(id)
 	}
 	ctx.closePath();
 	ctx.clip();
-
-	// Account for grid position offset
-	minY += yOffset; // this is needed for scaling but the values are not perfect
-	minX += xOffset;
 
 	ctx.drawImage(img, minX*diff, minY*diff, (cellWidth)*diff, (cellHeight)*diff, 0,0, c.width, c.height);
 

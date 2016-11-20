@@ -5,8 +5,6 @@
 {% endblock %}
 {% block content %}
 	
-	
-
 	<map name="map" id="gridMap">
 	{% for i in coords %}
 		<area id="cell{{loop.index}}" shape="poly" coords="{{i}}" onclick="cellClick({{loop.index}})">
@@ -20,7 +18,7 @@
 				{% set gridSrc = url_for('static', filename='images/uploads/grid_' + img['imgId'] + '.' + img['format']) %}
 				
 				<img  id="mainFA_image" class="pic" src="{{faSrc}}">
-				<img src="{{gridSrc}}" id="grid" class="pic overlay" usemap="#map" >
+				<img src="{{gridSrc}}" id="grid" class="pic overlay" usemap="#map" {% if isGridded == true %}style="display:block"{% endif%}>
 
 				{% if isGridded == false %}
 				<svg id="focusRing" class="" width="106" height="106">
@@ -81,7 +79,7 @@
 		</div>
 	</div>
 
-	
+	<script>var xOffsetPercent = {{xOffset}}, yOffsetPercent = {{yOffset}};</script>
 {% endblock %}
 
 {% block js %}
@@ -90,6 +88,7 @@
 <script>
 $('document').ready()
 {
+	
 	Split(['#topScreen', '#bottomScreen'], {
 		direction: 'vertical',
 		sizes : [75,25],
@@ -107,6 +106,7 @@ $('document').ready()
 	});
 
 	updateFocusRing();
+	remap();
 }
 </script>
 {% endblock %}

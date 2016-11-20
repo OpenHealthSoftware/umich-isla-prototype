@@ -21,6 +21,7 @@ def getPageData(imgId):
 	coords = processImageGrid(C_GRID_PATH)
 	image = getImageData(imgId)
 	controls = getControlImages()
+	gridData = getGridData(imgId)
 
 	data = {
 		"coords" : coords,
@@ -28,8 +29,14 @@ def getPageData(imgId):
 		"grid" : GRID_PATH,
 		"controls" : controls,
 		"numPrev" : 5, #number of control images to show at once
-		"isGridded" : isfile(UPLOAD_PATH + 'gridded_' + imgId + '.' + image['format'])
+		"isGridded" : isfile(UPLOAD_PATH + 'grid_' + imgId + '.' + image['format']),
+		"xOffset" : 0,
+		"yOffset" : 0
 	}
+	if gridData:
+		data['xOffset'] = gridData['xOffset']
+		data['yOffset'] = gridData['yOffset']
+
 	return data
 
 
@@ -46,12 +53,13 @@ def main_route():
 
 
 
-# Requires: FA image and grid images are their proper sizes
+# Requires: FA image and grid images are their proper sizes, name of picture in database,
+# img file format, and the percentage offsets created by the user positioning data
 # Effects: puts the center of the grid on the specified location of the FA image
-def createGriddedImage(originCoords, imgName):
+def createGriddedImage(originCoords, imgName, iFormat, xPerc, yPerc):
 	# Load images
 	grid = Image.open(GRID_PATH, 'r')
-	faImg = Image.open(UPLOAD_PATH + imgName, 'r')
+	faImg = Image.open(UPLOAD_PATH + imgName + iFormat, 'r')
 	fa_w, fa_h = faImg.size
 
 	# Calculate where grid goes and paste
@@ -63,19 +71,21 @@ def createGriddedImage(originCoords, imgName):
 	croppedGrid = Image.new('RGBA', (fa_w, fa_h))
 	croppedGrid.paste(grid, offset, mask=alpha)
 
-	imgName = "grid_" + imgName
+	gridId = "grid_" + imgName + iFormat
+	insertGridToDB(gridId, xPerc, yPerc, imgName)
 	png_info = grid.info
-	croppedGrid.save(UPLOAD_PATH + imgName, **png_info)
-	return UPLOAD_PATH + imgName
+	croppedGrid.save(UPLOAD_PATH + gridId, **png_info)
+	return UPLOAD_PATH + gridId
 
 
 
 @view.route('/viewPositioned', methods=['GET', 'POST'])
 def positionGrid_route():
-	imgName = request.form['picName']
+	rForm = request.form
+	imgName = rForm['picName']
 	image = getImageData(imgName)
-	originCoords = [request.form['x'], request.form['y']]
+	originCoords = [rForm['x'], rForm['y']]
 	originCoords = map(int, originCoords)
-	newImgPath = createGriddedImage(originCoords, imgName + '.' + image['format'])
+	newImgPath = createGriddedImage(originCoords, imgName, '.' + image['format'], rForm['xPerc'], rForm['yPerc'])
 	data = {'newImgPath' : newImgPath}
 	return jsonify(**data)
