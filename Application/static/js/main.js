@@ -109,13 +109,10 @@ $('document').ready()
 			type: 'POST',
 			success: function(response) {
 				console.log(response);
-				//$('#grid').prop('src', $('#grid').attr('src') + '?r=' + new Date().getTime())
 
 				// Convert to percentage
 				x = (x / mainImg.width()) * 100;
 				y = (y / mainImg.height()) * 100;
-				// Combine grid and fa Img
-				//$('#grid').css({left: x + '%', top: y + '%'});
 
 				document.getElementById('grid').src = response['newImgPath'];
 				$('#grid').show();
@@ -175,7 +172,6 @@ function remap()
 				if (i%2)
 					newCoords.push(parseInt(c*ratio) + yOffset);
 				else newCoords.push(parseInt(c*ratio) + xOffset);
-				//newCoords.push(parseInt(c*ratio));
 			}
 
 			// reset html
