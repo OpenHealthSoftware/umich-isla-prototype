@@ -148,6 +148,7 @@ var lastGridRatio = 0;
 // Changes area coordinates to match scaled grid / image
 function remap()
 {
+	remapNormal();
 	console.log("Remap called");
 	var ar = $('area');
 	var grid = document.getElementById('mainFA_image');
@@ -263,6 +264,7 @@ function cellClick(id)
 	//var c = document.getElementById("gridCanvas").getContext("2d");
 	//c.clearRect(cellCoords[0], cellCoords[1], cellWidth, cellHeight);
 	currentCell = id;
+	drawNormalCell(id);
 }
 
 document.getElementById('submitGrade').onclick = function()
@@ -379,4 +381,124 @@ function nextCell()
 {
 	currentCell++;
 	cellClick(currentCell);
+}
+
+
+function normalSelect(id)
+{
+	var norm = $("#"+id).children().first();
+	var normFullView = $('#normalImg');
+	normFullView.attr('src', norm.attr('src'));
+	var imgId = normFullView.attr('src').split('/').pop();
+	imgId = imgId.split('.')[0];
+	console.log(imgId);
+	// AJAX call to get xyOffset for grid
+	$.ajax({
+			url: '/normalData',
+			data: { 'picName' : imgId},
+			type: 'POST',
+			success: function(response) {
+				$('#normalGrid').attr('src', response['gridSrc']);
+				xNormOffsetPercent = response['x'];
+				yNormOffsetPercent = response['y'];
+				$('#normalGrid').show();
+				$('#focusRing').hide();
+				remapNormal();
+			},
+			error: function(error) {
+				console.log(error);
+			}
+		});
+}
+
+var xNormOffsetPercent = 0, yNormOffsetPercent = 0;
+var normCoords = [];
+var fullNormImg = $('')
+
+function drawNormalCell(cellId)
+{
+	cellCoords = normCoords[cellId-1].splice(0);
+	// Find greatest x and y for cell
+	var maxY = 0;
+	var maxX = 0;
+	var minY = cellCoords[1];
+	var minX = cellCoords[0];
+	for (var i = 0; i < cellCoords.length; i+=2)
+	{
+		if (cellCoords[i] > maxX)
+			maxX = cellCoords[i];
+		if (cellCoords[i] < minX)
+			minX = cellCoords[i];
+	
+		if (cellCoords[i+1] > maxY)
+			maxY = cellCoords[i+1];
+		if (cellCoords[i+1] < minY)
+			minY = cellCoords[i+1];
+	}
+	// Get rectangular cell dimensions
+	var cellHeight = (maxY > minY) ? maxY - minY : minY - maxY;
+	var cellWidth = (maxX > minX) ? maxX - minX : minX - maxX;
+	// ^^ Should be able to pass in, cell should be same size as main img cell
+
+	// Draw cell onto canvas
+	var c = document.getElementById("normalCellViewCanvas");
+	var ctx = c.getContext("2d");
+	var img = document.getElementById("normalImg");
+	// Set canvas dimensions
+	ctx.canvas.width = document.getElementById('cellExpanded').offsetWidth;
+	var ratio = cellHeight / cellWidth;
+	ctx.canvas.height = ctx.canvas.width * ratio;
+	// account for cells that are too high
+	var canvasAllocatedHeight = $('#gradeCell').height() 
+		- ($('#gradeForm').outerHeight() + $('#submitGrade').outerHeight());
+	while (ctx.canvas.height > canvasAllocatedHeight)
+	{
+		ctx.canvas.width -= 10;
+		ctx.canvas.height = ctx.canvas.width * ratio;
+	}
+	//Since canvas is pulling image data as native size use difference
+	var diff = img.naturalWidth / img.width;
+
+	//Clip to cell
+	ctx.moveTo(cellCoords[0], cellCoords[1]);
+	ctx.beginPath();
+	var coordsToCanvasRatio = ctx.canvas.width / cellWidth;
+	for (var i = 0; i < cellCoords.length; i += 2)
+	{
+		var x = (cellCoords[i]-minX)*coordsToCanvasRatio;
+		var  y = (cellCoords[i+1]-minY)*coordsToCanvasRatio;
+		ctx.lineTo(x, y);
+	}
+	ctx.closePath();
+	ctx.clip();
+
+	ctx.drawImage(img, minX*diff, minY*diff, (cellWidth)*diff, (cellHeight)*diff, 0,0, c.width, c.height);
+
+}
+
+function remapNormal()
+{
+	console.log("Remap normal called");
+	var img = $('#normalImg');
+	var grid = document.getElementById('normalImg');
+	var gridWidth = grid.width;
+	var gridNatWidth = grid.naturalWidth;
+	var ratio = gridWidth / gridNatWidth;
+
+	xOffset = xNormOffsetPercent * img.width();
+	yOffset = yNormOffsetPercent * img.height();
+	
+	normCoords = [];
+	for (var row in origCoords)
+	{
+		var newCoords = [];
+		for (var i in origCoords[row])
+		{
+			var c = parseInt(origCoords[row][i]);
+			if (i%2)
+				newCoords.push(parseInt(c*ratio) + yOffset);
+			else newCoords.push(parseInt(c*ratio) + xOffset);
+		}
+		normCoords.push(newCoords);
+	}
 }

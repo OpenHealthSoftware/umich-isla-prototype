@@ -4,25 +4,26 @@
 <link rel="stylesheet" href="{{url_for('static', filename='css/split.css')}}"/>
 {% endblock %}
 {% block content %}
-
 	
+	<map name="map" id="gridMap">
+	{% for i in coords %}
+		<area id="cell{{loop.index}}" shape="poly" coords="{{i}}" onclick="cellClick({{loop.index}})">
+	{% endfor %}
+	</map>
 
 	<div id="topScreen" class="split split-vertical" >
 		<div id="leftScreen" class="split split-horizontal content" >
-			<div id="fullView" ng-controller="fullImage">
-
-				<map name="map" id="gridMap">
-				{% for i in coords %}
-					<area id="cell{{loop.index}}" shape="poly" coords="{{i}}" ng-click="cellClick({{loop.index}})">
-				{% endfor %}
-				</map>
-				
+			<div id="fullView">
 				{% set faSrc = url_for('static', filename='images/uploads/' + img['imgId'] + '.' + img['format']) %}
 				{% set gridSrc = url_for('static', filename='images/uploads/grid_' + img['imgId'] + '.' + img['format']) %}
 				
 				<img  id="mainFA_image" class="pic" src="{{faSrc}}">
 				<img src="{{gridSrc}}" id="grid" class="pic overlay" usemap="#map" {% if isGridded == true %}style="display:block"{% endif%}>
-				<img id="normalImage" ng-src=[[nImg]]>
+				<div id="mainNormal">
+					<img id="normalImg" class="pic" src="">
+					<img id="normalGrid" class="pic overlay" src="" >
+				</div>
+				
 
 				{% if isGridded == false %}
 				<svg id="focusRing" class="" width="106" height="106">
@@ -30,10 +31,10 @@
 					<circle id="svgCenter" cx="53" cy="53" r="4" stroke="red" stroke-width="2" fill-opacity="0"/>
 				</svg>
 				{% endif %}
-			</div> <!-- END fullView -->
+			</div>
 		</div>
 
-		<div id="rightScreen" class="split split-horizontal content" ng-controller="cellGrading">
+		<div id="rightScreen" class="split split-horizontal content" >
 			<div id="gradeCell">
 				<div id="cellExpanded">
 					<canvas id="cellViewCanvas" width="0" height="0"></canvas>
@@ -62,7 +63,7 @@
 			</div><!-- END #settings -->
 		</div>
 	</div>
-	<div id="bottomScreen" class="split split-vertical content" ng-controller="normalImage">
+	<div id="bottomScreen" class="split split-vertical content" >
 		<div id="controlImgBar" class="carousel_container">
 			{% if controls|length > numPrev %}
 			<div id='left_scroll'> < </div>
@@ -71,7 +72,7 @@
 				<ul class='carousel_ul'>
 					{% for i in controls %}
 					<li>
-					<div id="control{{loop.index}}" class="controlPrevItem" ng-click="clicked({{loop.index}})">
+					<div id="control{{loop.index}}" class="controlPrevItem" onclick="normalSelect(this.id)">
 						<img src="{{url_for('static', filename='images/normals/' +i)}}">
 					</div>
 					</li>
@@ -83,107 +84,14 @@
 		</div>
 	</div>
 
-
 	<script>var xOffsetPercent = {{xOffset}}, yOffsetPercent = {{yOffset}};</script>
+	<canvas id="normalCellViewCanvas" width="0" height="0"></canvas>
 {% endblock %}
 
 {% block js %}
 <script src="{{url_for('static', filename='js/carousel.js')}}"></script>
 <script src="{{url_for('static', filename='js/split.min.js')}}"></script>
 <script>
-
-	var app = angular.module('app', [], function($interpolateProvider) {
-		$interpolateProvider.startSymbol('[[');
-		$interpolateProvider.endSymbol(']]');
-	});
-
-	app.service('sharedData', function() {
-		var cellId = 0;
-		var mainImgId = '';
-		var normalImgId = '';
-		
-		return {
-			getMainId: function() {
-				return mainImgId;
-			},
-			setMainId: function(value) {
-				mainImgId = value;
-			},
-			getNormalImgId: function() {
-				return normalImgId;
-			},
-			setNormalImgId: function(value) {
-				normalImgId = value;
-			},
-			getCellId: function() {
-				return cellId;
-			}, 
-			setCellId: function(val) {
-				cellId = val;
-			}
-		}
-	});
-
-	app.controller('normalImage', ['$scope', '$http', '$window', 'sharedData', 
-	function ($scope, $http, $window, sharedData) {
-		$scope.clicked = function(val) {
-			$("#control" + val).img.src;
-			sharedData.setNormalImgId(val);
-		};
-		$scope.normalPreviewSize;
-		$scope.normalPreviewLayout; //full bottom or partial bottom
-		$scope.numPrev; 
-		$scope.nextSet; // show next numPrev images
-
-
-	}
-	]);
-
-	app.controller('cellGrading', ['$scope', '$http', '$window', 'sharedData', 
-	function ($scope, $http, $window, sharedData) {	
-
-		$scope.mirrorCellId;
-		$scope.cellId = -1;
-		$scope.$watch( sharedData.getCellId, function(newval)
-		{
-			$scope.cellId = newval;
-			cellClick(newval);
-		});
-		$scope.toggleNormalCells;
-	}]);
-
-	app.controller('fullImage', ['$scope', '$http', '$window', 'sharedData', 
-	function ($scope, $http, $window, sharedData) {
-		$scope.imgId;
-		$scope.toggleGrid;
-		$scope.hoverOrClickCell;
-
-		$scope.cellClick = function(cellId) {
-			sharedData.setCellId(cellId);
-			console.log("here", sharedData.getCellId());
-
-		};
-
-		$scope.$watch(sharedData.getNormalImgId, function(newval){
-			$scope.nImg = newval;
-		});
-		$scope.slideNormal;
-		$scope.positionGrid;
-		$scope.cellMapping;
-	}
-	]);
-
-	app.controller('uploadPatientImage', ['$scope', '$http', '$window', 'sharedData', 
-	function ($scope, $http, $window, sharedData) {
-
-	}
-	]);
-
-	app.controller('manageNormalImage', ['$scope', '$http', '$window', 'sharedData', 
-	function ($scope, $http, $window, sharedData) {
-	
-	}
-	]);
 
 $('document').ready()
 {

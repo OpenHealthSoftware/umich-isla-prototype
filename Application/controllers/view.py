@@ -11,9 +11,17 @@ view = Blueprint('view', __name__, template_folder='templates', static_folder="s
 GRID_PATH = './static/images/grid6.png'
 C_GRID_PATH = './static/images/grid6.jpg' #for contout need nonalpha
 UPLOAD_PATH = './static/images/uploads/'
+GRID_PREFIX = "grid_" # prefix that grid images will begin with
 
 def getControlImages():
-	return [f for f in listdir('./static/images/normals/') if isfile(join('./static/images/normals/', f))]
+	files = [f for f in listdir('./static/images/normals/') if isfile(join('./static/images/normals/', f))]
+
+	#remove grid images
+	for f in files:
+		if f[:5] == GRID_PREFIX:
+			files.remove(f)
+
+	return files
 
 # Effects: forms list of data needs for a page
 def getPageData(imgId):
@@ -71,7 +79,7 @@ def createGriddedImage(originCoords, imgName, iFormat, xPerc, yPerc):
 	croppedGrid = Image.new('RGBA', (fa_w, fa_h))
 	croppedGrid.paste(grid, offset, mask=alpha)
 
-	gridId = "grid_" + imgName + iFormat
+	gridId = GRID_PREFIX + imgName + iFormat
 	insertGridToDB(gridId, xPerc, yPerc, imgName)
 	png_info = grid.info
 	croppedGrid.save(UPLOAD_PATH + gridId, **png_info)
@@ -88,4 +96,14 @@ def positionGrid_route():
 	originCoords = map(int, originCoords)
 	newImgPath = createGriddedImage(originCoords, imgName, '.' + image['format'], rForm['xPerc'], rForm['yPerc'])
 	data = {'newImgPath' : newImgPath}
+	return jsonify(**data)
+
+
+@view.route('/normalData', methods=['GET', 'POST'])
+def normal_data_route():
+	rForm = request.form
+	imgName = rForm['picName']
+	qr = getNormalData(imgName)
+	gridSrc = url_for('static', filename='images/normals/' + qr['gridId'] + '.' + qr['format'])
+	data = {'gridSrc' : gridSrc, 'x' : qr['xOffset'], 'y' : qr['yOffset']}
 	return jsonify(**data)

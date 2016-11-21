@@ -28,6 +28,12 @@ def getGridData(imgId):
 		return results
 
 
+def getNormalData(imgId):
+		cursor.execute("SELECT * FROM normals WHERE imgId=? LIMIT 1", (imgId,))
+		results = cursor.fetchone()
+		return results
+
+
 # Effects: Runs a MySQL query that inserts a photo into the photo table
 # returns true if successful
 def insertImageToDB(format, imgId):

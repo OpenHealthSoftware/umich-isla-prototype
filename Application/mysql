@@ -8,9 +8,19 @@ CREATE TABLE images(
 );
 
 CREATE TABLE grid(
-	gridId CHAR(100) NOT NULL,
+	gridId CHAR(37) NOT NULL,
 	xOffset DECIMAL(10,9) NOT NULL,
 	yOffset DECIMAL(10,9) NOT NULL,
 	imgId CHAR(32) NOT NULL,
 	FOREIGN KEY(imgId) REFERENCES images(imgId)
+);
+
+
+CREATE TABLE normals(
+	imgId CHAR(32) NOT NULL,
+	format CHAR(3) NOT NULL,
+	gridId CHAR(37) NOT NULL,
+	xOffset DECIMAL(10,9) NOT NULL,
+	yOffset DECIMAL(10,9) NOT NULL,
+	PRIMARY KEY(imgId)
 );
