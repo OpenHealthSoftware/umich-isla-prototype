@@ -4,7 +4,7 @@ from sqlFunctions import *
 from os import listdir
 from os.path import isfile, join
 from PIL import Image
-
+import os
 
 
 view = Blueprint('view', __name__, template_folder='templates', static_folder="static")
@@ -14,13 +14,12 @@ UPLOAD_PATH = './static/images/uploads/'
 GRID_PREFIX = "grid_" # prefix that grid images will begin with
 
 def getControlImages():
-	files = [f for f in listdir('./static/images/normals/') if isfile(join('./static/images/normals/', f))]
+	files = [f for f in listdir('./static/images/normals/') 
+		if isfile(join('./static/images/normals/', f)) and not os.path.basename(f).startswith(GRID_PREFIX)]
 
 	#remove grid images
-	for f in files:
-		if f[:5] == GRID_PREFIX:
-			files.remove(f)
 
+	print files, "\n\n\n"
 	return files
 
 # Effects: forms list of data needs for a page
@@ -103,7 +102,7 @@ def positionGrid_route():
 def normal_data_route():
 	rForm = request.form
 	imgName = rForm['picName']
-	qr = getNormalData(imgName)
-	gridSrc = url_for('static', filename='images/normals/' + qr['gridId'] + '.' + qr['format'])
+	qr = getGridData(imgName)
+	gridSrc = url_for('static', filename='images/normals/' + qr['gridId']) #gridID has file format
 	data = {'gridSrc' : gridSrc, 'x' : qr['xOffset'], 'y' : qr['yOffset']}
 	return jsonify(**data)

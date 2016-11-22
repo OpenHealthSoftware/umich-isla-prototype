@@ -58,6 +58,6 @@ def main_route():
 			uploadPic(request)
 
 	data = {
-		"images" : getImages()
+		"images" : getImages("images")
 	}
 	return render_template("index.html", **data)

@@ -9,8 +9,8 @@ cursor = conn.cursor()
 
 
 # Effects: Runs a MySQL query that returns all images in the database
-def getImages():
-	cursor.execute("SELECT * FROM images ORDER BY imgId DESC")
+def getImages(table):
+	cursor.execute("SELECT * FROM " + table + " ORDER BY imgId DESC")
 	results = cursor.fetchall()
 	print "\n\nResults: ", results
 	return results
@@ -36,9 +36,8 @@ def getNormalData(imgId):
 
 # Effects: Runs a MySQL query that inserts a photo into the photo table
 # returns true if successful
-def insertImageToDB(format, imgId):
-	cursor.execute("INSERT INTO images (format, imgId) VALUES (\'" \
-		+ format + "\', \'" + imgId + "\')")
+def insertImageToDB(table, format, imgId):
+	cursor.execute("INSERT INTO " + table + " (format, imgId) VALUES (?,?)", (format, imgId))
 	conn.commit()
 	if (cursor.fetchall()):
 		return True

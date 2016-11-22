@@ -17,5 +17,9 @@ sql = dict(
 )
 
 # For file uploads
-UPLOAD_FOLDER = './static/images/uploads'
-ALLOWED_EXTENSIONS = set(['png', 'PNG','jpg', 'bmp', 'gif'])
+UPLOAD_FOLDER_P = './static/images/uploads/'
+UPLOAD_FOLDER_NORM = './static/images/normals/'
+ALLOWED_EXTENSIONS = set(['png', 'PNG', 'jpg', 'bmp', 'gif'])
+GRID_PATH = './static/images/grid6.png'
+C_GRID_PATH = './static/images/grid6.jpg' #for contout need nonalpha
+GRID_PREFIX = "grid_" # prefix that grid images will begin with

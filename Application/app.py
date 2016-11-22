@@ -11,9 +11,11 @@ app = Flask(__name__, template_folder='templates')
 # Register the controllers
 app.register_blueprint(controllers.main)
 app.register_blueprint(controllers.view)
+app.register_blueprint(controllers.uploads)
 
 # Config uploads
-app.config['UPLOAD_FOLDER'] = config.UPLOAD_FOLDER
+app.config['UPLOAD_FOLDER_P'] = config.UPLOAD_FOLDER_P
+app.config['UPLOAD_FOLDER_NORM'] = config.UPLOAD_FOLDER_NORM
 
 
 

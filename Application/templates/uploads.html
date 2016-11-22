@@ -1,0 +1,68 @@
+{% extends "base.html" %}
+{% block css %}
+<link rel="stylesheet" href="/static/css/index.css" />
+{% endblock %}
+{% block content %}
+
+	
+	
+	{% if uploaded and type == "normal" %}
+		<div id="normalPrev">
+			<img id="nImg" src="{{normalImgSrc}}" alt="{{normalId}}">
+
+			<svg id="focusRing" class="" width="106" height="106">
+				<circle id="svgCirc" cx="53" cy="53" r="50" stroke="green" stroke-width="6" fill-opacity="0"/>
+				<circle id="svgCenter" cx="53" cy="53" r="4" stroke="red" stroke-width="2" fill-opacity="0"/>
+			</svg>
+
+			<button id="submitPosition">Submit</button>
+		</div>
+		<style>
+			#normalPrev{height: 80%; width: 80%;position:relative;}
+			#nImg {height: auto; width: auto; max-width: 100%; max-height: 100%;}
+		</style>
+
+	{% else %}
+		<div id="addPicture" class="preview">
+			<form action="" method="POST" enctype="multipart/form-data">
+				<input type="hidden" name="op" value="add">
+				<select name="type">
+					<option value="patient">Patient Image (for grading)</option>
+					<option value="normal">Normal Image</option>
+				</select>
+				Reference Name: <input type="text" name="refName" value="">
+				<select name="eye">
+					<option value="right">Right Eye</option>
+					<option value="left">Left Eye</option>
+				</select>
+				<input type="file" name="img" accept="image/*" required>
+				<input type="submit" value="Upload">
+			</form>
+		</div>
+		{% for p in images %}
+			<a href="view?p={{p['imgId']}}" class="aPrev">
+			<div id="imgPrev{{loop.index}}" class="imgPrev">
+				<img src="{{url_for('static', filename=typePath + p['imgId'] + '.' + p['format'])}}">
+			</div>
+			</a>
+			{% if edit %}
+				<div class="deletePhoto">
+					<form action="/uploads" method="post">
+						<input type="hidden" name="op" value="delete">
+						<input type="hidden" name="type" value="{{type}}">
+						<input type="hidden" name="imgId" value="{{p['imgId']}}">
+						<input type="submit" value="Delete Photo">
+					</form>
+				</div>
+			{% endif %}
+		{% endfor %}
+    {% endif %}
+	
+
+
+{% endblock %}
+
+
+{% block js %}
+<script src="{{url_for('static', filename='js/uploads.js')}}"></script>
+{% endblock %}

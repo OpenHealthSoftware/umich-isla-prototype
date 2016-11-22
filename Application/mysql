@@ -19,8 +19,5 @@ CREATE TABLE grid(
 CREATE TABLE normals(
 	imgId CHAR(32) NOT NULL,
 	format CHAR(3) NOT NULL,
-	gridId CHAR(37) NOT NULL,
-	xOffset DECIMAL(10,9) NOT NULL,
-	yOffset DECIMAL(10,9) NOT NULL,
 	PRIMARY KEY(imgId)
 );

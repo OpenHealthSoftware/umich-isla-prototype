@@ -49,7 +49,6 @@ $('document').ready()
 	});
 	
 	// Make user center grid
-	//$('#fullView').height(mainImg.height()); 
 
 	$(window).keydown(function(e){
 		var deltaR = 0;
@@ -287,6 +286,8 @@ document.getElementById('submitGrade').onclick = function()
 	//unselect radio buttons
 	$('input[name=grade]')[0].checked = false;
 	$('input[name=grade]')[1].checked = false;
+
+	nextCell();
 };
 
 // Effects: turns multidim array into csv string
@@ -310,7 +311,7 @@ $('#export').click(function()
 	if (numCellsGraded < numCells)
 	{	
 		alert("Arer you sure? Not all of the cells have been graded.");
-		highlightUngradedCells();
+		//highlightUngradedCells();
 	}
 
 	var data = exportDataToCSV(exportData);
@@ -417,7 +418,10 @@ var fullNormImg = $('')
 
 function drawNormalCell(cellId)
 {
-	cellCoords = normCoords[cellId-1].splice(0);
+	var cellCoords = [];
+	for (var i in normCoords[cellId-1]) //prevents bug
+		cellCoords.push(normCoords[cellId-1][i]);
+
 	// Find greatest x and y for cell
 	var maxY = 0;
 	var maxX = 0;
@@ -471,9 +475,7 @@ function drawNormalCell(cellId)
 	}
 	ctx.closePath();
 	ctx.clip();
-
 	ctx.drawImage(img, minX*diff, minY*diff, (cellWidth)*diff, (cellHeight)*diff, 0,0, c.width, c.height);
-
 }
 
 function remapNormal()
@@ -501,4 +503,25 @@ function remapNormal()
 		}
 		normCoords.push(newCoords);
 	}
+}
+
+
+function resizeCells()
+{
+	cellClick(currentCell);
+	normalSelect(currentCell);
+	return;
+	$('canvas').each( function(){
+		var cW = $(this).prop('width');
+		var cH = $(this).prop('height');
+		var targetWidth = $('#normalCell').width();
+
+		var ratio = cH / cW;
+		var newWidth = targetWidth;
+		var newHeight = targetWidth * ratio;
+
+		$(this).prop('width', newWidth);
+		$(this).prop('height', newHeight);
+
+	});
 }

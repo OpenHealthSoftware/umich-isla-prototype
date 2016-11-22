@@ -50,6 +50,9 @@
 				</div>
 				<input id="inputCell" type="hidden" value="0">
 			</div>
+			<div id="normalCell">
+				<canvas id="normalCellViewCanvas" width="0" height="0"></canvas>
+			</div>
 			<div id="settings" >
 				<div onclick="toggleSettings()">X</div>
 				<button id="export">Export Grade</button>
@@ -66,8 +69,8 @@
 	<div id="bottomScreen" class="split split-vertical content" >
 		<div id="controlImgBar" class="carousel_container">
 			{% if controls|length > numPrev %}
-			<div id='left_scroll'> < </div>
 			{% endif %}
+			<div id='left_scroll'> < </div>
 			<div class='carousel_inner'>
 				<ul class='carousel_ul'>
 					{% for i in controls %}
@@ -79,18 +82,21 @@
 				{% endfor %}
 			</div>
 			{% if controls|length > numPrev %}
-			<div id="right_scroll"> > </div>
+			
 			{% endif %}
+			<div id="right_scroll"> > </div>
 		</div>
 	</div>
 
 	<script>var xOffsetPercent = {{xOffset}}, yOffsetPercent = {{yOffset}};</script>
-	<canvas id="normalCellViewCanvas" width="0" height="0"></canvas>
+
 {% endblock %}
 
 {% block js %}
+<script src="{{url_for('static', filename='js/main.js')}}"></script>
 <script src="{{url_for('static', filename='js/carousel.js')}}"></script>
 <script src="{{url_for('static', filename='js/split.min.js')}}"></script>
+<script src="{{url_for('static', filename='js/main.js')}}"></script>
 <script>
 
 $('document').ready()
@@ -109,6 +115,7 @@ $('document').ready()
 		onDragEnd : function(){
 			updateFocusRing();
 			remap();
+			resizeCells();
 		} 
 	});
 
@@ -116,4 +123,5 @@ $('document').ready()
 	remap();
 }
 </script>
+
 {% endblock %}
