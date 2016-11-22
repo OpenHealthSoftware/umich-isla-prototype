@@ -17,6 +17,8 @@ var yOffset = 0;
 var mainImg = $('#mainFA_image');
 var frX = 0, frY = 0;
 var currentCell = 0;
+var GRID_ROWS = 6;
+var GRID_COLS = 6;
 
 // Effects: updates the containment bounds and cursor origin for focusring
 function updateFocusRing()
@@ -126,6 +128,10 @@ $('document').ready()
 		
 	});
 
+		$('area').each(function(){
+				var id = parseInt($(this).attr('id').split('_')[1]);
+				$(this).click(function(){cellClick(id)});
+		});
 }
 
 
@@ -190,7 +196,7 @@ function cellClick(id)
 	var date = new Date();
 	startTime = date.getTime();
 	//Get cell coordinates for repainting section of image
-	var cell = document.getElementById("cell"+id);
+	var cell = document.getElementById("cell_"+id);
 	var cellCoords = cell.getAttribute("coords");
 
 	// Convert string to int array
@@ -416,6 +422,30 @@ var xNormOffsetPercent = 0, yNormOffsetPercent = 0;
 var normCoords = [];
 var fullNormImg = $('')
 
+var quickView = false;
+
+$('#quickViewBtn').unbind().click(function()
+{
+	console.log(quickView);
+	if (quickView == false)
+	{
+		$('area').each(function(){$(this).unbind()});
+		$('area').each(function(){
+			var id = parseInt($(this).attr('id').split('_')[1]);
+			$(this).hover(function(){cellClick(id)});
+		});
+	}
+	else {
+		$('area').each(function(){$(this).unbind()});
+			$('area').each(function(){
+				var id = parseInt($(this).attr('id').split('_')[1]);
+			$(this).click(function(){cellClick(id)});
+		});
+	}
+	quickView = !quickView;
+}
+);
+
 function drawNormalCell(cellId)
 {
 	var cellCoords = [];
@@ -509,7 +539,7 @@ function remapNormal()
 function resizeCells()
 {
 	cellClick(currentCell);
-	normalSelect(currentCell);
+	drawNormalCell(currentCell);
 	return;
 	$('canvas').each( function(){
 		var cW = $(this).prop('width');

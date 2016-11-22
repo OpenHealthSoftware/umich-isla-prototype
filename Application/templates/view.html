@@ -7,7 +7,7 @@
 	
 	<map name="map" id="gridMap">
 	{% for i in coords %}
-		<area id="cell{{loop.index}}" shape="poly" coords="{{i}}" onclick="cellClick({{loop.index}})">
+		<area id="cell_{{loop.index}}" shape="poly" coords="{{i}}" >
 	{% endfor %}
 	</map>
 
@@ -62,6 +62,7 @@
 				<button id="submitPosition">Position</button>
 				{% endif %}
 
+				<button id="quickViewBtn">Quick View</button>
 
 			</div><!-- END #settings -->
 		</div>
