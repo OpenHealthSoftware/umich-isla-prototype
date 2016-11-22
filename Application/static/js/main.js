@@ -696,8 +696,6 @@ function drawFlippedCells()
 	var mirrorCell = 0;
 
 	mirrorCell = mirrorRow * GRID_COLS + col;
-
-	console.log(mirrorRow, "mirror", mirrorCell, "cell");
 	drawFlipMain(mirrorCell, document.getElementById('mainCellFlippedCanvas'));
 	drawFlipNorm(mirrorCell, document.getElementById('normalCellFlippedCanvas'));
 }

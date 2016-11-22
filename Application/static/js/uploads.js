@@ -13,6 +13,36 @@
 			}
 		});
 	}
+    $(window).keydown(function(e){
+		var deltaR = 0;
+		if (e.which == 38)
+			deltaR = 5;
+		else if (e.which == 40)
+			deltaR = -5;
+
+		var svX = parseInt($('#focusRing').attr('width'));
+		var svY = parseInt($('#focusRing').attr('height'));
+		var cx = parseInt($('#svgCirc').attr('cx'));
+		var cy = parseInt($('#svgCirc').attr('cy'));
+		var r = parseInt($('#svgCirc').attr('r'));
+		var strokeWidth = parseInt($('#svgCirc').attr('stroke-width'));
+
+		var newR = deltaR + r;
+		var cxy =  newR + (strokeWidth / 2);
+		var width = cxy * 2;
+
+		// Check bounds
+		var maxWidth = mainImg.width();
+		var maxHeight = mainImg.height();
+		if (width > maxWidth || width > maxHeight || width < 10) //square
+			return;
+		$('#focusRing').attr({'width' : width, 'height' : width});
+		$('#svgCirc').attr({'cx':  cxy, 'cy': cxy, 'r': newR});
+		$('#svgCenter').attr({'cx':  cxy, 'cy': cxy});
+
+
+		updateFocusRing();
+	});
 	$('document').ready()
     {
 		$('#focusRing').draggable();

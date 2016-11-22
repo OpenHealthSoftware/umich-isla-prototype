@@ -10,9 +10,11 @@
 
 <body>
 	  <div id="fullwrap">
+		  {% block headnav %}
 		<div id ="headnav">
 			{% include "headnav.html" %}
 		</div>
+		{%endblock %}
 		<div id="content">
 			{% block content %}{% endblock %}
 		</div>
