@@ -15,6 +15,7 @@ var origCoords = [];
 var xOffset = 0;
 var yOffset = 0;
 var mainImg = $('#mainFA_image');
+var normImg = $('#normalImg');
 var frX = 0, frY = 0;
 var currentCell = 0;
 var GRID_ROWS = 5;
@@ -309,7 +310,7 @@ var selectedNormId = '';
 function normalSelect(id)
 {
 	var norm = $("#"+id).children().first();
-	var normFullView = $('#normalImg');
+	var normFullView = normImg;
 	normFullView.attr('src', norm.attr('src'));
 	var imgId = normFullView.attr('src').split('/').pop();
 	imgId = imgId.split('.')[0];
@@ -342,7 +343,6 @@ function normalSelect(id)
 
 var xNormOffsetPercent = 0, yNormOffsetPercent = 0;
 var normCoords = [];
-var fullNormImg = $('')
 
 var quickView = false;
 $('#quickViewBtn').unbind().click(function()
@@ -370,7 +370,7 @@ $('#quickViewBtn').unbind().click(function()
 
 function remapNormal()
 {
-	var img = $('#normalImg');
+	var img = normImg;
 	var grid = document.getElementById('normalImg');
 	var gridWidth = grid.width;
 	var gridNatWidth = grid.naturalWidth;
@@ -418,7 +418,8 @@ function drawCellManager(cellId)
 		c.clearRect(0,0, $(this)[0].width, $(this)[0].height);
 	});
 
-
+	var mainId = mainImg.prop('id');
+	var normId = normImg.prop('id');
 
 	var patientCanvas = document.getElementById('cellViewCanvas');
 	var patientFlippedCanvas = document.getElementById('mainCellFlippedCanvas');
@@ -441,23 +442,28 @@ function drawCellManager(cellId)
 	// coords
 	var mainCoords = parseHTMLAreaCoords('cell_' + cellId);
 	var mainCoordsFlipped = parseHTMLAreaCoords('cell_' + mirrorCell);
+	var n = [], nF = [];	
 
-	drawCell(cellId, patientCanvas, "mainFA_image", mainCoords, "patient");
-	drawCell(mirrorCell, patientFlippedCanvas, "mainFA_image", mainCoordsFlipped, "patient", "flipped");
+	drawCell(cellId, patientCanvas, mainId, mainCoords, "patient");
+	drawCell(mirrorCell, patientFlippedCanvas, mainId, mainCoordsFlipped, "patient", "flipped");
 	if (selectedNormId != '')
 	{
-		var n = [], nF = [];
 		for (var i in normCoords[cellId-1]) n.push(normCoords[cellId-1][i]); // Since slice seems to cause bugs
 		for (var i in normCoords[mirrorCell-1]) nF.push(normCoords[mirrorCell-1][i]);
-		drawCell(cellId, normalCanvas, "normalImg", n, "normal");
-		drawCell(mirrorCell, normalFlippedCanvas, "normalImg", nF, "normal", "flipped");
+		drawCell(cellId, normalCanvas, normId, n, "normal");
+		drawCell(mirrorCell, normalFlippedCanvas, normId, nF, "normal", "flipped");
 	}
 
 	// Highlighting
-	highlightCell(mainCoords, document.getElementById('mainFA_canvas'), 
-			mainImg.width(), mainImg.height(), "#F1C40F");
-	highlightCell(mainCoordsFlipped, document.getElementById('mainFA_canvas'),
-				mainImg.width(), mainImg.height(), "#D35400");
+	var mainCanv = document.getElementById('mainFA_canvas');
+	var normCanv = document.getElementById('norm_canvas');
+	highlightCell(mainCoords, mainCanv, mainImg.width(), mainImg.height(), "#F1C40F");
+	highlightCell(mainCoordsFlipped, mainCanv, mainImg.width(), mainImg.height(), "#D35400");
+	if (selectedNormId != '')
+	{
+		highlightCell(n, normCanv, normImg.width(), normImg.height(), "#B7950B");
+		highlightCell(nF, normCanv, normImg.width(), normImg.height(), "#A04000");
+	}
 
 	// Updates 
 	console.log("Grading cell " + cellId);

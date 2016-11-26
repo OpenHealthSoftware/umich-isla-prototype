@@ -42,13 +42,18 @@ html, body, #fullwrap
 	height: auto; 
 }
 
-.overlay{position: absolute;}
+.overlay{position: absolute; top: 0;}
 
 .traceCanvas
 {
 	position: absolute;
 	top: 0;
 	pointer-events: none;
+}
+
+#mainNormal
+{
+	position: relative;
 }
 
 #gridCanvas { pointer-events: none;}
@@ -68,6 +73,7 @@ html, body, #fullwrap
 }
 
 canvas{border: solid 1px black;}
+#cellViewCanvas{border: solid 2px #F1C40F;}
 
 #rightScreen
 {
