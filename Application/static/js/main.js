@@ -49,7 +49,7 @@ $('document').ready()
 		var coords = $(this).attr('coords');
 		coords = coords.split(','); // turn into array
 		for (var i in coords)
-			coords[i] = parseInt(coords[i]);
+			coords[i] = parseFloat(coords[i]);
 		origCoords.push(coords);
 	});
 	
@@ -175,10 +175,10 @@ function remap()
 		// calculate new coords
 		for (var i in origCoords[row])
 		{
-			var c = parseInt(origCoords[row][i]);
+			var c = parseFloat(origCoords[row][i]);
 			if (i%2)
-				newCoords.push(parseInt(c*ratio) + yOffset);
-			else newCoords.push(parseInt(c*ratio) + xOffset);
+				newCoords.push(parseFloat(c*ratio) + yOffset);
+			else newCoords.push(parseFloat(c*ratio) + xOffset);
 		}
 
 		// reset html
@@ -202,7 +202,7 @@ document.getElementById('submitGrade').onclick = function()
 		"cell" : cellId,
 		"gradeTime": gradingTime
 	};
-	//exportData.push(data);
+
 	exportData[cellId] = data;
 	++numCellsGraded;
 
@@ -374,10 +374,10 @@ function remapNormal()
 		var newCoords = [];
 		for (var i in origCoords[row])
 		{
-			var c = parseInt(origCoords[row][i]);
+			var c = parseFloat(origCoords[row][i]);
 			if (i%2)
-				newCoords.push(parseInt(c*ratio) + yOffset);
-			else newCoords.push(parseInt(c*ratio) + xOffset);
+				newCoords.push(parseFloat(c*ratio) + yOffset);
+			else newCoords.push(parseFloat(c*ratio) + xOffset);
 		}
 		normCoords.push(newCoords);
 	}
@@ -451,6 +451,7 @@ function drawCellManager(cellId)
 		highlightCell(n, normCanv, normImg.width(), normImg.height(), "#B7950B");
 		highlightCell(nF, normCanv, normImg.width(), normImg.height(), "#A04000");
 	}
+	
 
 	// Updates 
 	console.log("Grading cell " + cellId);
