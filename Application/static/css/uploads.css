@@ -1,0 +1,50 @@
+.popUpBox
+{
+    position: relative;
+    height: 100%;
+    width: 80%;
+    margin: 0 auto;
+    overflow-y: scroll;
+    font-size: 1.2em;
+}
+
+.popUpSection input, .popUpSection textarea, .popUpSection label, .popUpSection select, 
+.popUpSection option
+{
+    width: 95%;
+}
+.popUpSection input, .popUpSection textarea, .popUpSection select, 
+.popUpSection option
+{
+    padding: 1em 2em;
+}
+
+.popUpSection
+{
+    width: 95%;
+    margin: 4% 0 4% 0;
+}
+
+
+.inputfile {
+	width: 0.1px !important;
+	height: 0.1px;
+	opacity: 0;
+	overflow: hidden;
+	position: absolute;
+	z-index: -1;
+}
+
+#fileFieldLabel
+{
+    display: inline-block;
+    background-color: #4CAF50;
+    border: none;
+    color: white;
+    padding: 1em 0 1em 2em;
+    text-decoration: none;
+    text-overflow: ellipsis;
+    cursor: pointer;
+    margin: 0;
+}
+

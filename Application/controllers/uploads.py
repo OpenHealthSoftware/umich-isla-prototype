@@ -32,6 +32,7 @@ def generateFilename(filename):
 # Requires: request object, type of img upload (patient or normal)
 # Effects: Uploads valid file to server and updates database
 def uploadImg(request, type):
+	form = request.form
 	upFolder = ''
 	# type
 	if type == "normal":
@@ -52,8 +53,13 @@ def uploadImg(request, type):
 
 	if file and fileExt: # If file and extension aren't null
 		filename = generateFilename(file.filename)
+		refName = form['refName']
+		eye = form['eye']
+		comments = form['comments']
+		# save to database
+		insertImageToDB(table, fileExt, filename, refName, eye, comments)
+		# save to server
 		file.save(os.path.join(current_app.config.get(upFolder), filename + '.' + fileExt))
-		insertImageToDB(table, fileExt, filename)
 	return filename + '.' + fileExt
 
 
@@ -69,9 +75,9 @@ def upload_route():
 
 	# Add or delete album
 	if request.method == 'POST':
-		data = request.form
-		operation = data['op']
-		type = data['type']
+		form = request.form
+		operation = form['op']
+		type = form['type']
 		
 		if operation == 'add':
 			imgFilename = uploadImg(request, type)

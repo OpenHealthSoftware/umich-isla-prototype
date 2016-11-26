@@ -1,6 +1,7 @@
 {% extends "base.html" %}
 {% block css %}
 <link rel="stylesheet" href="/static/css/index.css" />
+<link rel="stylesheet" href="/static/css/uploads.css" />
 {% endblock %}
 {% block content %}
 
@@ -23,22 +24,41 @@
 		</style>
 
 	{% else %}
-		<div id="addPicture" class="preview">
-			<form action="" method="POST" enctype="multipart/form-data">
+		<div id="addPicture" class="popUpBox">
+			<form action="" method="POST" enctype="multipart/form-data" id="uploadForm">
 				<input type="hidden" name="op" value="add">
-				<select name="type">
-					<option value="patient">Patient Image (for grading)</option>
-					<option value="normal">Normal Image</option>
-				</select>
-				Reference Name: <input type="text" name="refName" value="">
-				<select name="eye">
-					<option value="right">Right Eye</option>
-					<option value="left">Left Eye</option>
-				</select>
-				<input type="file" name="img" accept="image/*" required>
-				<input type="submit" value="Upload">
+				<div id="" class="popUpSection">
+					<input id="fileField" class="inputfile" type="file" name="img" accept="image/*" required>
+					<label for="fileField" id="fileFieldLabel">File: </label>
+				</div>
+				<div id="" class="popUpSection">
+					<label for="imgType">Type: </label>
+					<select id="imgType" name="type">
+						<option value="patient">Patient Image (for grading)</option>
+						<option value="normal">Normal Image</option>
+					</select>
+				</div>
+				<div id="" class="popUpSection">
+					<label for="refName">Reference Name: </label>
+					<input id="refName" type="text" name="refName" value="">
+				</div>
+				<div id="" class="popUpSection">
+					<label for="eye">Eye: </label>
+					<select name="eye" id="eye">
+						<option value="right">Right Eye</option>
+						<option value="left">Left Eye</option>
+					</select>
+				</div>
+				<div id="" class="popUpSection">				
+					<label for="commentsField">Comments: </label>
+					<textarea rows="5" cols="" form="uploadForm" id="commentsField"></textarea>
+				</div>
+				<div id="" class="popUpSection">				
+					<input type="submit" value="Upload">
+				</div>
 			</form>
 		</div>
+
 		{% for p in images %}
 			<a href="view?p={{p['imgId']}}" class="aPrev">
 			<div id="imgPrev{{loop.index}}" class="imgPrev">
@@ -65,4 +85,16 @@
 
 {% block js %}
 <script src="{{url_for('static', filename='js/uploads.js')}}"></script>
+<script>
+var fileFieldLabelText = $('#fileFieldLabel').html();
+$('document').ready()
+{
+	$('#fileField').change(function()
+	{
+		if ( $(this).prop('files').length > 0)
+			$('#fileFieldLabel').html(fileFieldLabelText + $(this).prop('files')[0]['name']);
+		else $('#fileFieldLabel').html(fileFieldLabelText);
+	});
+}
+</script>
 {% endblock %}

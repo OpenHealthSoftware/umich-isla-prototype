@@ -36,8 +36,9 @@ def getNormalData(imgId):
 
 # Effects: Runs a MySQL query that inserts a photo into the photo table
 # returns true if successful
-def insertImageToDB(table, format, imgId):
-	cursor.execute("INSERT INTO " + table + " (format, imgId) VALUES (?,?)", (format, imgId))
+def insertImageToDB(table, inFormat, imgId, refName, eye, comments):
+	cursor.execute("INSERT INTO " + table + " (format, imgId, referenceName, eye, comments) VALUES (?,?)", 
+			(inFormat, imgId, refName, eye, comments) )
 	conn.commit()
 	if (cursor.fetchall()):
 		return True

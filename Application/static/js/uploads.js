@@ -19,6 +19,7 @@
 			deltaR = 5;
 		else if (e.which == 40)
 			deltaR = -5;
+        else return;
 
 		var svX = parseInt($('#focusRing').attr('width'));
 		var svY = parseInt($('#focusRing').attr('height'));
