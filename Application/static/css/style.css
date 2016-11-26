@@ -44,6 +44,13 @@ html, body, #fullwrap
 
 .overlay{position: absolute;}
 
+.traceCanvas
+{
+	position: absolute;
+	top: 0;
+	pointer-events: none;
+}
+
 #gridCanvas { pointer-events: none;}
 
 #grid{
@@ -133,3 +140,7 @@ input[type=button]:hover, input[type=submit]:hover, input[type=reset]:hover, but
 	float: left;
 }
 
+.selected
+{
+	border: 3px solid green;
+}

@@ -150,7 +150,7 @@ function gup(name) {
 		return unescape(results[1]);
 }
 
-var lastGridRatio = 0;
+
 // Changes area coordinates to match scaled grid / image
 function remap()
 {
@@ -165,29 +165,23 @@ function remap()
 	xOffset = xOffsetPercent * mainImg.width();
 	yOffset = yOffsetPercent * mainImg.height();
 	
-	//if (gridWidth / gridNatWidth != lastGridRatio)
+	var row = 0;
+	ar.each(function()
 	{
-		
-		var row = 0;
-		ar.each(function()
+		var newCoords = [];
+		// calculate new coords
+		for (var i in origCoords[row])
 		{
-			var newCoords = [];
-			// calculate new coords
-			for (var i in origCoords[row])
-			{
-				var c = parseInt(origCoords[row][i]);
-				if (i%2)
-					newCoords.push(parseInt(c*ratio) + yOffset);
-				else newCoords.push(parseInt(c*ratio) + xOffset);
-			}
+			var c = parseInt(origCoords[row][i]);
+			if (i%2)
+				newCoords.push(parseInt(c*ratio) + yOffset);
+			else newCoords.push(parseInt(c*ratio) + xOffset);
+		}
 
-			// reset html
-			$(this).attr('coords', newCoords.toString());
-			row++;
-		});
-		lastGridRatio = ratio;
-	}
-
+		// reset html
+		$(this).attr('coords', newCoords.toString());
+		row++;
+	});
 }
 
 
@@ -310,7 +304,8 @@ function nextCell()
 	drawCellManager(currentCell);
 }
 
-var isNormSelected = false;
+var selectedNormId = '';
+// Effects: Selects a normal image to be used for grading comparison
 function normalSelect(id)
 {
 	var norm = $("#"+id).children().first();
@@ -331,7 +326,13 @@ function normalSelect(id)
 				$('#normalGrid').show();
 				$('#focusRing').hide();
 				remapNormal();
-				isNormSelected = true;
+				if (selectedNormId != '')
+					$('#' + selectedNormId).removeClass("selected");
+				console.log(selectedNormId, id);
+				$('#' + id).addClass("selected");
+				selectedNormId = id;
+				if (currentCell != 0)
+					drawCellManager(currentCell);
 			},
 			error: function(error) {
 				console.log(error);
@@ -369,7 +370,6 @@ $('#quickViewBtn').unbind().click(function()
 
 function remapNormal()
 {
-	console.log("Remap normal called");
 	var img = $('#normalImg');
 	var grid = document.getElementById('normalImg');
 	var gridWidth = grid.width;
@@ -394,12 +394,32 @@ function remapNormal()
 	}
 }
 
+// Effects: returns a float array of the coords stored in the area html tags
+function parseHTMLAreaCoords(elId)
+{
+		var cell = document.getElementById(elId);
+		var cellCoords = cellCoords = cell.getAttribute("coords");
 
+		// Convert string to int array
+		cellCoords = cellCoords.split(',');
+		for (var i = 0; i < cellCoords.length; i++)
+			cellCoords[i] = parseFloat(cellCoords[i]);
+
+		return cellCoords;
+}
 
 var hasCellBeenDrawn = false; //prevents resizing error
 // Effects: handles drawing the multiple respective cells for one single clicked cell
 function drawCellManager(cellId)
 {
+	// Clear trace canvases
+	$('.traceCanvas').each(function(){
+		var c = $(this)[0].getContext('2d');
+		c.clearRect(0,0, $(this)[0].width, $(this)[0].height);
+	});
+
+
+
 	var patientCanvas = document.getElementById('cellViewCanvas');
 	var patientFlippedCanvas = document.getElementById('mainCellFlippedCanvas');
 	var normalCanvas = document.getElementById('normalCellViewCanvas');
@@ -418,15 +438,29 @@ function drawCellManager(cellId)
 	var mirrorCell = 0;
 	mirrorCell = mirrorRow * GRID_COLS + col;
 
-	drawCell(cellId, patientCanvas, "mainFA_image", normCoords, "patient", "");
-	drawCell(mirrorCell, patientFlippedCanvas, "mainFA_image", normCoords, "patient", "flipped");
-	if (isNormSelected == true)
+	// coords
+	var mainCoords = parseHTMLAreaCoords('cell_' + cellId);
+	var mainCoordsFlipped = parseHTMLAreaCoords('cell_' + mirrorCell);
+
+	drawCell(cellId, patientCanvas, "mainFA_image", mainCoords, "patient");
+	drawCell(mirrorCell, patientFlippedCanvas, "mainFA_image", mainCoordsFlipped, "patient", "flipped");
+	if (selectedNormId != '')
 	{
-		drawCell(cellId, normalCanvas, "normalImg", normCoords, "normal", "");
-		drawCell(mirrorCell, normalFlippedCanvas, "normalImg", normCoords, "normal", "flipped");
+		var n = [], nF = [];
+		for (var i in normCoords[cellId-1]) n.push(normCoords[cellId-1][i]); // Since slice seems to cause bugs
+		for (var i in normCoords[mirrorCell-1]) nF.push(normCoords[mirrorCell-1][i]);
+		drawCell(cellId, normalCanvas, "normalImg", n, "normal");
+		drawCell(mirrorCell, normalFlippedCanvas, "normalImg", nF, "normal", "flipped");
 	}
 
+	// Highlighting
+	highlightCell(mainCoords, document.getElementById('mainFA_canvas'), 
+			mainImg.width(), mainImg.height(), "#F1C40F");
+	highlightCell(mainCoordsFlipped, document.getElementById('mainFA_canvas'),
+				mainImg.width(), mainImg.height(), "#D35400");
+
 	// Updates 
+	console.log("Grading cell " + cellId);
 	currentCell = cellId;
 	$('#inputCell').val(cellId);
 	hasCellBeenDrawn = true;
@@ -437,34 +471,18 @@ function drawCellManager(cellId)
 	
 }
 
+
+
 // Requires: id of the cell to be drawn, the canvas to draw on, the source image id, the coordinates, and what type (normal or patient)
 // Effects: draws the clicked cell to a canvas
-function drawCell(cellId, canv, imgId, inCoords, type, type2)
+function drawCell(cellId, canv, imgId, cellCoords, type)
 {
-	console.log("Grading cell " + cellId + " for " + type + type2);
-	var cellCoords;
+	// for grading data
 	if (type == "patient")
 	{
-		// for grading data
 		var date = new Date();
 		startTime = date.getTime();
-
-		//Get cell coordinates for repainting section of image
-		var cell = document.getElementById("cell_"+cellId);
-		cellCoords = cell.getAttribute("coords");
-
-		// Convert string to int array
-		cellCoords = cellCoords.split(',');
-		for (var i = 0; i < cellCoords.length; i++)
-			cellCoords[i] = parseInt(cellCoords[i]);
 	}
-	else // type == "normal/control"
-	{
-		cellCoords = [];
-		for (var i in inCoords[cellId-1]) // since slice seems to cause bugs
-			cellCoords.push(inCoords[cellId-1][i]);
-	}
-
 
 	// Find greatest x and y for cell
 	var maxY = 0;
@@ -523,6 +541,27 @@ function drawCell(cellId, canv, imgId, inCoords, type, type2)
 	ctx.clip();
 
 	ctx.drawImage(img, minX*diff, minY*diff, (cellWidth)*diff, (cellHeight)*diff, 0,0, canv.width, canv.height);
+}
+
+// Effects: Highlights the perimeter of the cell onto the passed canvas, with the canvas being the 
+// same size as the passed jquery img
+function highlightCell(inCoords, canv, width, height, color)
+{
+	var c = canv.getContext("2d");
+	if (canv.width < 1)
+	{ 
+		canv.width = width;
+		canv.height = height;
+	}
+
+	c.beginPath();
+	for (var i = 0; i < inCoords.length; i += 2)
+	{
+		c.lineTo(inCoords[i], inCoords[i+1]);
+	}
+	c.closePath();
+	c.strokeStyle = color;
+	c.stroke();
 }
 
 var isControlBarOpen = true;
