@@ -16,6 +16,8 @@ var xOffset = 0;
 var yOffset = 0;
 var mainImg = $('#mainFA_image');
 var normImg = $('#normalImg');
+var mainCanv = document.getElementById('mainFA_canvas');
+var normCanv = document.getElementById('norm_canvas');
 var frX = 0, frY = 0;
 var currentCell = 0;
 var GRID_ROWS = 5;
@@ -205,8 +207,10 @@ document.getElementById('submitGrade').onclick = function()
 	++numCellsGraded;
 
 	//unselect radio buttons
-	$('input[name=grade]')[0].checked = false;
-	$('input[name=grade]')[1].checked = false;
+	$('input[name=grade]').each(function(){
+		$(this)[0].checked = false;
+	});
+	
 
 	nextCell();
 };
@@ -248,37 +252,22 @@ $('#export').click(function()
 
 function highlightUngradedCells()
 {
-	var cells = $('area');
-	var c = document.getElementById("gridCanvas").getContext("2d");
-	document.getElementById("gridCanvas").width = $('#grid').width();
-	document.getElementById("gridCanvas").height = $('#grid').height();
+	// clear canvas
+	$('.traceCanvas').each(function(){
+		var c = $(this)[0].getContext('2d');
+		c.clearRect(0,0, $(this)[0].width, $(this)[0].height);
+	});
 
+	var cells = $('area');
 	// loop through all cells
 	cells.each(function()
 	{
-		var cellNumber = $(this).attr('id');
-		cellNumber = cellNumber.substr(4, cellNumber.length - 1); // [cell]xxx
-		cellNumber = parseInt(cellNumber);
-
-		// trace
-		if (!exportData[cellNumber])
+		var cellId = $(this).attr('id');
+		cellId = parseInt(cellId.split('_')[1]); //cell_XXX
+		if (!exportData[cellId]) //cell hasn't' been graded
 		{
-			//alert("cell " + cellNumber + " is ungraded");
-			
-
-			var cellCoords = $(this).attr('coords').split(',');
-			c.beginPath();
-			var xDiff = cellCoords[0] - (cellCoords[0] * .9);
-			xDiff *= 1.5;
-			var yDiff = cellCoords[1] - (cellCoords[1] * .9);
-			yDiff *= 1.5;
-			for (var i = 0; i < cellCoords.length; i += 2)
-			{
-				c.lineTo(cellCoords[i] * .9 + xDiff, cellCoords[i+1] * .9 + yDiff);
-			}
-			c.strokeStyle = 'red';
-			c.stroke();
-			c.closePath();
+			cellCoords = parseHTMLAreaCoords($(this).prop('id'));
+			highlightCell(cellCoords, mainCanv, mainImg.width(), mainImg.height(), "red");
 		}
 	});
 }
@@ -455,8 +444,6 @@ function drawCellManager(cellId)
 	}
 
 	// Highlighting
-	var mainCanv = document.getElementById('mainFA_canvas');
-	var normCanv = document.getElementById('norm_canvas');
 	highlightCell(mainCoords, mainCanv, mainImg.width(), mainImg.height(), "#F1C40F");
 	highlightCell(mainCoordsFlipped, mainCanv, mainImg.width(), mainImg.height(), "#D35400");
 	if (selectedNormId != '')
@@ -573,11 +560,20 @@ function highlightCell(inCoords, canv, width, height, color)
 var isControlBarOpen = true;
 function toggleNormalsBar()
 {
+	var btnLabel = $('#toggleNormalsBtn').html();
 	if (isControlBarOpen)
 	{
 		topBotScreemSplit.collapse(1);
+		btnLabel = btnLabel.replace('Hide', 'Show');
 	}
-	else topBotScreemSplit.setSizes([75,25]);
+	else 
+	{
+		topBotScreemSplit.setSizes([75,25]);
+		btnLabel = btnLabel.replace('Show', 'Hide');		
+	}
+
+	$('#toggleNormalsBtn').html(btnLabel);
+	console.log(btnLabel);
 	isControlBarOpen = !isControlBarOpen;
 }
 
