@@ -72,6 +72,7 @@
 
 				<a href="/"><button>Patients</button></a>
 				<a href="/uploads"><button>Upload</button></a>
+				<button id="toggleNormalsBtn" onclick="toggleNormalsBar()">Hide Normal Images</button>				
 				
 			</div><!-- END #settings -->
 		</div>
@@ -82,7 +83,7 @@
 			{% endif %}
 			<div id='left_scroll'> < </div>
 			<div class='carousel_inner'>
-				<ul class='carousel_ul'>
+				<ul class='carousel_ul' id="controlImgCarouselUL">
 					{% for i in controls %}
 					<li>
 					<div id="control{{loop.index}}" class="controlPrevItem" onclick="normalSelect(this.id)">
@@ -105,7 +106,6 @@
 {% endblock %}
 
 {% block js %}
-<script src="{{url_for('static', filename='js/main.js')}}"></script>
 <script src="{{url_for('static', filename='js/carousel.js')}}"></script>
 <script src="{{url_for('static', filename='js/split.min.js')}}"></script>
 <script src="{{url_for('static', filename='js/main.js')}}"></script>
@@ -114,7 +114,7 @@
 $('document').ready()
 {
 	
-	Split(['#topScreen', '#bottomScreen'], {
+	var topBotScreemSplit = Split(['#topScreen', '#bottomScreen'], {
 		direction: 'vertical',
 		sizes : [75,25],
 		onDragEnd : function(){
@@ -127,7 +127,8 @@ $('document').ready()
 		onDragEnd : function(){
 			updateFocusRing();
 			remap();
-			resizeCells();
+			if (hasCellBeenDrawn == true)
+				drawCellManager(currentCell);
 		} 
 	});
 

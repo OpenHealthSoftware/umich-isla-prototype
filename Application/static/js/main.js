@@ -131,7 +131,7 @@ $('document').ready()
 
 		$('area').each(function(){
 				var id = parseInt($(this).attr('id').split('_')[1]);
-				$(this).click(function(){cellClick(id, document.getElementById('cellViewCanvas'))});
+				$(this).click(function(){drawCellManager(id)});
 		});
 }
 
@@ -190,90 +190,7 @@ function remap()
 
 }
 
-// Effects: draws the clicked cell to a canvas
-function cellClick(id, c)
-{
-	console.log("Grading cell " + id);
-	var date = new Date();
-	startTime = date.getTime();
-	//Get cell coordinates for repainting section of image
-	var cell = document.getElementById("cell_"+id);
-	var cellCoords = cell.getAttribute("coords");
 
-	// Convert string to int array
-	cellCoords = cellCoords.split(',');
-	for (var i = 0; i < cellCoords.length; i++)
-		cellCoords[i] = parseInt(cellCoords[i]);
-
-
-	// Find greatest x and y for cell
-	var maxY = 0;
-	var maxX = 0;
-	var minY = cellCoords[1];
-	var minX = cellCoords[0];
-	for (var i = 0; i < cellCoords.length; i+=2)
-	{
-		if (cellCoords[i] > maxX)
-			maxX = cellCoords[i];
-		if (cellCoords[i] < minX)
-			minX = cellCoords[i];
-	
-		if (cellCoords[i+1] > maxY)
-			maxY = cellCoords[i+1];
-		if (cellCoords[i+1] < minY)
-			minY = cellCoords[i+1];
-	}
-	// Get rectangular cell dimensions
-	var cellHeight = (maxY > minY) ? maxY - minY : minY - maxY;
-	var cellWidth = (maxX > minX) ? maxX - minX : minX - maxX;
-
-	// Draw cell onto canvas
-	var ctx = c.getContext("2d");
-	var img = document.getElementById("mainFA_image");
-	// Set canvas dimensions
-	ctx.canvas.width = document.getElementById('cellExpanded').offsetWidth;
-	var ratio = cellHeight / cellWidth;
-	ctx.canvas.height = ctx.canvas.width * ratio;
-	// account for cells that are too high
-	var canvasAllocatedHeight = $('#gradeCell').height() 
-		- ($('#gradeForm').outerHeight() + $('#submitGrade').outerHeight());
-	while (ctx.canvas.height > canvasAllocatedHeight)
-	{
-		ctx.canvas.width -= 10;
-		ctx.canvas.height = ctx.canvas.width * ratio;
-	}
-	//Since canvas is pulling image data as native size use difference
-	var diff = img.naturalWidth / img.width;
-
-	//Clip to cell
-	ctx.moveTo(cellCoords[0], cellCoords[1]);
-	ctx.beginPath();
-	var coordsToCanvasRatio = ctx.canvas.width / cellWidth;
-	for (var i = 0; i < cellCoords.length; i += 2)
-	{
-		var x = (cellCoords[i]-minX)*coordsToCanvasRatio;
-		var  y = (cellCoords[i+1]-minY)*coordsToCanvasRatio;
-		ctx.lineTo(x, y);
-	}
-	ctx.closePath();
-	ctx.clip();
-
-	ctx.drawImage(img, minX*diff, minY*diff, (cellWidth)*diff, (cellHeight)*diff, 0,0, c.width, c.height);
-
-	// Display grading box
-	// Display reference images
-	// Display mirrored cell (highlight on image and give options for next cell incases mirrored cell isn't correct)
-	document.getElementById('gradeCell').style.display = "block";
-	$('#inputCell').val(id);
-
-	//var c = document.getElementById("gridCanvas").getContext("2d");
-	//c.clearRect(cellCoords[0], cellCoords[1], cellWidth, cellHeight);
-
-	currentCell = id;
-	drawNormalCell(id, document.getElementById('normalCellViewCanvas'));
-	drawFlippedCells();
-	
-}
 
 document.getElementById('submitGrade').onclick = function()
 {
@@ -390,10 +307,10 @@ function toggleSettings()
 function nextCell()
 {
 	currentCell++;
-	cellClick(currentCell, document.getElementById('cellViewCanvas'));
+	drawCellManager(currentCell);
 }
 
-
+var isNormSelected = false;
 function normalSelect(id)
 {
 	var norm = $("#"+id).children().first();
@@ -414,6 +331,7 @@ function normalSelect(id)
 				$('#normalGrid').show();
 				$('#focusRing').hide();
 				remapNormal();
+				isNormSelected = true;
 			},
 			error: function(error) {
 				console.log(error);
@@ -426,7 +344,6 @@ var normCoords = [];
 var fullNormImg = $('')
 
 var quickView = false;
-
 $('#quickViewBtn').unbind().click(function()
 {
 	var c = document.getElementById('cellViewCanvas');
@@ -435,80 +352,20 @@ $('#quickViewBtn').unbind().click(function()
 		$('area').each(function(){$(this).unbind()});
 		$('area').each(function(){
 			var id = parseInt($(this).attr('id').split('_')[1]);
-			$(this).hover(function(){cellClick(id,c)});
+			$(this).hover(function(){drawCellManager(id)});
 		});
 	}
 	else {
 		$('area').each(function(){$(this).unbind()});
 			$('area').each(function(){
 				var id = parseInt($(this).attr('id').split('_')[1]);
-			$(this).click(function(){cellClick(id,c)});
+			$(this).click(function(){drawCellManager(id)});
 		});
 	}
 	quickView = !quickView;
 }
 );
 
-function drawNormalCell(cellId, c)
-{
-	var cellCoords = [];
-	for (var i in normCoords[cellId-1]) //prevents bug
-		cellCoords.push(normCoords[cellId-1][i]);
-
-	// Find greatest x and y for cell
-	var maxY = 0;
-	var maxX = 0;
-	var minY = cellCoords[1];
-	var minX = cellCoords[0];
-	for (var i = 0; i < cellCoords.length; i+=2)
-	{
-		if (cellCoords[i] > maxX)
-			maxX = cellCoords[i];
-		if (cellCoords[i] < minX)
-			minX = cellCoords[i];
-	
-		if (cellCoords[i+1] > maxY)
-			maxY = cellCoords[i+1];
-		if (cellCoords[i+1] < minY)
-			minY = cellCoords[i+1];
-	}
-	// Get rectangular cell dimensions
-	var cellHeight = (maxY > minY) ? maxY - minY : minY - maxY;
-	var cellWidth = (maxX > minX) ? maxX - minX : minX - maxX;
-	// ^^ Should be able to pass in, cell should be same size as main img cell
-
-	// Draw cell onto canvas
-	var ctx = c.getContext("2d");
-	var img = document.getElementById("normalImg");
-	// Set canvas dimensions
-	ctx.canvas.width = document.getElementById('cellExpanded').offsetWidth;
-	var ratio = cellHeight / cellWidth;
-	ctx.canvas.height = ctx.canvas.width * ratio;
-	// account for cells that are too high
-	var canvasAllocatedHeight = $('#gradeCell').height() 
-		- ($('#gradeForm').outerHeight() + $('#submitGrade').outerHeight());
-	while (ctx.canvas.height > canvasAllocatedHeight)
-	{
-		ctx.canvas.width -= 10;
-		ctx.canvas.height = ctx.canvas.width * ratio;
-	}
-	//Since canvas is pulling image data as native size use difference
-	var diff = img.naturalWidth / img.width;
-
-	//Clip to cell
-	ctx.moveTo(cellCoords[0], cellCoords[1]);
-	ctx.beginPath();
-	var coordsToCanvasRatio = ctx.canvas.width / cellWidth;
-	for (var i = 0; i < cellCoords.length; i += 2)
-	{
-		var x = (cellCoords[i]-minX)*coordsToCanvasRatio;
-		var  y = (cellCoords[i+1]-minY)*coordsToCanvasRatio;
-		ctx.lineTo(x, y);
-	}
-	ctx.closePath();
-	ctx.clip();
-	ctx.drawImage(img, minX*diff, minY*diff, (cellWidth)*diff, (cellHeight)*diff, 0,0, c.width, c.height);
-}
 
 function remapNormal()
 {
@@ -538,167 +395,144 @@ function remapNormal()
 }
 
 
-function resizeCells()
+
+var hasCellBeenDrawn = false; //prevents resizing error
+// Effects: handles drawing the multiple respective cells for one single clicked cell
+function drawCellManager(cellId)
 {
-	cellClick(currentCell, document.getElementById('cellViewCanvas'));
-	//drawNormalCell(currentCell);
-	return;
-	$('canvas').each( function(){
-		var cW = $(this).prop('width');
-		var cH = $(this).prop('height');
-		var targetWidth = $('#normalCell').width();
-
-		var ratio = cH / cW;
-		var newWidth = targetWidth;
-		var newHeight = targetWidth * ratio;
-
-		$(this).prop('width', newWidth);
-		$(this).prop('height', newHeight);
-
-	});
-}
-
-function drawFlipMain(cellId, c)
-{
-	//Get cell coordinates for repainting section of image
-	var cell = document.getElementById("cell_"+cellId);
-	var cellCoords = cell.getAttribute("coords");
-
-	// Convert string to int array
-	cellCoords = cellCoords.split(',');
-	for (var i = 0; i < cellCoords.length; i++)
-		cellCoords[i] = parseInt(cellCoords[i]);
+	var patientCanvas = document.getElementById('cellViewCanvas');
+	var patientFlippedCanvas = document.getElementById('mainCellFlippedCanvas');
+	var normalCanvas = document.getElementById('normalCellViewCanvas');
+	var normalFlippedCanvas = document.getElementById('normalCellFlippedCanvas');
 
 
-	// Find greatest x and y for cell
-	var maxY = 0;
-	var maxX = 0;
-	var minY = cellCoords[1];
-	var minX = cellCoords[0];
-	for (var i = 0; i < cellCoords.length; i+=2)
-	{
-		if (cellCoords[i] > maxX)
-			maxX = cellCoords[i];
-		if (cellCoords[i] < minX)
-			minX = cellCoords[i];
-	
-		if (cellCoords[i+1] > maxY)
-			maxY = cellCoords[i+1];
-		if (cellCoords[i+1] < minY)
-			minY = cellCoords[i+1];
-	}
-	// Get rectangular cell dimensions
-	var cellHeight = (maxY > minY) ? maxY - minY : minY - maxY;
-	var cellWidth = (maxX > minX) ? maxX - minX : minX - maxX;
-
-	// Draw cell onto canvas
-	var ctx = c.getContext("2d");
-	var img = document.getElementById("mainFA_image");
-	// Set canvas dimensions
-	ctx.canvas.width = document.getElementById('cellExpanded').offsetWidth;
-	var ratio = cellHeight / cellWidth;
-	ctx.canvas.height = ctx.canvas.width * ratio;
-	// account for cells that are too high
-	var canvasAllocatedHeight = $('#gradeCell').height() 
-		- ($('#gradeForm').outerHeight() + $('#submitGrade').outerHeight());
-	while (ctx.canvas.height > canvasAllocatedHeight)
-	{
-		ctx.canvas.width -= 10;
-		ctx.canvas.height = ctx.canvas.width * ratio;
-	}
-	//Since canvas is pulling image data as native size use difference
-	var diff = img.naturalWidth / img.width;
-
-	//Clip to cell
-	ctx.moveTo(cellCoords[0], cellCoords[1]);
-	ctx.beginPath();
-	var coordsToCanvasRatio = ctx.canvas.width / cellWidth;
-	for (var i = 0; i < cellCoords.length; i += 2)
-	{
-		var x = (cellCoords[i]-minX)*coordsToCanvasRatio;
-		var  y = (cellCoords[i+1]-minY)*coordsToCanvasRatio;
-		ctx.lineTo(x, y);
-	}
-	ctx.closePath();
-	ctx.clip();
-
-	ctx.drawImage(img, minX*diff, minY*diff, (cellWidth)*diff, (cellHeight)*diff, 0,0, c.width, c.height);
-}
-
-
-function drawFlipNorm(cellId, c)
-{
-	var cellCoords = [];
-	for (var i in normCoords[cellId-1]) //prevents bug
-		cellCoords.push(normCoords[cellId-1][i]);
-
-	// Find greatest x and y for cell
-	var maxY = 0;
-	var maxX = 0;
-	var minY = cellCoords[1];
-	var minX = cellCoords[0];
-	for (var i = 0; i < cellCoords.length; i+=2)
-	{
-		if (cellCoords[i] > maxX)
-			maxX = cellCoords[i];
-		if (cellCoords[i] < minX)
-			minX = cellCoords[i];
-	
-		if (cellCoords[i+1] > maxY)
-			maxY = cellCoords[i+1];
-		if (cellCoords[i+1] < minY)
-			minY = cellCoords[i+1];
-	}
-	// Get rectangular cell dimensions
-	var cellHeight = (maxY > minY) ? maxY - minY : minY - maxY;
-	var cellWidth = (maxX > minX) ? maxX - minX : minX - maxX;
-	// ^^ Should be able to pass in, cell should be same size as main img cell
-
-	// Draw cell onto canvas
-	var ctx = c.getContext("2d");
-	var img = document.getElementById("normalImg");
-	// Set canvas dimensions
-	ctx.canvas.width = document.getElementById('cellExpanded').offsetWidth;
-	var ratio = cellHeight / cellWidth;
-	ctx.canvas.height = ctx.canvas.width * ratio;
-	// account for cells that are too high
-	var canvasAllocatedHeight = $('#gradeCell').height() 
-		- ($('#gradeForm').outerHeight() + $('#submitGrade').outerHeight());
-	while (ctx.canvas.height > canvasAllocatedHeight)
-	{
-		ctx.canvas.width -= 10;
-		ctx.canvas.height = ctx.canvas.width * ratio;
-	}
-	//Since canvas is pulling image data as native size use difference
-	var diff = img.naturalWidth / img.width;
-
-	//Clip to cell
-	ctx.moveTo(cellCoords[0], cellCoords[1]);
-	ctx.beginPath();
-	var coordsToCanvasRatio = ctx.canvas.width / cellWidth;
-	for (var i = 0; i < cellCoords.length; i += 2)
-	{
-		var x = (cellCoords[i]-minX)*coordsToCanvasRatio;
-		var  y = (cellCoords[i+1]-minY)*coordsToCanvasRatio;
-		ctx.lineTo(x, y);
-	}
-	ctx.closePath();
-	ctx.clip();
-	ctx.drawImage(img, minX*diff, minY*diff, (cellWidth)*diff, (cellHeight)*diff, 0,0, c.width, c.height);
-}
-function drawFlippedCells()
-{
 	// convert cellId to row col 
-	var row = Math.floor(currentCell / GRID_COLS);
-	var col = currentCell % GRID_COLS;
-
+	var row = Math.floor(cellId / GRID_COLS);
+	var col = cellId % GRID_COLS;
 	var	mirrorRow = (GRID_ROWS -1) - row;
-
+	if (col == 0)  // edge case
+	{ 
+		col = GRID_COLS;
+		mirrorRow++;
+	}
 	var mirrorCell = 0;
-
 	mirrorCell = mirrorRow * GRID_COLS + col;
-	drawFlipMain(mirrorCell, document.getElementById('mainCellFlippedCanvas'));
-	drawFlipNorm(mirrorCell, document.getElementById('normalCellFlippedCanvas'));
+
+	drawCell(cellId, patientCanvas, "mainFA_image", normCoords, "patient", "");
+	drawCell(mirrorCell, patientFlippedCanvas, "mainFA_image", normCoords, "patient", "flipped");
+	if (isNormSelected == true)
+	{
+		drawCell(cellId, normalCanvas, "normalImg", normCoords, "normal", "");
+		drawCell(mirrorCell, normalFlippedCanvas, "normalImg", normCoords, "normal", "flipped");
+	}
+
+	// Updates 
+	currentCell = cellId;
+	$('#inputCell').val(cellId);
+	hasCellBeenDrawn = true;
+	// Display grading box
+	// Display reference images
+	// Display mirrored cell (highlight on image and give options for next cell incases mirrored cell isn't correct)
+	document.getElementById('gradeCell').style.display = "block";
+	
 }
 
+// Requires: id of the cell to be drawn, the canvas to draw on, the source image id, the coordinates, and what type (normal or patient)
+// Effects: draws the clicked cell to a canvas
+function drawCell(cellId, canv, imgId, inCoords, type, type2)
+{
+	console.log("Grading cell " + cellId + " for " + type + type2);
+	var cellCoords;
+	if (type == "patient")
+	{
+		// for grading data
+		var date = new Date();
+		startTime = date.getTime();
+
+		//Get cell coordinates for repainting section of image
+		var cell = document.getElementById("cell_"+cellId);
+		cellCoords = cell.getAttribute("coords");
+
+		// Convert string to int array
+		cellCoords = cellCoords.split(',');
+		for (var i = 0; i < cellCoords.length; i++)
+			cellCoords[i] = parseInt(cellCoords[i]);
+	}
+	else // type == "normal/control"
+	{
+		cellCoords = [];
+		for (var i in inCoords[cellId-1]) // since slice seems to cause bugs
+			cellCoords.push(inCoords[cellId-1][i]);
+	}
+
+
+	// Find greatest x and y for cell
+	var maxY = 0;
+	var maxX = 0;
+	var minY = cellCoords[1];
+	var minX = cellCoords[0];
+	for (var i = 0; i < cellCoords.length; i+=2)
+	{
+		if (cellCoords[i] > maxX)
+			maxX = cellCoords[i];
+		if (cellCoords[i] < minX)
+			minX = cellCoords[i];
+	
+		if (cellCoords[i+1] > maxY)
+			maxY = cellCoords[i+1];
+		if (cellCoords[i+1] < minY)
+			minY = cellCoords[i+1];
+	}
+	// Get rectangular cell dimensions
+	var cellHeight = (maxY > minY) ? maxY - minY : minY - maxY;
+	var cellWidth = (maxX > minX) ? maxX - minX : minX - maxX;
+
+	// Draw cell onto canvas
+	var ctx = canv.getContext("2d");
+	var img = document.getElementById(imgId);
+	// Set canvas dimensions
+	ctx.canvas.width = document.getElementById('cellExpanded').offsetWidth;
+	var ratio = cellHeight / cellWidth;
+	ctx.canvas.height = ctx.canvas.width * ratio;
+
+
+	// account for cells that are too high
+	var canvasAllocatedHeight = $('#gradeCell').height() 
+		- ($('#gradeForm').outerHeight() + $('#submitGrade').outerHeight());
+	while (ctx.canvas.height > canvasAllocatedHeight)
+	{
+		ctx.canvas.width -= 10;
+		ctx.canvas.height = ctx.canvas.width * ratio;
+	}
+
+
+	//Since canvas is pulling image data as native size use difference
+	var diff = img.naturalWidth / img.width;
+
+	//Clip to cell
+	ctx.moveTo(cellCoords[0], cellCoords[1]);
+	ctx.beginPath();
+	var coordsToCanvasRatio = ctx.canvas.width / cellWidth;
+	for (var i = 0; i < cellCoords.length; i += 2)
+	{
+		var x = (cellCoords[i]-minX)*coordsToCanvasRatio;
+		var  y = (cellCoords[i+1]-minY)*coordsToCanvasRatio;
+		ctx.lineTo(x, y);
+	}
+	ctx.closePath();
+	ctx.clip();
+
+	ctx.drawImage(img, minX*diff, minY*diff, (cellWidth)*diff, (cellHeight)*diff, 0,0, canv.width, canv.height);
+}
+
+var isControlBarOpen = true;
+function toggleNormalsBar()
+{
+	if (isControlBarOpen)
+	{
+		topBotScreemSplit.collapse(1);
+	}
+	else topBotScreemSplit.setSizes([75,25]);
+	isControlBarOpen = !isControlBarOpen;
+}
 
