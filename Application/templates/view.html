@@ -92,7 +92,7 @@
 				<button id="toggleNormalsBtn" onclick="highlightUngradedCells()">Ungraded Cells</button>
 				<button id="toggleGridsBtn" onclick="toggleGrids()">Hide Grids</button>
 				<button id="nextNormalBtn" onclick="nextNormal()">See another Normal</button>
-
+				<button id="gradeViewSwitchBtn" onclick="switchToGradeView()">Switch to Grade View</button>
 				
 			</div><!-- END #settings -->
 		</div><!-- END #rightScreen -->
@@ -136,15 +136,18 @@
 $('document').ready()
 {
 	
-	var topBotScreemSplit = Split(['#topScreen', '#bottomScreen'], {
+	var topBotScreenSplit = Split(['#topScreen', '#bottomScreen'], {
 		direction: 'vertical',
 		sizes : [75,25],
 		onDragEnd : function(){
 			remap();
+			// User dragged control bar open
+			if (isControlBarOpen == false)
+				toggleNormalsBar();
 		} 
 	});
 
-	Split(['#leftScreen', '#rightScreen'], { 
+	var leftRightScreenSplit = Split(['#leftScreen', '#rightScreen'], { 
 		sizes : [65,35], 
 		onDragEnd : function(){
 			updateFocusRing();

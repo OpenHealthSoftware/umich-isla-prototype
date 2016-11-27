@@ -290,23 +290,34 @@ function highlightUngradedCells()
 
 
 
-// Effects: handles the transition between settings and cell grade divs
 var settingsOpen = true;
+var gradeViewDefaultWidth = $('#gradeView').width() / $('#gradeView').parent().width() * 100;
+var settingsDefaultWidth = $('#settings').width() / $('#settings').parent().width() * 100;
+// Effects: handles the transition between sliding between settings and cell grade divs
 function toggleSettings()
 {
 	var s = $('#settings');
-	var openWidth =  '50%';
+	var openWidth =  '49%';
 
 	if (settingsOpen)
-		$('#settings').animate({width: '10%'});
-	else $('#settings').animate({width: openWidth});
+	{
+		$('#settings').animate({width: settingsDefaultWidth + '%'});
+		$('#gradeView').animate({width: gradeViewDefaultWidth + '%'});
+	}
+	else 
+	{
+		$('#settings').animate({width: openWidth});
+		$('#gradeView').animate({width: openWidth});
+	}
 	settingsOpen = !settingsOpen;
 }
 
 
 function nextCell()
 {
-	currentCell++;
+	if (currentCell + 1 <= $('area').length)
+		currentCell++;
+	else currentCell = 1;
 	drawCellManager(currentCell);
 }
 
@@ -334,7 +345,7 @@ function normalSelect(id)
 				remapNormal();
 				if (selectedNormId != '')
 					$('#' + selectedNormId).removeClass("selected");
-				console.log(selectedNormId, id);
+
 				$('#' + id).addClass("selected");
 				selectedNormId = id;
 				if (currentCell != 0)
@@ -576,12 +587,12 @@ function toggleNormalsBar()
 	var btnLabel = $('#toggleNormalsBtn').html();
 	if (isControlBarOpen)
 	{
-		topBotScreemSplit.collapse(1);
+		topBotScreenSplit.collapse(1);
 		btnLabel = btnLabel.replace('Hide', 'Show');
 	}
 	else 
 	{
-		topBotScreemSplit.setSizes([75,25]);
+		topBotScreenSplit.setSizes([75,25]);
 		btnLabel = btnLabel.replace('Show', 'Hide');
 	}
 
@@ -617,4 +628,36 @@ function nextNormal()
 	if (idNum < $('#controlImgCarouselUL li').length)
 		normalSelect('control' + idNum);
 	else normalSelect('control1');
+}
+
+var isGradeView = false;
+// Effects: Transitions the interface to the grading view
+function switchToGradeView()
+{
+	if (isGradeView == false)
+	{
+		// Make sure to have a normal selected
+		if (selectedNormId == '')
+			nextNormal();
+		// Make sure a cell is selected
+		if (currentCell == 0)
+			nextCell();
+		// resize views
+		leftRightScreenSplit.setSizes([40,60]);
+		//make sure control bar is collapsed
+		if (isControlBarOpen)
+			toggleNormalsBar();
+	}
+	else
+	{
+		leftRightScreenSplit.setSizes([65,35]);
+		//make sure control bar gets opened
+		if (isControlBarOpen == false)
+			toggleNormalsBar();
+	}
+
+	// update data
+	remap();
+	drawCellManager(currentCell);
+	isGradeView = !isGradeView;
 }
