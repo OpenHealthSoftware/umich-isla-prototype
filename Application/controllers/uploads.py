@@ -73,6 +73,9 @@ def upload_route():
 	folderPath = ''
 	imgFilename = ''
 
+	if request.method == 'GET':
+		if request.args:
+			type = request.args['type']
 	# Add or delete album
 	if request.method == 'POST':
 		form = request.form

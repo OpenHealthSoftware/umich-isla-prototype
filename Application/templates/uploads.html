@@ -31,6 +31,9 @@
 					<input id="fileField" class="inputfile" type="file" name="img" accept="image/*" required>
 					<label for="fileField" id="fileFieldLabel">File: </label>
 				</div>
+				{% if type %}
+					<input type="hidden" name="type" value="{{type}}">
+				{% else %}
 				<div id="" class="popUpSection">
 					<label for="imgType">Type: </label>
 					<select id="imgType" name="type" required>
@@ -38,6 +41,7 @@
 						<option value="normal">Normal Image</option>
 					</select>
 				</div>
+				{% endif %}
 				<div id="" class="popUpSection">
 					<label for="refName">Reference Name: </label>
 					<input id="refName" type="text" name="refName" value="">

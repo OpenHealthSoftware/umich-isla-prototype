@@ -5,10 +5,20 @@
 {% block content %}
 
 
+	{% if type %}
+	<a href="uploads?type={{type}}" class="imgPrev" id="uploadPrev">
+		+
+	</a>
+	{% else %}
+	<a href="uploads" id="aPrev uploadPrev">
+		+
+	</a>
+	{% endif %}
+
 	{% for p in images %}
 		<a href="view?p={{p['imgId']}}" class="aPrev">
 		<div id="imgPrev{{loop.index}}" class="imgPrev">
-			<img src="{{url_for('static', filename='images/uploads/' + p['imgId'] + '.' + p['format'])}}">
+			<img src="{{url_for('static', filename=imgPath + p['imgId'] + '.' + p['format'])}}">
 		</div>
 		</a>
 	{% endfor %}

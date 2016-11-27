@@ -8,3 +8,9 @@
 	width: 100%;
 	height: auto;
 }
+
+#uploadPrev
+{
+	height: 100px;
+	background-color: red;
+}

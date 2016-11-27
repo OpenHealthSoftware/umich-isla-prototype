@@ -7,6 +7,8 @@ import os
 
 main = Blueprint('main', __name__, template_folder='templates', static_folder="static")
 
+UPLOAD_FOLDER_P = 'images/uploads/'
+UPLOAD_FOLDER_NORM = 'images/normals/'
 
 # Effects: returns a extension name if it is valid
 def getExtension(filename):
@@ -48,6 +50,9 @@ def uploadPic(request):
 
 @main.route('/', methods=['GET', 'POST'])
 def main_route():
+	imgTable = 'images'
+	path = UPLOAD_FOLDER_P
+	type = ''
 
 	# Add or delete album
 	if request.method == 'POST':
@@ -57,7 +62,19 @@ def main_route():
 		if operation == 'add':
 			uploadPic(request)
 
+	if request.method == 'GET' and request.args:
+		q = request.args
+		if q['type'] == 'normal':
+			path = UPLOAD_FOLDER_NORM
+			type = "normal"
+			imgTable = 'normals'
+		elif q['type'] == 'patient':
+			type = 'patient'
+			#imgTable = 'images'
+
 	data = {
-		"images" : getImages("images")
+		"images" : getImages(imgTable),
+		"imgPath" : path,
+		"type" : type
 	}
 	return render_template("index.html", **data)

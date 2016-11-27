@@ -85,9 +85,9 @@
 
 				<button id="quickViewBtn">Quick View</button>
 
-				<a href="/"><button class="patient-shade-1">Patients</button></a>
-				<a href="/"><button class="normal-shade-1">Normals</button></a>
-				<a href="/uploads"><button>Upload</button></a>
+				<a href="{{url_for('main.main_route', type='patient')}}"><button class="patient-shade-1">Patients</button></a>
+				<a href="{{url_for('main.main_route', type='normal')}}"><button class="normal-shade-1">Normals</button></a>
+				<a href="{{url_for('uploads.upload_route')}}"><button>Upload</button></a>
 				<button id="toggleNormalsBtn" class="normal-shade-1" onclick="toggleNormalsBar()">Hide Normal Images</button>	
 				<button id="toggleNormalsBtn" onclick="highlightUngradedCells()">Ungraded Cells</button>
 				<button id="toggleGridsBtn" onclick="toggleGrids()">Hide Grids</button>
