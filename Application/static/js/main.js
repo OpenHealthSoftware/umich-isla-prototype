@@ -319,7 +319,7 @@ function normalSelect(id)
 	normFullView.attr('src', norm.attr('src'));
 	var imgId = normFullView.attr('src').split('/').pop();
 	imgId = imgId.split('.')[0];
-	console.log(imgId);
+
 	// AJAX call to get xyOffset for grid
 	$.ajax({
 			url: '/normalData',
@@ -601,4 +601,20 @@ function toggleGrids()
 
 	$('.grid').toggle();
 	areGridsShowing = !areGridsShowing;
+}
+
+// Effects: selects / shows the next normal
+function nextNormal()
+{
+	if (selectedNormId == '')
+	{
+		normalSelect('control1');
+		return;
+	}
+	// get current id num 
+	var idNum = parseInt(selectedNormId.split('control')[1]);	
+	idNum++;
+	if (idNum < $('#controlImgCarouselUL li').length)
+		normalSelect('control' + idNum);
+	else normalSelect('control1');
 }
