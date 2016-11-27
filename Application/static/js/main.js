@@ -302,14 +302,17 @@ function toggleSettings()
 	if (settingsOpen)
 	{
 		$('#settings').animate({width: settingsDefaultWidth + '%'});
-		$('#gradeView').animate({width: gradeViewDefaultWidth + '%'});
+		$('#gradeView').animate({width: gradeViewDefaultWidth + '%'}, 
+			function(){ drawCellManager(currentCell); });
 	}
 	else 
 	{
 		$('#settings').animate({width: openWidth});
-		$('#gradeView').animate({width: openWidth});
+		$('#gradeView').animate({width: openWidth}, 
+			function(){ drawCellManager(currentCell); });
 	}
 	settingsOpen = !settingsOpen;
+
 }
 
 
@@ -526,7 +529,7 @@ function drawCell(cellId, canv, imgId, cellCoords, type)
 	var ctx = canv.getContext("2d");
 	var img = document.getElementById(imgId);
 	// Set canvas dimensions
-	ctx.canvas.width = $('.cellContainer').width();
+	ctx.canvas.width = $('.cellRow').width() * .47; //.47 = .cellContainer width
 	var ratio = cellHeight / cellWidth;
 	ctx.canvas.height = ctx.canvas.width * ratio;
 
