@@ -1,3 +1,27 @@
+:root
+{
+	--normal-shade-1: #0E96F1;
+}
+.patient-shade-1
+{
+	background-color: #F1C40F;
+}
+
+.patient-shade-2
+{
+	background-color: #F8E187;
+}
+
+.normal-shade-1
+{
+	background-color: #0E96F1;
+}
+
+.normal-shade-2
+{
+	background-color: #87CBF8;
+}
+
 html, body, #fullwrap
 {
 	margin: 0;
@@ -73,8 +97,6 @@ html, body, #fullwrap
 	cursor: pointer;
 }
 
-canvas{border: solid 1px black;}
-
 
 #rightScreen
 {
@@ -98,12 +120,10 @@ canvas{border: solid 1px black;}
 .cellContainer
 {
 	position: relative;
-	width: 48%; /*5px = (3px marg + 2pxBorder) * 2 */
+	width: 47%;
 	float: left;
-	margin: .25%;
-	border: solid 2px rgba(0,0,0,0);
+	padding: 1%;
 }
-#cellViewCanvas{border: solid 2px #F1C40F;}
 
 .cellRow
 {
@@ -114,6 +134,7 @@ canvas{border: solid 1px black;}
 {
 	width: 100%;
 }
+
 
 #gradeCell form
 {
@@ -162,5 +183,5 @@ input[type=button]:hover, input[type=submit]:hover, input[type=reset]:hover, but
 
 .selected
 {
-	border: 3px solid green;
+	border: 3px solid var(--normal-shade-1);
 }

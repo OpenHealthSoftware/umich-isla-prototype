@@ -41,16 +41,16 @@
 			<div id="gradeView">
 				<div id="cells" class="">
 					<div class="cellRow">
-						<div class="cellContainer">
+						<div class="cellContainer patient-shade-2">
 							<canvas id="mainCellFlippedCanvas" width="0" height="0"></canvas>
 						</div>
-						<div class="cellContainer">
+						<div class="cellContainer normal-shade-2">
 							<canvas id="normalCellFlippedCanvas" width="0" height="0"></canvas>
 						</div>
 					</div> <!-- END .cellRow -->
 					
 					<div class="cellRow">					
-						<div id="gradeCell" class="cellContainer">
+						<div id="gradeCell" class="cellContainer patient-shade-1">
 							<div id="cellExpanded">
 								<canvas id="cellViewCanvas" width="0" height="0"></canvas>
 							</div>
@@ -62,7 +62,7 @@
 							<button id="submitGrade">Submit Grade</button>
 						</div>
 
-						<div id="normalCell" class="cellContainer">
+						<div id="normalCell" class="cellContainer normal-shade-1">
 							<canvas id="normalCellViewCanvas" width="0" height="0"></canvas>
 						</div>
 					</div><!-- END .cellRow -->
@@ -85,9 +85,10 @@
 
 				<button id="quickViewBtn">Quick View</button>
 
-				<a href="/"><button>Patients</button></a>
+				<a href="/"><button class="patient-shade-1">Patients</button></a>
+				<a href="/"><button class="normal-shade-1">Normals</button></a>
 				<a href="/uploads"><button>Upload</button></a>
-				<button id="toggleNormalsBtn" onclick="toggleNormalsBar()">Hide Normal Images</button>	
+				<button id="toggleNormalsBtn" class="normal-shade-1" onclick="toggleNormalsBar()">Hide Normal Images</button>	
 				<button id="toggleNormalsBtn" onclick="highlightUngradedCells()">Ungraded Cells</button>
 				<button id="toggleGridsBtn" onclick="toggleGrids()">Hide Grids</button>
 				

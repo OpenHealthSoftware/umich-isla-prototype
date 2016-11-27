@@ -23,6 +23,13 @@ var currentCell = 0;
 var GRID_ROWS = 5;
 var GRID_COLS = 5;
 
+// COLORS
+
+var PATIENT_SHADE_1 = '#F1C40F';
+var PATIENT_SHADE_2 = '#F8E187';
+var NORMAL_SHADE_1 = '#0E96F1';
+var NORMAL_SHADE_2 = '#87CBF8';
+
 // Effects: updates the containment bounds and cursor origin for focusring
 function updateFocusRing()
 {
@@ -453,12 +460,12 @@ function drawCellManager(cellId)
 	}
 
 	// Highlighting
-	highlightCell(mainCoords, mainCanv, mainImg.width(), mainImg.height(), "#F1C40F");
-	highlightCell(mainCoordsFlipped, mainCanv, mainImg.width(), mainImg.height(), "#D35400");
+	highlightCell(mainCoords, mainCanv, mainImg.width(), mainImg.height(), PATIENT_SHADE_1);
+	highlightCell(mainCoordsFlipped, mainCanv, mainImg.width(), mainImg.height(), PATIENT_SHADE_2);
 	if (selectedNormId != '')
 	{
-		highlightCell(n, normCanv, normImg.width(), normImg.height(), "#B7950B");
-		highlightCell(nF, normCanv, normImg.width(), normImg.height(), "#A04000");
+		highlightCell(n, normCanv, normImg.width(), normImg.height(), NORMAL_SHADE_1);
+		highlightCell(nF, normCanv, normImg.width(), normImg.height(), NORMAL_SHADE_2);
 	}
 	
 
