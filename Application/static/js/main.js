@@ -3,9 +3,10 @@
 exportData = {};
 // For exporting to csv, give the key names => column names
 exportData[0] = { 
-		"perfusion" : "perfusion",
-		"cell" : "cell",
-		"gradeTime" : "gradeTime"
+		"perfusion" : "Perfusion",
+		"cell" : "Cell",
+		"gradeTime" : "Grade Time (s)",
+		"normalImgCompared": "Normal Image used in comparsion"
 	};
 startTime = 0;
 endTime = 0;
@@ -203,20 +204,38 @@ function remap()
 
 }
 
-
+function isCellValid(cellId)
+{
+	if (cellId > $('area').length || cellId < 1)
+	{
+		console.log('Cell' + cellId + " is not valid");
+		return false;
+	}
+	return true;
+}
 
 document.getElementById('submitGrade').onclick = function()
 {
+	if (!isCellValid(currentCell))
+		return;
+	var formEls = $('input[name=grade]:checked').val();
+	if (!formEls) // no grade was selected
+		return;
 	var t = new Date();
 	endTime = t.getTime();
-	var formEls = $('input[name=grade]:checked').val();
 	var cellId = currentCell;
 	var gradingTime = (endTime - startTime) / 1000;
+	var normalSrc = normImg.attr('src');
+	var normalId = normalSrc.split('/').pop();
+	if (selectedNormId == '')
+		normalId = "Null";
+
 	// Create data object
 	var data = {
 		"perfusion" : $('input[name=grade]:checked').val(),
 		"cell" : cellId,
-		"gradeTime": gradingTime
+		"gradeTime": gradingTime,
+		"normalImgCompared": normalId
 	};
 
 	exportData[cellId] = data;
@@ -259,7 +278,9 @@ $('#export').click(function()
 	var encodedURI = encodeURI(data);
 	var link = document.createElement("a");
 	link.setAttribute("href", "data:application/octet-stream," + encodedURI);
-	link.setAttribute("download", "my_data.csv");
+	var date = new Date().toISOString(); // might need to get rid of : for windows
+	var graderId = "mav";
+	link.setAttribute("download", date + "_" + graderId + "_" + gup('p') +".csv");
 	document.body.appendChild(link); // Required for FF
 
 	link.click(); // This will download the data file
@@ -290,7 +311,7 @@ function highlightUngradedCells()
 
 
 
-var settingsOpen = true;
+var settingsOpen = false;
 var gradeViewDefaultWidth = $('#gradeView').width() / $('#gradeView').parent().width() * 100;
 var settingsDefaultWidth = $('#settings').width() / $('#settings').parent().width() * 100;
 // Effects: handles the transition between sliding between settings and cell grade divs
@@ -301,13 +322,13 @@ function toggleSettings()
 
 	if (settingsOpen)
 	{
-		$('#settings').animate({width: settingsDefaultWidth + '%'});
+		s.animate({width: settingsDefaultWidth + '%'});
 		$('#gradeView').animate({width: gradeViewDefaultWidth + '%'}, 
 			function(){ drawCellManager(currentCell); });
 	}
 	else 
 	{
-		$('#settings').animate({width: openWidth});
+		s.animate({width: openWidth});
 		$('#gradeView').animate({width: openWidth}, 
 			function(){ drawCellManager(currentCell); });
 	}
@@ -318,7 +339,7 @@ function toggleSettings()
 
 function nextCell()
 {
-	if (currentCell + 1 <= $('area').length)
+	if (isCellValid(currentCell + 1))
 		currentCell++;
 	else currentCell = 1;
 	drawCellManager(currentCell);
@@ -328,7 +349,7 @@ var selectedNormId = '';
 // Effects: Selects a normal image to be used for grading comparison
 function normalSelect(id)
 {
-	var norm = $("#"+id).children().first();
+	var norm = $("#"+id + ' img').first();
 	var normFullView = normImg;
 	normFullView.attr('src', norm.attr('src'));
 	var imgId = normFullView.attr('src').split('/').pop();
@@ -431,6 +452,10 @@ var hasCellBeenDrawn = false; //prevents resizing error
 // Effects: handles drawing the multiple respective cells for one single clicked cell
 function drawCellManager(cellId)
 {
+	// make sure cellId is valid
+	if (isCellValid(cellId) == false)
+		return;
+
 	// Clear trace canvases
 	$('.traceCanvas').each(function(){
 		var c = $(this)[0].getContext('2d');
