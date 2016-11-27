@@ -1,3 +1,4 @@
+	var frX = 0, frY = 0;
 	function updateFocusRing()
 	{
 		var arr = [0, 0];
@@ -69,10 +70,12 @@
 			xOffsetPercent = x / mainImg.width();
 			yOffsetPercent = y / mainImg.height();
 
+			var type = $('#type').val();
+
 			$.ajax({
 				url: '/uploads/position',
 				data: { 'picName' : mainImg.attr('alt'), 'x' : xGridOffset, 'y' : yGridOffset, 
-                    'xPerc' : xOffsetPercent, 'yPerc': yOffsetPercent},
+                    'xPerc' : xOffsetPercent, 'yPerc': yOffsetPercent, 'type': type},
 				type: 'POST',
 				success: function(response) {
 					document.location.href = response['goto'];

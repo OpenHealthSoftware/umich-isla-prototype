@@ -9,11 +9,12 @@ cursor = conn.cursor()
 
 
 # Effects: Runs a MySQL query that returns all images in the database
-def getImages(table):
-	cursor.execute("SELECT * FROM " + table + " ORDER BY imgId DESC")
+def getImages(type):
+	cursor.execute("SELECT * FROM images WHERE type=\'" + type + "\' ORDER BY imgId DESC")
 	results = cursor.fetchall()
 	print "\n\nResults: ", results
 	return results
+
 
 # Effects: Runs a MySQL query that returns a specific image in the database
 def getImageData(imgId):
@@ -23,22 +24,15 @@ def getImageData(imgId):
 
 
 def getGridData(imgId):
-		cursor.execute("SELECT * FROM grid WHERE imgId=? LIMIT 1", (imgId,))
+		cursor.execute("SELECT * FROM grids WHERE imgId=? LIMIT 1", (imgId,))
 		results = cursor.fetchone()
 		return results
-
-
-def getNormalData(imgId):
-		cursor.execute("SELECT * FROM normals WHERE imgId=? LIMIT 1", (imgId,))
-		results = cursor.fetchone()
-		return results
-
 
 # Effects: Runs a MySQL query that inserts a photo into the photo table
 # returns true if successful
-def insertImageToDB(table, inFormat, imgId, refName, eye, comments):
-	cursor.execute("INSERT INTO " + table + " (format, imgId, referenceName, eye, comments) VALUES (?,?)", 
-			(inFormat, imgId, refName, eye, comments) )
+def insertImageToDB(inFormat, imgId, refName, eye, comments, type):
+	cursor.execute("INSERT INTO images (format, imgId, referenceName, eye, comments, type)" + 
+		"VALUES (?,?,?,?,?,?)", (inFormat, imgId, refName, eye, comments, type) )
 	conn.commit()
 	if (cursor.fetchall()):
 		return True
@@ -48,7 +42,7 @@ def insertImageToDB(table, inFormat, imgId, refName, eye, comments):
 
 
 def insertGridToDB(gridId, xOffset, yOffset, imgId):
-	cursor.execute("INSERT INTO grid (gridId, xOffset, yOffset, imgId) VALUES(?,?,?,?)",
+	cursor.execute("INSERT INTO grids (gridId, xOffset, yOffset, imgId) VALUES(?,?,?,?)",
 				(gridId, xOffset, yOffset, imgId)
 	)
 	conn.commit()
@@ -56,3 +50,8 @@ def insertGridToDB(gridId, xOffset, yOffset, imgId):
 		return True
 	else:
 		return False
+
+
+def deleteEntry(table, primaryKey, primaryVal):
+	cursor.execute("DELETE FROM " + table + " WHERE " + primaryKey + "=" + primaryVal);
+	conn.commit()

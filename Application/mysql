@@ -7,25 +7,17 @@ CREATE TABLE images(
 	referenceName CHAR(250),
 	eye CHAR(5) NOT NULL,
 	comments TEXT,
+	type VARCHAR(7) NOT NULL,
 	PRIMARY KEY(imgId)
 );
 
-CREATE TABLE grid(
+CREATE TABLE grids(
 	gridId CHAR(37) NOT NULL,
 	xOffset DECIMAL(10,9) NOT NULL,
 	yOffset DECIMAL(10,9) NOT NULL,
 	imgId CHAR(32) NOT NULL,
-	FOREIGN KEY(imgId) REFERENCES images(imgId)
+	FOREIGN KEY(imgId) REFERENCES images(imgId) ON DELETE CASCADE
 );
 
-
-CREATE TABLE normals(
-	imgId CHAR(32) NOT NULL,
-	format CHAR(3) NOT NULL,
-	referenceName CHAR(250),
-	eye CHAR(5) NOT NULL,
-	comments TEXT,
-	PRIMARY KEY(imgId)
-);
 
 monday send email with thursday schedule

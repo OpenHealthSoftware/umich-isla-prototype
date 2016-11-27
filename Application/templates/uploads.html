@@ -7,9 +7,9 @@
 
 	
 	
-	{% if uploaded and type == "normal" %}
+	{% if uploaded %}
 		<div id="normalPrev">
-			<img id="nImg" src="{{normalImgSrc}}" alt="{{normalId}}">
+			<img id="nImg" src="{{imgSrc}}" alt="{{imgId}}">
 
 			<svg id="focusRing" class="" width="106" height="106">
 				<circle id="svgCirc" cx="53" cy="53" r="50" stroke="green" stroke-width="6" fill-opacity="0"/>
@@ -17,6 +17,8 @@
 			</svg>
 
 			<button id="submitPosition">Submit</button>
+			<input type="hidden" id="type" value="{{type}}">
+			
 		</div>
 		<style>
 			#normalPrev{height: 80%; width: 80%;position:relative;}
@@ -55,7 +57,7 @@
 				</div>
 				<div id="" class="popUpSection">				
 					<label for="commentsField">Comments: </label>
-					<textarea rows="5" cols="" form="uploadForm" id="commentsField"></textarea>
+					<textarea rows="5" cols="" name="comments" form="uploadForm" id="commentsField"></textarea>
 				</div>
 				<div id="" class="popUpSection">				
 					<input type="submit" value="Upload">

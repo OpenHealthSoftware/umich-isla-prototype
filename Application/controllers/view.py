@@ -16,10 +16,6 @@ GRID_PREFIX = "grid_" # prefix that grid images will begin with
 def getControlImages():
 	files = [f for f in listdir('./static/images/normals/') 
 		if isfile(join('./static/images/normals/', f)) and not os.path.basename(f).startswith(GRID_PREFIX)]
-
-	#remove grid images
-
-	print files, "\n\n\n"
 	return files
 
 # Effects: forms list of data needs for a page

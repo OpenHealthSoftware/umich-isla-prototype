@@ -37,10 +37,8 @@ def uploadImg(request, type):
 	# type
 	if type == "normal":
 		upFolder = 'UPLOAD_FOLDER_NORM'
-		table = "normals"
 	elif type == 'patient':
 		 upFolder = 'UPLOAD_FOLDER_P'
-		 table = "images"
 
 	# check if the post request has the file part
 	if 'img' not in request.files:
@@ -48,16 +46,23 @@ def uploadImg(request, type):
 		print "failed: ", request.files
 		return redirect(request.url)
 	file = request.files['img']
-
+	
 	fileExt = getExtension(file.filename)
 
 	if file and fileExt: # If file and extension aren't null
 		filename = generateFilename(file.filename)
-		refName = form['refName']
+
 		eye = form['eye']
-		comments = form['comments']
+		refName = ''
+		comments = ''
+
+		if form['refName']:		
+			refName = form['refName']
+		if form['comments']:
+			comments = form['comments']
+
 		# save to database
-		insertImageToDB(table, fileExt, filename, refName, eye, comments)
+		insertImageToDB(fileExt, filename, refName, eye, comments, type)
 		# save to server
 		file.save(os.path.join(current_app.config.get(upFolder), filename + '.' + fileExt))
 	return filename + '.' + fileExt
@@ -102,8 +107,8 @@ def upload_route():
 		"uploaded" : isUploaded,
 		"edit" : False,
 		"typePath" : folderPath,
-		"normalImgSrc" : UPLOAD_FOLDER_NORM + imgFilename,
-		"normalId" : imgFilename.rsplit('.', 1)[0]
+		"imgSrc" : folderPath + imgFilename,
+		"imgId" : imgFilename.rsplit('.', 1)[0]
 	}
 	return render_template("uploads.html", **data)
 
@@ -111,10 +116,14 @@ def upload_route():
 # Requires: FA image and grid images are their proper sizes, name of picture in database,
 # img file format, and the percentage offsets created by the user positioning data
 # Effects: puts the center of the grid on the specified location of the FA image
-def createGriddedImage(originCoords, imgName, iFormat, xPerc, yPerc):
+def createGriddedImage(originCoords, imgName, iFormat, xPerc, yPerc, type):
 	# Load images
+	if type == "normal":
+		uploadPath = UPLOAD_FOLDER_NORM
+	else:
+		uploadPath = UPLOAD_FOLDER_P
 	grid = Image.open(GRID_PATH, 'r')
-	faImg = Image.open(UPLOAD_FOLDER_NORM + imgName + iFormat, 'r')
+	faImg = Image.open(uploadPath + imgName + iFormat, 'r')
 	fa_w, fa_h = faImg.size
 
 	# Calculate where grid goes and paste
@@ -129,25 +138,21 @@ def createGriddedImage(originCoords, imgName, iFormat, xPerc, yPerc):
 	gridId = GRID_PREFIX + imgName + iFormat
 	insertGridToDB(gridId, xPerc, yPerc, imgName)
 	png_info = grid.info
-	croppedGrid.save(UPLOAD_FOLDER_NORM + gridId, **png_info)
-	return UPLOAD_FOLDER_NORM + gridId
+	croppedGrid.save(uploadPath + gridId, **png_info)
+	return uploadPath + gridId
 
 
 @uploads.route('/uploads/position', methods=['GET', 'POST'])
 def upload_position_route():
 	rForm = request.form
 	imgName = rForm['picName']
-	image = getNormalData(imgName)
+	image = getImageData(imgName)
 	originCoords = [rForm['x'], rForm['y']]
 	originCoords = map(int, originCoords)
-	print "\n\n\n"
-	print image['format']
-	print rForm['xPerc']
-	print rForm['yPerc']
-	print rForm
-	print "\n\n\n"
-	newImgPath = createGriddedImage(originCoords, imgName, '.' + image['format'], rForm['xPerc'], rForm['yPerc'])
-	url = "/uploads"
+
+	newImgPath = createGriddedImage(originCoords, imgName, '.' + image['format'], rForm['xPerc'], 
+		rForm['yPerc'], rForm['type'])
+	url = url_for('uploads.upload_route')
 	data = {'goto' : url}
 	return jsonify(**data)
 
