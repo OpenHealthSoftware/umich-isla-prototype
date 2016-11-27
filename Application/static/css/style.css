@@ -103,6 +103,7 @@ html, body, #fullwrap
 #rightScreen
 {
 	width: 100%;
+	height: 100%;
 }
 
 #gradeView
@@ -113,18 +114,12 @@ html, body, #fullwrap
 }
 
 
-#cellExpanded
-{
-	width: 100%;
-	height: 100%;
-}
-
 .cellContainer
 {
 	position: relative;
 	width: 47%;
 	float: left;
-	padding: 1%;
+	padding: 2px;
 }
 
 .cellRow

@@ -183,10 +183,10 @@ function remap()
 		// calculate new coords
 		for (var i in origCoords[row])
 		{
-			var c = parseInt(origCoords[row][i]);
+			var c = origCoords[row][i];
 			if (i%2)
-				newCoords.push(parseInt(c*ratio) + yOffset);
-			else newCoords.push(parseInt(c*ratio) + xOffset);
+				newCoords.push(c*ratio + yOffset);
+			else newCoords.push(c*ratio + xOffset);
 		}
 
 		// reset html
@@ -425,10 +425,10 @@ function remapNormal()
 		var newCoords = [];
 		for (var i in origCoords[row])
 		{
-			var c = parseInt(origCoords[row][i]);
+			var c = origCoords[row][i];
 			if (i%2)
-				newCoords.push(parseInt(c*ratio) + yOffset);
-			else newCoords.push(parseInt(c*ratio) + xOffset);
+				newCoords.push(c*ratio + yOffset);
+			else newCoords.push(c*ratio + xOffset);
 		}
 		normCoords.push(newCoords);
 	}
@@ -554,17 +554,18 @@ function drawCell(cellId, canv, imgId, cellCoords, type)
 	var ctx = canv.getContext("2d");
 	var img = document.getElementById(imgId);
 	// Set canvas dimensions
-	ctx.canvas.width = $('.cellRow').width() * .47; //.47 = .cellContainer width
+	ctx.canvas.width = $('#gradeView').width() * .47; //.47 = .cellContainer width
 	var ratio = cellHeight / cellWidth;
 	ctx.canvas.height = ctx.canvas.width * ratio;
 
-
 	// account for cells that are too high
-	var canvasAllocatedHeight = $('#gradeCell').height() 
+	var maxHeight = $('#rightScreen').height()
 		- ($('#gradeForm').outerHeight() + $('#submitGrade').outerHeight());
-	while (ctx.canvas.height > canvasAllocatedHeight)
+		maxHeight /= 2;
+		maxHeight -= 12; //magic but aprox 4 * padding on .cellContainer
+	while (ctx.canvas.height > maxHeight)
 	{
-		ctx.canvas.width -= 10;
+		ctx.canvas.width -= 2;
 		ctx.canvas.height = ctx.canvas.width * ratio;
 	}
 
