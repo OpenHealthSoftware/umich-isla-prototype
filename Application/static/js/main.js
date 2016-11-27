@@ -49,7 +49,7 @@ $('document').ready()
 		var coords = $(this).attr('coords');
 		coords = coords.split(','); // turn into array
 		for (var i in coords)
-			coords[i] = parseFloat(coords[i]);
+			coords[i] = parseInt(coords[i]);
 		origCoords.push(coords);
 	});
 	
@@ -175,16 +175,25 @@ function remap()
 		// calculate new coords
 		for (var i in origCoords[row])
 		{
-			var c = parseFloat(origCoords[row][i]);
+			var c = parseInt(origCoords[row][i]);
 			if (i%2)
-				newCoords.push(parseFloat(c*ratio) + yOffset);
-			else newCoords.push(parseFloat(c*ratio) + xOffset);
+				newCoords.push(parseInt(c*ratio) + yOffset);
+			else newCoords.push(parseInt(c*ratio) + xOffset);
 		}
 
 		// reset html
 		$(this).attr('coords', newCoords.toString());
 		row++;
 	});
+
+
+	// reset trace canvas size --- mOVE SOMEWHERE ELSE 
+	$('.traceCanvas').each(function(){
+		//if ($(this).width < mainImg.width()) // don't need to resize if canvas is bigger or equal
+		$(this)[0].width = mainImg.width();
+		$(this)[0].height = mainImg.height();
+	});
+
 }
 
 
@@ -374,10 +383,10 @@ function remapNormal()
 		var newCoords = [];
 		for (var i in origCoords[row])
 		{
-			var c = parseFloat(origCoords[row][i]);
+			var c = parseInt(origCoords[row][i]);
 			if (i%2)
-				newCoords.push(parseFloat(c*ratio) + yOffset);
-			else newCoords.push(parseFloat(c*ratio) + xOffset);
+				newCoords.push(parseInt(c*ratio) + yOffset);
+			else newCoords.push(parseInt(c*ratio) + xOffset);
 		}
 		normCoords.push(newCoords);
 	}
