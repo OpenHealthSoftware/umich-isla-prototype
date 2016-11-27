@@ -194,7 +194,7 @@ document.getElementById('submitGrade').onclick = function()
 	var t = new Date();
 	endTime = t.getTime();
 	var formEls = $('input[name=grade]:checked').val();
-	var cellId = $('#inputCell').val();
+	var cellId = currentCell;
 	var gradingTime = (endTime - startTime) / 1000;
 	// Create data object
 	var data = {
@@ -456,13 +456,9 @@ function drawCellManager(cellId)
 	// Updates 
 	console.log("Grading cell " + cellId);
 	currentCell = cellId;
-	$('#inputCell').val(cellId);
 	hasCellBeenDrawn = true;
-	// Display grading box
-	// Display reference images
-	// Display mirrored cell (highlight on image and give options for next cell incases mirrored cell isn't correct)
-	document.getElementById('gradeCell').style.display = "block";
-	
+
+	document.getElementById('gradeCell').style.display = "block";	
 }
 
 
@@ -503,7 +499,7 @@ function drawCell(cellId, canv, imgId, cellCoords, type)
 	var ctx = canv.getContext("2d");
 	var img = document.getElementById(imgId);
 	// Set canvas dimensions
-	ctx.canvas.width = document.getElementById('cellExpanded').offsetWidth;
+	ctx.canvas.width = $('.cellContainer').width();
 	var ratio = cellHeight / cellWidth;
 	ctx.canvas.height = ctx.canvas.width * ratio;
 
@@ -570,11 +566,23 @@ function toggleNormalsBar()
 	else 
 	{
 		topBotScreemSplit.setSizes([75,25]);
-		btnLabel = btnLabel.replace('Show', 'Hide');		
+		btnLabel = btnLabel.replace('Show', 'Hide');
 	}
 
 	$('#toggleNormalsBtn').html(btnLabel);
-	console.log(btnLabel);
 	isControlBarOpen = !isControlBarOpen;
 }
 
+var areGridsShowing = true;
+function toggleGrids()
+{
+	var btnLabel = $('#toggleGridsBtn').html();	
+	if (areGridsShowing)
+		btnLabel = btnLabel.replace('Hide', 'Show');		
+	else
+		btnLabel = btnLabel.replace('Show', 'Hide');
+	$('#toggleGridsBtn').html(btnLabel);
+
+	$('.grid').toggle();
+	areGridsShowing = !areGridsShowing;
+}

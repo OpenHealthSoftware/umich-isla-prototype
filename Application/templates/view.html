@@ -19,11 +19,11 @@
 				{% set gridSrc = url_for('static', filename='images/uploads/grid_' + img['imgId'] + '.' + img['format']) %}
 				
 				<img  id="mainFA_image" class="pic" src="{{faSrc}}">
-				<img src="{{gridSrc}}" id="grid" class="pic overlay" usemap="#map" {% if isGridded == true %}style="display:block"{% endif%}>
+				<img src="{{gridSrc}}" id="grid" class="pic overlay grid" usemap="#map" {% if isGridded == true %}style="display:block"{% endif%}>
 				<canvas id="mainFA_canvas" class="traceCanvas" width="0" height="0"></canvas>
 				<div id="mainNormal">
 					<img id="normalImg" class="pic" src="">
-					<img id="normalGrid" class="pic overlay" src="" >
+					<img id="normalGrid" class="pic overlay grid" src="" >
 					<canvas id="norm_canvas" class="traceCanvas" width="0" height="0"></canvas>					
 				</div>
 				
@@ -38,29 +38,42 @@
 		</div>
 
 		<div id="rightScreen" class="split split-horizontal content" >
-			<div>
-				<canvas id="mainCellFlippedCanvas" width="0" height="0" style="float:left;"></canvas>
-				<canvas id="normalCellFlippedCanvas" width="0" height="0" style="float:left;"></canvas>
-			</div>
-			<div style="clear:both;"></div>
-			<div id="gradeCell">
-				<div id="cellExpanded">
-					<canvas id="cellViewCanvas" width="0" height="0"></canvas>
-				</div>
-				<form id="gradeForm">
-					<input type="radio" name="grade" value="perfused">Perfused<br>
-					<input type="radio" name="grade" value="non-perfused">Non-Perfused<br>
-					<input type="radio" name="grade" value="blockage">Blockage<br>
-				</form>
-				<button id="submitGrade">Submit Grade</button>
-				<div id="referenceImgs">
-					<img class="referenceImg" src="">
-				</div>
-				<input id="inputCell" type="hidden" value="0">
-			</div>
-			<div id="normalCell">
-				<canvas id="normalCellViewCanvas" width="0" height="0"></canvas>
-			</div>
+			<div id="gradeView">
+				<div id="cells" class="">
+					<div class="cellRow">
+						<div class="cellContainer">
+							<canvas id="mainCellFlippedCanvas" width="0" height="0"></canvas>
+						</div>
+						<div class="cellContainer">
+							<canvas id="normalCellFlippedCanvas" width="0" height="0"></canvas>
+						</div>
+					</div> <!-- END .cellRow -->
+					
+					<div class="cellRow">					
+						<div id="gradeCell" class="cellContainer">
+							<div id="cellExpanded">
+								<canvas id="cellViewCanvas" width="0" height="0"></canvas>
+							</div>
+							<form id="gradeForm">
+								<input type="radio" name="grade" value="perfused">Perfused<br>
+								<input type="radio" name="grade" value="non-perfused">Non-Perfused<br>
+								<input type="radio" name="grade" value="blockage">Blockage<br>
+							</form>
+							<button id="submitGrade">Submit Grade</button>
+						</div>
+
+						<div id="normalCell" class="cellContainer">
+							<canvas id="normalCellViewCanvas" width="0" height="0"></canvas>
+						</div>
+					</div><!-- END .cellRow -->
+
+					
+				</div> <!-- END #cells -->
+				
+				<div style="clear:both;"></div>
+				
+				
+			</div> <!-- END #gradeView -->
 			<div id="settings" >
 				<div onclick="toggleSettings()">X</div>
 				<button id="export">Export Grade</button>
@@ -75,11 +88,14 @@
 				<a href="/"><button>Patients</button></a>
 				<a href="/uploads"><button>Upload</button></a>
 				<button id="toggleNormalsBtn" onclick="toggleNormalsBar()">Hide Normal Images</button>	
-				<button id="toggleNormalsBtn" onclick="highlightUngradedCells()">Ungraded Cells</button>	
+				<button id="toggleNormalsBtn" onclick="highlightUngradedCells()">Ungraded Cells</button>
+				<button id="toggleGridsBtn" onclick="toggleGrids()">Hide Grids</button>
 				
 			</div><!-- END #settings -->
-		</div>
-	</div>
+		</div><!-- END #rightScreen -->
+	</div><!-- END #topScreen -->
+
+
 	<div id="bottomScreen" class="split split-vertical content" >
 		<div id="controlImgBar" class="carousel_container">
 			{% if controls|length > numPrev %}
