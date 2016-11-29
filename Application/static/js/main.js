@@ -727,7 +727,11 @@ function router(target)
 
 
 }
-$('#exitFrame').click(function(){$('#viewFrameCont').hide();})
+$('#exitFrame').click(function()
+{
+	$('#viewFrameCont').hide();
+	$('#viewFrame .aPrev').remove();
+});
 
 // Effects: handles the construction / data input for the view element
 function viewConstructor(data)
