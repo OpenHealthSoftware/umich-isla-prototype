@@ -8,12 +8,23 @@ cursor = conn.cursor()
 #cursor = db.cursor()
 
 
+# Effects: creates an array of dictionary results since jsonify cant serialize the standard results
+def toDict(cur):
+	ncols = len(cursor.description)
+	colnames = [cursor.description[i][0] for i in range(ncols)]
+	results = []
+
+	for row in cursor.fetchall():
+		res = {}
+		for i in range(ncols):
+			res[colnames[i]] = row[i]
+		results.append(res)
+	return results
+
 # Effects: Runs a MySQL query that returns all images in the database
 def getImages(type):
 	cursor.execute("SELECT * FROM images WHERE type=\'" + type + "\' ORDER BY imgId DESC")
-	results = cursor.fetchall()
-	print "\n\nResults: ", results
-	return results
+	return toDict(cursor)
 
 
 # Effects: Runs a MySQL query that returns a specific image in the database

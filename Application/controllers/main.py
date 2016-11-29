@@ -1,4 +1,5 @@
 from flask import *
+import json
 import imageProcessing
 from sqlFunctions import *
 import config
@@ -16,20 +17,27 @@ def main_route():
 	path = UPLOAD_FOLDER_P
 	type = ''
 
-	if request.method == 'GET' and request.args:
-		q = request.args
+	if request.method == 'POST' and request.form:
+		q = request.form
 		type = q['type']
 		if type == 'normal':
 			path = UPLOAD_FOLDER_NORM
+		print "\n\n\nLOOKKKKKK", q['type'], "\n\n"
 
 	images = []
-	if not type:
-		images = getImages('patient')
-	else:
+	if type is not None:
 		images = getImages(type)
+	else:
+		images = getImages('patient')
+
+	# create all the src paths for images
+	srcPath = []
+	for x in images:
+		p = url_for('static', filename=path + x['imgId'] + '.' + x['format'])
+		srcPath.append(p)
+
 	data = {
 		"images" : images,
-		"imgPath" : path,
-		"type" : type
+		"paths" : srcPath,
 	}
-	return render_template("index.html", **data)
+	return jsonify(data=data)

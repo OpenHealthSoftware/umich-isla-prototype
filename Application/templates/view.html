@@ -11,6 +11,7 @@
 		<area id="cell_{{loop.index}}" shape="poly" coords="{{i}}" >
 	{% endfor %}
 	</map>
+	
 
 	<div id="topScreen" class="split split-vertical" >
 		<div id="leftScreen" class="split split-horizontal content" >
@@ -85,9 +86,9 @@
 
 				<button id="quickViewBtn">Quick View</button>
 
-				<a href="{{url_for('main.main_route', type='patient')}}"><button class="patient-shade-1">Patients</button></a>
-				<a href="{{url_for('main.main_route', type='normal')}}"><button class="normal-shade-1">Normals</button></a>
-				<a href="{{url_for('uploads.upload_route')}}"><button>Upload</button></a>
+				<button onclick="router('patient')" class="patient-shade-1">Patients</button>
+				<button onclick="router('normal')" class="normal-shade-1">Normals</button>
+				<button onclick="router('upload')">Upload</button>
 				<button id="toggleNormalsBtn" class="normal-shade-1" onclick="toggleNormalsBar()">Hide Normal Images</button>	
 				<button id="toggleNormalsBtn" onclick="highlightUngradedCells()">Ungraded Cells</button>
 				<button id="toggleGridsBtn" onclick="toggleGrids()">Hide Grids</button>
@@ -122,8 +123,15 @@
 	</div>
 
 	
-
-	<script>var xOffsetPercent = {{xOffset}}, yOffsetPercent = {{yOffset}};</script>
+	<div id="viewFrameCont" class="">
+		<div id="exitFrame">X</div>
+		<div id="viewFrame" ></div>
+	</div>
+	<script>
+		var xOffsetPercent = {{xOffset}}, yOffsetPercent = {{yOffset}};
+		var url_view = "{{url_for('main.main_route')}}";
+		var url_upload = "{{url_for('uploads.upload_route')}}";
+	</script>
 
 {% endblock %}
 

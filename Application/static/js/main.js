@@ -690,3 +690,68 @@ function switchToGradeView()
 	drawCellManager(currentCell);
 	isGradeView = !isGradeView;
 }
+
+// Effects: displays an iframe with the target src
+function router(target)
+{
+	var url = '';
+	var targetFunc;
+
+	if (target == 'normal' || target == 'patient')
+	{
+		url = url_view;
+		//targetFunc = viewConstructor();
+	}
+	else if (target == 'upload')
+	{
+		url = url_upload;
+		//targetFunc = uploadConstructor();
+	}
+
+	$.ajax({
+			url: url,
+			data: { 'type' : target },
+			dataType: 'json',
+			type: 'POST',
+			success: function(response) {
+				console.log(response);
+				
+				if (target == 'normal' || target == 'patient')
+					viewConstructor(response['data']);
+				else uploadConstructor(response);
+			},
+			error: function(error) {
+				console.log(error);
+			}
+		});
+
+
+}
+$('#exitFrame').click(function(){$('#viewFrameCont').hide();})
+
+// Effects: handles the construction / data input for the view element
+function viewConstructor(data)
+{
+	var images = data['images'];
+	var paths = data['paths'];
+	var v = $('#viewFrame');
+
+	for (var i = 0; i < images.length; ++i)
+	{
+		var imgId = images[i]['imgId'];
+		var path = paths[i];
+
+		var pic = $('<a href="view?p=' + imgId + '" class="aPrev"> \
+								<div id="imgPrev' + i + '" class="imgPrev"> \
+									<img src="' + path + '" > \
+								</div></a>');
+		v.append(pic);
+	}
+	$("#viewFrameCont").show();
+}
+
+// Effects: handles the construction / data input for the upload element
+function uploadConstructor()
+{
+
+}

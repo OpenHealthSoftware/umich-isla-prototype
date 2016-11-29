@@ -44,6 +44,8 @@ html, body, #fullwrap
 	height: 100%;
 }
 
+
+
 #leftScreen {height: 100%;}
 
 #fullView
@@ -186,4 +188,39 @@ input[type=button]:hover, input[type=submit]:hover, input[type=reset]:hover, but
 .controlPrevItem
 {
 	cursor: pointer;
+}
+
+
+#viewFrameCont
+{
+	position: absolute;
+	top: 10%;
+	left: 10%;
+	width: 80%;
+	height: 80%;
+	display: none;
+	background-color: blue;
+}
+#viewFrame
+{
+	position: relative;
+	width: 100%;
+	height: 100%;
+	top: 0;
+}
+.imgPrev
+{
+	width: 25%;
+	float: left;
+}
+
+.imgPrev img {
+	width: 100%;
+	height: auto;
+}
+
+#uploadPrev
+{
+	height: 100px;
+	background-color: red;
 }
