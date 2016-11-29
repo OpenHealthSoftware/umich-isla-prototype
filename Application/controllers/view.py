@@ -18,8 +18,9 @@ def getControlImages():
 		if isfile(join('./static/images/normals/', f)) and not os.path.basename(f).startswith(GRID_PREFIX)]
 	return files
 
+# Requires: the imgId in the database
 # Effects: forms list of data needs for a page
-def getPageData(imgId):
+def getPageData(imgId, ):
 	
 	coords = processImageGrid(C_GRID_PATH)
 	image = getImageData(imgId)
@@ -46,11 +47,17 @@ def getPageData(imgId):
 
 @view.route('/view', methods=['GET', 'POST'])
 def main_route():
+	gradeView = True
+	data = {}
 
-	if request.method == "GET":
+	if request.method == "GET" and request.args:
 		args = request.args
 		imgId = args['p']
 		data = getPageData(imgId)
+
+	#if len(data) == 0:
+	#	data['upload'] = True
+	#	print "MADE IT"
 
 	return render_template("view.html", **data)
 

@@ -6,6 +6,11 @@
 {% block headnav %}{% endblock %}
 {% block content %}
 	
+
+	{% if upload %}
+		<h1>testing</h1>
+	
+	{% else %}
 	<map name="map" id="gridMap">
 	{% for i in coords %}
 		<area id="cell_{{loop.index}}" shape="poly" coords="{{i}}" >
@@ -132,6 +137,7 @@
 		var url_view = "{{url_for('main.main_route')}}";
 		var url_upload = "{{url_for('uploads.upload_route')}}";
 	</script>
+	{% endif %}
 
 {% endblock %}
 

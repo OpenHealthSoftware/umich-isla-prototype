@@ -64,24 +64,6 @@
 				</div>
 			</form>
 		</div>
-
-		{% for p in images %}
-			<a href="view?p={{p['imgId']}}" class="aPrev">
-			<div id="imgPrev{{loop.index}}" class="imgPrev">
-				<img src="{{url_for('static', filename=typePath + p['imgId'] + '.' + p['format'])}}">
-			</div>
-			</a>
-			{% if edit %}
-				<div class="deletePhoto">
-					<form action="/uploads" method="post">
-						<input type="hidden" name="op" value="delete">
-						<input type="hidden" name="type" value="{{type}}">
-						<input type="hidden" name="imgId" value="{{p['imgId']}}">
-						<input type="submit" value="Delete Photo">
-					</form>
-				</div>
-			{% endif %}
-		{% endfor %}
     {% endif %}
 	
 

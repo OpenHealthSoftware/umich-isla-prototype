@@ -16,28 +16,27 @@ UPLOAD_FOLDER_NORM = 'images/normals/'
 def main_route():
 	path = UPLOAD_FOLDER_P
 	type = ''
+	form = ''
 
 	if request.method == 'POST' and request.form:
-		q = request.form
-		type = q['type']
+		form = request.form
+		type = form['getContent']
 		if type == 'normal':
 			path = UPLOAD_FOLDER_NORM
-		print "\n\n\nLOOKKKKKK", q['type'], "\n\n"
 
 	images = []
-	if type is not None:
+	if type:
 		images = getImages(type)
 	else:
 		images = getImages('patient')
 
-	# create all the src paths for images
-	srcPath = []
-	for x in images:
-		p = url_for('static', filename=path + x['imgId'] + '.' + x['format'])
-		srcPath.append(p)
-
 	data = {
 		"images" : images,
-		"paths" : srcPath,
+		"imgPath" : path,
+		"type" : type
 	}
-	return jsonify(data=data)
+	if form and form['getContent']:
+		html = render_template("index.html", **data)
+		return jsonify(html=html)
+	else:
+		return render_template("index.html", **data)

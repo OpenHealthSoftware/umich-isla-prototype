@@ -710,15 +710,13 @@ function router(target)
 
 	$.ajax({
 			url: url,
-			data: { 'type' : target },
+			data: { 'getContent' : target },
 			dataType: 'json',
 			type: 'POST',
 			success: function(response) {
 				console.log(response);
 				
-				if (target == 'normal' || target == 'patient')
-					viewConstructor(response['data']);
-				else uploadConstructor(response);
+				constructView(response);
 			},
 			error: function(error) {
 				console.log(error);
@@ -733,29 +731,13 @@ $('#exitFrame').click(function()
 	$('#viewFrame .aPrev').remove();
 });
 
-// Effects: handles the construction / data input for the view element
-function viewConstructor(data)
+// Effects: handles appending new html to the document
+function constructView(data)
 {
-	var images = data['images'];
-	var paths = data['paths'];
+	source = $(data['html']).find('#content').html();
 	var v = $('#viewFrame');
-
-	for (var i = 0; i < images.length; ++i)
-	{
-		var imgId = images[i]['imgId'];
-		var path = paths[i];
-
-		var pic = $('<a href="view?p=' + imgId + '" class="aPrev"> \
-								<div id="imgPrev' + i + '" class="imgPrev"> \
-									<img src="' + path + '" > \
-								</div></a>');
-		v.append(pic);
-	}
+	v.append(source);
 	$("#viewFrameCont").show();
 }
 
-// Effects: handles the construction / data input for the upload element
-function uploadConstructor()
-{
 
-}

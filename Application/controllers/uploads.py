@@ -72,11 +72,11 @@ def uploadImg(request, type):
 
 @uploads.route('/uploads', methods=['GET', 'POST'])
 def upload_route():
-	images = []
 	isUploaded = False
 	type = ''
 	folderPath = ''
 	imgFilename = ''
+	form = ''
 
 	if request.method == 'GET':
 		if request.args:
@@ -84,33 +84,30 @@ def upload_route():
 	# Add or delete album
 	if request.method == 'POST':
 		form = request.form
-		operation = form['op']
-		type = form['type']
-		
-		if operation == 'add':
-			imgFilename = uploadImg(request, type)
-			isUploaded = True
-		elif operation == 'delete':
-			deleteImg()
+		if not form['getContent']:
+			operation = form['op']
+			type = form['type']
+			
+			if operation == 'add':
+				imgFilename = uploadImg(request, type)
+				isUploaded = True
+			elif operation == 'delete':
+				deleteImg()
 
-		if type == "normal":
-			folderPath = UPLOAD_FOLDER_NORM
-			images = getImages("normals")
-		elif type == "patient":
-			folderPath = UPLOAD_FOLDER_P
-			images = getImages("images")
 
 	data = {
-		
-		"images" : images,
 		"type" : type,
 		"uploaded" : isUploaded,
-		"edit" : False,
 		"typePath" : folderPath,
 		"imgSrc" : folderPath + imgFilename,
 		"imgId" : imgFilename.rsplit('.', 1)[0]
 	}
-	return render_template("uploads.html", **data)
+
+	if form and form['getContent']:
+		html = render_template("uploads.html", **data)
+		return jsonify(html=html)
+	else:
+		render_template("uploads.html", **data)
 
 
 # Requires: FA image and grid images are their proper sizes, name of picture in database,
