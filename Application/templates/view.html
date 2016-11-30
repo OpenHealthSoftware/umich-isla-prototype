@@ -59,7 +59,15 @@
 						<div id="gradeCell" class="cellContainer patient-shade-1">
 
 							<canvas id="cellViewCanvas" width="0" height="0"></canvas>
+						</div>
 
+						<div id="normalCell" class="cellContainer normal-shade-1">
+							<canvas id="normalCellViewCanvas" width="0" height="0"></canvas>
+						</div>
+					</div><!-- END .cellRow -->
+
+					<div class="cellRow">
+						<div class="cellContainer" patient-shade-1>
 							<form id="gradeForm">
 								<input type="radio" name="grade" value="perfused">Perfused<br>
 								<input type="radio" name="grade" value="non-perfused">Non-Perfused<br>
@@ -68,36 +76,45 @@
 							<button id="submitGrade">Submit Grade</button>
 						</div>
 
-						<div id="normalCell" class="cellContainer normal-shade-1">
-							<canvas id="normalCellViewCanvas" width="0" height="0"></canvas>
+						<div id="gradingButtons" class="cellContainer">
+							<button id="nextNormalBtn" class="normal-shade-1" onclick="nextNormal()">See another Normal</button>
+							<button id="nextCell" onclick="nextCell()">Next Cell</button>
 						</div>
-					</div><!-- END .cellRow -->
+					</div>
 
 					
 				</div> <!-- END #cells -->
+
+				
 				
 				<div style="clear:both;"></div>
 				
 				
 			</div> <!-- END #gradeView -->
 			<div id="settings" >
-				<div onclick="toggleSettings()">X</div>
-				<button id="export">Export Grade</button>
-				<button id="nextCell" onclick="nextCell()">Next Cell</button>
+				<div id="settingsIcon" onclick="toggleSettings()"><img src="{{url_for('static', filename='images/ic_settings_white_48px.svg')}}"></div>
+				
+				<div id="menuCont">
+					<button id="menuBtn">Menu</button>
+					<div id="menuDropdownCont">
+						<div id="menuDropdown">
+							<button id="export">Export Grade</button>
+							<button onclick="router('patient')" class="patient-shade-1">Patients</button>
+							<button onclick="router('normal')" class="normal-shade-1">Normals</button>
+							<button onclick="router('upload')">Upload</button>
+						</div>
+					</div>
+				</div>
+				
+			
 
-				{% if isGridded == false %}
-				<button id="submitPosition">Position</button>
-				{% endif %}
+				
 
 				<button id="quickViewBtn">Quick View</button>
-
-				<button onclick="router('patient')" class="patient-shade-1">Patients</button>
-				<button onclick="router('normal')" class="normal-shade-1">Normals</button>
-				<button onclick="router('upload')">Upload</button>
 				<button id="toggleNormalsBtn" class="normal-shade-1" onclick="toggleNormalsBar()">Hide Normal Images</button>	
 				<button id="toggleNormalsBtn" onclick="highlightUngradedCells()">Ungraded Cells</button>
 				<button id="toggleGridsBtn" onclick="toggleGrids()">Hide Grids</button>
-				<button id="nextNormalBtn" class="normal-shade-1" onclick="nextNormal()">See another Normal</button>
+				
 				<button id="gradeViewSwitchBtn" onclick="switchToGradeView()">Switch to Grade View</button>
 				
 			</div><!-- END #settings -->

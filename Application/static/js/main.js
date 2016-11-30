@@ -560,7 +560,7 @@ function nextNormal()
 	// get current id num 
 	var idNum = parseInt(selectedNormId.split('control')[1]);	
 	idNum++;
-	if (idNum < $('#controlImgCarouselUL li').length)
+	if (idNum <= $('#controlImgCarouselUL li').length)
 		normalSelect('control' + idNum);
 	else normalSelect('control1');
 }
