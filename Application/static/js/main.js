@@ -61,84 +61,6 @@ $('document').ready()
 		origCoords.push(coords);
 	});
 	
-	// Make user center grid
-
-	$(window).keydown(function(e){
-		var deltaR = 0;
-		if (e.which == 38)
-			deltaR = 5;
-		else if (e.which == 40)
-			deltaR = -5;
-		else return;
-
-		var svX = parseInt($('#focusRing').attr('width'));
-		var svY = parseInt($('#focusRing').attr('height'));
-		var cx = parseInt($('#svgCirc').attr('cx'));
-		var cy = parseInt($('#svgCirc').attr('cy'));
-		var r = parseInt($('#svgCirc').attr('r'));
-		var strokeWidth = parseInt($('#svgCirc').attr('stroke-width'));
-
-		var newR = deltaR + r;
-		var cxy =  newR + (strokeWidth / 2);
-		var width = cxy * 2;
-
-		// Check bounds
-		var maxWidth = mainImg.width();
-		var maxHeight = mainImg.height();
-		if (width > maxWidth || width > maxHeight || width < 10) //square
-			return;
-		$('#focusRing').attr({'width' : width, 'height' : width});
-		$('#svgCirc').attr({'cx':  cxy, 'cy': cxy, 'r': newR});
-		$('#svgCenter').attr({'cx':  cxy, 'cy': cxy});
-
-
-		updateFocusRing();
-	});
-	$('#submitPosition').click(function()
-	{
-		var fr = $('#focusRing');
-		// center of focus ring
-		var x = frX + (fr.width() / 2);
-		var y =  frY + (fr.width() / 2);
-		frY = y;
-		frX = x;
-
-		// Figure out the natural values for operation on full size image
-		xGridOffset = Math.floor(x * (mainImg.get(0).naturalWidth / mainImg.width()));
-		yGridOffset = Math.floor(y * (mainImg.get(0).naturalHeight / mainImg.height()));
-	
-		// Offset respective to current view scale
-		var gridW = mainImg.width();
-		var gridH = mainImg.height();
-		// Find coordinates for top-left corner of grid
-		x = x - (gridW  / 2);
-		y = y - (gridH  / 2);
-		xOffsetPercent = x / mainImg.width();
-		yOffsetPercent = y / mainImg.height();
-
-		$.ajax({
-			url: '/viewPositioned',
-			data: { 'picName' : gup("p"), 'x' : xGridOffset, 'y' : yGridOffset, 'xPerc' : xOffsetPercent, 'yPerc': yOffsetPercent},
-			type: 'POST',
-			success: function(response) {
-				console.log(response);
-
-				// Convert to percentage
-				x = (x / mainImg.width()) * 100;
-				y = (y / mainImg.height()) * 100;
-
-				document.getElementById('grid').src = response['newImgPath'];
-				$('#grid').show();
-				$('#focusRing').hide();
-				$(this).hide();
-				remap();
-			},
-			error: function(error) {
-				console.log(error);
-			}
-		});
-		
-	});
 
 		$('area').each(function(){
 				var id = parseInt($(this).attr('id').split('_')[1]);
@@ -694,23 +616,33 @@ function switchToGradeView()
 // Effects: displays an iframe with the target src
 function router(target)
 {
+	console.log(target);
 	var url = '';
 	var targetFunc;
+	var data;
+
+	$('#viewFrame').empty();	
 
 	if (target == 'normal' || target == 'patient')
 	{
 		url = url_view;
 		//targetFunc = viewConstructor();
 	}
-	else if (target == 'upload')
+	else if (target == 'upload' || target == 'uploadSubmit')
 	{
 		url = url_upload;
 		//targetFunc = uploadConstructor();
+		if (target == 'uploadSubmit')
+		{
+			data = $('#uploadForm').serializeArray();
+			console.log("data", data);
+		}
 	}
+	
 
 	$.ajax({
 			url: url,
-			data: { 'getContent' : target },
+			data: { 'getContent' : target,  uploadForm: data},
 			dataType: 'json',
 			type: 'POST',
 			success: function(response) {
@@ -728,7 +660,7 @@ function router(target)
 $('#exitFrame').click(function()
 {
 	$('#viewFrameCont').hide();
-	$('#viewFrame .aPrev').remove();
+	$('#viewFrame').empty();
 });
 
 // Effects: handles appending new html to the document
@@ -738,6 +670,43 @@ function constructView(data)
 	var v = $('#viewFrame');
 	v.append(source);
 	$("#viewFrameCont").show();
-}
 
+	// add necessary stuff
+	var fileFieldLabelText = $('#fileFieldLabel').html();
+	$('#fileField').change(function()
+	{
+		if ( $(this).prop('files').length > 0)
+			$('#fileFieldLabel').html(fileFieldLabelText + $(this).prop('files')[0]['name']);
+		else $('#fileFieldLabel').html(fileFieldLabelText);
+	});
+	$('form#uploadForm').submit(function(e){
+		var formData = new FormData($(this)[0]);
+
+		$.ajax({
+			url: "uploads",
+			data: formData,
+			dataType: 'json',
+			type: 'POST',
+			async: false,
+			success: function(response) {
+				$('#viewFrame').empty();
+				source = $(response['html']).find('#content').html();
+				var v = $('#viewFrame');
+				v.append(source);
+				console.log(response);
+				$('#submitPosition').click(function(){submitPositonClick();});
+				$('#focusRing').draggable();
+				updateFocusRing();
+			},
+			error: function(error) {
+				console.log(error);
+			},
+			cache: false,
+       		contentType: false,
+       		processData: false
+		});
+		e.preventDefault();
+		return false;
+	});
+}
 

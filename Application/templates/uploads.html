@@ -27,7 +27,7 @@
 
 	{% else %}
 		<div id="addPicture" class="popUpBox">
-			<form action="" method="POST" enctype="multipart/form-data" id="uploadForm">
+			<form  method="POST" enctype="multipart/form-data" id="uploadForm">
 				<input type="hidden" name="op" value="add">
 				<div id="" class="popUpSection">
 					<input id="fileField" class="inputfile" type="file" name="img" accept="image/*" required>
@@ -63,6 +63,11 @@
 					<input type="submit" value="Upload">
 				</div>
 			</form>
+			<!--
+						<div id="" class="popUpSection">				
+					<button id="uploadSubmitBtn" onclick="router('uploadSubmit')">Upload</button>
+			</div>
+			-->
 		</div>
     {% endif %}
 	
@@ -73,16 +78,4 @@
 
 {% block js %}
 <script src="{{url_for('static', filename='js/uploads.js')}}"></script>
-<script>
-var fileFieldLabelText = $('#fileFieldLabel').html();
-$('document').ready()
-{
-	$('#fileField').change(function()
-	{
-		if ( $(this).prop('files').length > 0)
-			$('#fileFieldLabel').html(fileFieldLabelText + $(this).prop('files')[0]['name']);
-		else $('#fileFieldLabel').html(fileFieldLabelText);
-	});
-}
-</script>
 {% endblock %}

@@ -1,3 +1,17 @@
+
+// Changes the custom file upload label to display the file name
+$('document').ready()
+{
+	var fileFieldLabelText = $('#fileFieldLabel').html();
+	$('#fileField').change(function()
+	{
+		if ( $(this).prop('files').length > 0)
+			$('#fileFieldLabel').html(fileFieldLabelText + $(this).prop('files')[0]['name']);
+		else $('#fileFieldLabel').html(fileFieldLabelText);
+	});
+}
+	
+	
 	var frX = 0, frY = 0;
 	function updateFocusRing()
 	{
@@ -51,6 +65,13 @@
 		updateFocusRing();
 		$('#submitPosition').click(function()
 		{
+			submitPositonClick();
+			
+		});
+	}
+
+	function submitPositonClick()
+	{
 			var fr = $('#focusRing');
 			var mainImg = $('#nImg');
 			// center of focus ring
@@ -78,12 +99,10 @@
                     'xPerc' : xOffsetPercent, 'yPerc': yOffsetPercent, 'type': type},
 				type: 'POST',
 				success: function(response) {
-					document.location.href = response['goto'];
+					console.log("SUCCESSSSS", response);
 				},
 				error: function(error) {
                     console.log(error);
 				}
 			});
-			
-		});
 	}

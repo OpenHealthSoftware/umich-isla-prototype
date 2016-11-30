@@ -6,11 +6,11 @@
 
 
 	{% if type %}
-	<a href="uploads?type={{type}}" class="imgPrev" id="uploadPrev">
+	<a class="imgPrev" id="uploadPrev" onclick="router('upload')">
 		+
 	</a>
 	{% else %}
-	<a href="uploads" class="imgPrev" id="uploadPrev">
+	<a  class="imgPrev" id="uploadPrev" onclick="router('upload')">
 		+
 	</a>
 	{% endif %}

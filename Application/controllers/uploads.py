@@ -11,6 +11,8 @@ from PIL import Image
 
 uploads = Blueprint('uploads', __name__, template_folder='templates', static_folder="static")
 
+UPLOAD_FOLDER_P = 'images/uploads/'
+UPLOAD_FOLDER_NORM = 'images/normals/'
 
 # Effects: returns a extension name if it is valid
 def getExtension(filename):
@@ -84,13 +86,17 @@ def upload_route():
 	# Add or delete album
 	if request.method == 'POST':
 		form = request.form
-		if not form['getContent']:
+
+		if request.files:
 			operation = form['op']
 			type = form['type']
-			
 			if operation == 'add':
 				imgFilename = uploadImg(request, type)
 				isUploaded = True
+				if type == 'patient':
+					folderPath = UPLOAD_FOLDER_P
+				elif type == 'normal':
+					folderPath = UPLOAD_FOLDER_NORM
 			elif operation == 'delete':
 				deleteImg()
 
@@ -99,15 +105,13 @@ def upload_route():
 		"type" : type,
 		"uploaded" : isUploaded,
 		"typePath" : folderPath,
-		"imgSrc" : folderPath + imgFilename,
+		"imgSrc" : url_for('static', filename=folderPath + imgFilename),
 		"imgId" : imgFilename.rsplit('.', 1)[0]
 	}
 
-	if form and form['getContent']:
-		html = render_template("uploads.html", **data)
-		return jsonify(html=html)
-	else:
-		render_template("uploads.html", **data)
+
+	html = render_template("uploads.html", **data)
+	return jsonify(html=html)
 
 
 # Requires: FA image and grid images are their proper sizes, name of picture in database,
@@ -119,6 +123,7 @@ def createGriddedImage(originCoords, imgName, iFormat, xPerc, yPerc, type):
 		uploadPath = UPLOAD_FOLDER_NORM
 	else:
 		uploadPath = UPLOAD_FOLDER_P
+	uploadPath = '.' + url_for('static', filename=uploadPath)
 	grid = Image.open(GRID_PATH, 'r')
 	faImg = Image.open(uploadPath + imgName + iFormat, 'r')
 	fa_w, fa_h = faImg.size

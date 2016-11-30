@@ -20,7 +20,7 @@ def getControlImages():
 
 # Requires: the imgId in the database
 # Effects: forms list of data needs for a page
-def getPageData(imgId, ):
+def getPageData(imgId):
 	
 	coords = processImageGrid(C_GRID_PATH)
 	image = getImageData(imgId)
