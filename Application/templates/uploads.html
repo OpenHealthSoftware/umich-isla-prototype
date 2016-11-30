@@ -9,51 +9,59 @@
 	
 	{% if uploaded %}
 		<div id="normalPrev">
-			<img id="nImg" src="{{imgSrc}}" alt="{{imgId}}">
+			<div id="uploadImgCont">
+				<img id="nImg" src="{{imgSrc}}" alt="{{imgId}}">
+			</div>
 
-			<svg id="focusRing" class="" width="106" height="106">
-				<circle id="svgCirc" cx="53" cy="53" r="50" stroke="green" stroke-width="6" fill-opacity="0"/>
-				<circle id="svgCenter" cx="53" cy="53" r="4" stroke="red" stroke-width="2" fill-opacity="0"/>
-			</svg>
+			<div id="focusRingCont">
+				<svg id="focusRing" class="" width="106" height="106">
+					<circle id="svgCirc" cx="53" cy="53" r="50" stroke="green" stroke-width="6" fill-opacity="0"/>
+					<circle id="svgCenter" cx="53" cy="53" r="4" stroke="red" stroke-width="2" fill-opacity="0"/>
+				</svg>
+			</div>
 
 			<button id="submitPosition">Submit</button>
 			<input type="hidden" id="type" value="{{type}}">
 			
+			<div id="loading">Processing...</div>
+
+			<div id="continueOptions">
+				<button onclick="router('upload')">Back to Uploading</button>
+				<a href="{{url_for('view.main_route', p=imgId)}}"><button>Grade Uploaded Image</button></a>
+			</div>
+
 		</div>
 
 	{% else %}
 		<div id="addPicture" class="popUpBox">
 			<form  method="POST" enctype="multipart/form-data" id="uploadForm">
 				<input type="hidden" name="op" value="add">
-				<div id="" class="popUpSection">
+				<div id="fileCont" class="popUpSection">
 					<input id="fileField" class="inputfile" type="file" name="img" accept="image/*" required>
 					<label for="fileField" id="fileFieldLabel">File: </label>
 				</div>
-				{% if type %}
-					<input type="hidden" name="type" value="{{type}}">
-				{% else %}
-				<div id="" class="popUpSection">
+				<div id="" class="popUpSection pop-half">
 					<label for="imgType">Type: </label>
 					<select id="imgType" name="type" required>
 						<option value="patient">Patient Image (for grading)</option>
 						<option value="normal">Normal Image</option>
 					</select>
 				</div>
-				{% endif %}
-				<div id="" class="popUpSection">
-					<label for="refName">Reference Name: </label>
-					<input id="refName" type="text" name="refName" value="">
-				</div>
-				<div id="" class="popUpSection">
+				<div id="" class="popUpSection pop-half">
 					<label for="eye">Eye: </label>
 					<select name="eye" id="eye" required>
 						<option value="right">Right Eye</option>
 						<option value="left">Left Eye</option>
 					</select>
 				</div>
+				<div style="clear:both"></div>
+				<div id="" class="popUpSection">
+					<label for="refName">Reference Name: </label>
+					<input id="refName" type="text" name="refName" value="">
+				</div>
 				<div id="" class="popUpSection">				
 					<label for="commentsField">Comments: </label>
-					<textarea rows="5" cols="" name="comments" form="uploadForm" id="commentsField"></textarea>
+					<textarea rows="4" cols="" name="comments" form="uploadForm" id="commentsField"></textarea>
 				</div>
 				<div id="" class="popUpSection">				
 					<input type="submit" value="Upload">

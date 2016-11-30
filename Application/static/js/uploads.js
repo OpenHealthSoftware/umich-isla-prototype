@@ -48,13 +48,19 @@ function updateFocusRing()
 	arr.push($('#normalPrev').width() - $('#focusRing').width());
 	arr.push($('#normalPrev').height() - $('#focusRing').height());
 	console.log(arr);
-	$('#focusRing').draggable({containment: arr,
+	$('#focusRingCont').draggable({containment: arr,
 		cursor: 'move',
-		cursorAt: { top: $('#focusRing').width(), left: $('#focusRing').width() /2},
+		//cursorAt: { top: $('#focusRing').width(), left: $('#focusRing').width() /2},
 		stop: function(e, ui){
 			frX = ui.position.left;
 			frY = ui.position.top;
-		}
+		},
+		start: function(event, ui){
+			$(this).draggable('instance').offset.click = {
+				left: Math.floor(ui.helper.width() / 2),
+				top: Math.floor(ui.helper.height() / 2)
+			};
+		} 
 	});
 }
 
@@ -125,10 +131,17 @@ function submitPositionClick()
 			type: 'POST',
 			success: function(response) {
 				console.log("SUCCESSSSS", response);
+				$('#loading').hide();
 				//Continue uploading, grade uploaded image?
+				$('#continueOptions').show();
+				//$('#viewFrame').empty();	
 			},
 			error: function(error) {
 				console.log(error);
 			}
 		});
+		// show after ajax request
+		$('#loading').show();
 }
+
+

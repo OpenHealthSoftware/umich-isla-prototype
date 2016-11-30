@@ -93,13 +93,7 @@ html, body, #fullwrap
 	left: 0;
 }
 
-#focusRing
-{
-	position: absolute;
-	top: 0;
-	left:0;
-	cursor: pointer;
-}
+
 
 
 #rightScreen
@@ -201,11 +195,15 @@ input[type=button]:hover, input[type=submit]:hover, input[type=reset]:hover, but
 	display: none;
 	background-color: blue;
 }
+#exitFrame
+{
+	height: 30px;
+}
 #viewFrame
 {
 	position: relative;
 	width: 100%;
-	height: 100%;
+	height: calc(100% - 30px);
 	top: 0;
 }
 .imgPrev
