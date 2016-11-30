@@ -1,4 +1,4 @@
-
+var uploadMainImg;
 // Changes the custom file upload label to display the file name
 function uploadFileLabeUpdater()
 {
@@ -48,25 +48,20 @@ function updateFocusRing()
 	arr.push($('#normalPrev').width() - $('#focusRing').width());
 	arr.push($('#normalPrev').height() - $('#focusRing').height());
 	console.log(arr);
-	$('#focusRingCont').draggable({containment: arr,
+	$('#focusRing').draggable({containment: arr,
 		cursor: 'move',
 		//cursorAt: { top: $('#focusRing').width(), left: $('#focusRing').width() /2},
 		stop: function(e, ui){
 			frX = ui.position.left;
 			frY = ui.position.top;
 		},
-		start: function(event, ui){
-			$(this).draggable('instance').offset.click = {
-				left: Math.floor(ui.helper.width() / 2),
-				top: Math.floor(ui.helper.height() / 2)
-			};
-		} 
 	});
 }
 
 // Effects: resizes ring when down/up arrow keys are pressed
 function handleRingResize()
 {
+	uploadMainImg = $('#nImg');
 	$(window).keydown(function(e){
 		var deltaR = 0;
 		if (e.which == 38)
@@ -87,8 +82,8 @@ function handleRingResize()
 		var width = cxy * 2;
 
 		// Check bounds
-		var maxWidth = mainImg.width();
-		var maxHeight = mainImg.height();
+		var maxWidth = uploadMainImg.width();
+		var maxHeight = uploadMainImg.height();
 		if (width > maxWidth || width > maxHeight || width < 10) //square
 			return;
 		$('#focusRing').attr({'width' : width, 'height' : width});
@@ -103,38 +98,35 @@ function handleRingResize()
 
 function submitPositionClick()
 {
+		uploadMainImg = $('#nImg');
 		var fr = $('#focusRing');
-		var mainImg = $('#nImg');
 		// center of focus ring
 		var x = frX + (fr.width() / 2);
 		var y =  frY + (fr.width() / 2);
 
 		// Figure out the natural values for operation on full size image
-		xGridOffset = Math.floor(x * (mainImg.get(0).naturalWidth / mainImg.width()));
-		yGridOffset = Math.floor(y * (mainImg.get(0).naturalHeight / mainImg.height()));
+		xGridOffset = Math.floor(x * (uploadMainImg.get(0).naturalWidth / uploadMainImg.width()));
+		yGridOffset = Math.floor(y * (uploadMainImg.get(0).naturalHeight / uploadMainImg.height()));
 	
 		// Offset respective to current view scale
-		var gridW = mainImg.width();
-		var gridH = mainImg.height();
+		var gridW = uploadMainImg.width();
+		var gridH = uploadMainImg.height();
 		// Find coordinates for top-left corner of grid
 		x = x - (gridW  / 2);
 		y = y - (gridH  / 2);
-		xOffsetPercent = x / mainImg.width();
-		yOffsetPercent = y / mainImg.height();
+		var xOffsetPercent_up = x / uploadMainImg.width();
+		var yOffsetPercent_up = y / uploadMainImg.height();
 
 		var type = $('#type').val();
 
 		$.ajax({
 			url: '/uploads/position',
-			data: { 'picName' : mainImg.attr('alt'), 'x' : xGridOffset, 'y' : yGridOffset, 
-				'xPerc' : xOffsetPercent, 'yPerc': yOffsetPercent, 'type': type},
+			data: { 'picName' : uploadMainImg.attr('alt'), 'x' : xGridOffset, 'y' : yGridOffset, 
+				'xPerc' : xOffsetPercent_up, 'yPerc': yOffsetPercent_up, 'type': type},
 			type: 'POST',
 			success: function(response) {
-				console.log("SUCCESSSSS", response);
 				$('#loading').hide();
-				//Continue uploading, grade uploaded image?
 				$('#continueOptions').show();
-				//$('#viewFrame').empty();	
 			},
 			error: function(error) {
 				console.log(error);

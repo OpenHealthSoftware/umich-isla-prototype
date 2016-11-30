@@ -19,7 +19,6 @@ var mainImg = $('#mainFA_image');
 var normImg = $('#normalImg');
 var mainCanv = document.getElementById('mainFA_canvas');
 var normCanv = document.getElementById('norm_canvas');
-var frX = 0, frY = 0;
 var currentCell = 0;
 var GRID_ROWS = 5;
 var GRID_COLS = 5;
@@ -637,7 +636,7 @@ $('#exitFrame').click(function()
 // Effects: handles appending new html to the document
 function constructView(data, type)
 {
-	$('#viewFrame').empty();	
+	$('#viewFrame').empty();
 	source = $(data['html']).find('#content').html();
 	var v = $('#viewFrame');
 	v.append(source);

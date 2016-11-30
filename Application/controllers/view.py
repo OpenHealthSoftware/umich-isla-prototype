@@ -55,9 +55,18 @@ def main_route():
 		imgId = args['p']
 		data = getPageData(imgId)
 
-	#if len(data) == 0:
-	#	data['upload'] = True
-	#	print "MADE IT"
+
+	if not request.args:
+		data = {
+			"coords" : [],
+			"img" : {'imgId' : '', 'format' : ''},
+			"grid" : '',
+			"controls" : '',
+			"numPrev" : 5, #number of control images to show at once
+			"xOffset" : 0,
+			"yOffset" : 0
+		}
+		return render_template("view.html", **data)
 
 	return render_template("view.html", **data)
 
