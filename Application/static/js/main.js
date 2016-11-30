@@ -31,22 +31,7 @@ var PATIENT_SHADE_2 = '#F8E187';
 var NORMAL_SHADE_1 = '#0E96F1';
 var NORMAL_SHADE_2 = '#87CBF8';
 
-// Effects: updates the containment bounds and cursor origin for focusring
-function updateFocusRing()
-{
-	var arr = [0, 0];
-	arr.push($('#fullView').width() - $('#focusRing').width());
-	arr.push($('#fullView').height() - $('#focusRing').height());
 
-	$('#focusRing').draggable({containment: arr,
-		cursor: 'move',
-		cursorAt: { top: $('#focusRing').width(), left: $('#focusRing').width() /2},
-		stop: function(e, ui){
-			frX = ui.position.left;
-			frY = ui.position.top;
-		}
-	});
-}
 
 $('document').ready()
 {
@@ -624,21 +609,9 @@ function router(target)
 	$('#viewFrame').empty();	
 
 	if (target == 'normal' || target == 'patient')
-	{
 		url = url_view;
-		//targetFunc = viewConstructor();
-	}
 	else if (target == 'upload' || target == 'uploadSubmit')
-	{
 		url = url_upload;
-		//targetFunc = uploadConstructor();
-		if (target == 'uploadSubmit')
-		{
-			data = $('#uploadForm').serializeArray();
-			console.log("data", data);
-		}
-	}
-	
 
 	$.ajax({
 			url: url,
@@ -647,16 +620,14 @@ function router(target)
 			type: 'POST',
 			success: function(response) {
 				console.log(response);
-				
-				constructView(response);
+				constructView(response, target);
 			},
 			error: function(error) {
 				console.log(error);
 			}
 		});
-
-
 }
+
 $('#exitFrame').click(function()
 {
 	$('#viewFrameCont').hide();
@@ -664,49 +635,33 @@ $('#exitFrame').click(function()
 });
 
 // Effects: handles appending new html to the document
-function constructView(data)
+function constructView(data, type)
 {
+	$('#viewFrame').empty();	
 	source = $(data['html']).find('#content').html();
 	var v = $('#viewFrame');
 	v.append(source);
 	$("#viewFrameCont").show();
 
 	// add necessary stuff
-	var fileFieldLabelText = $('#fileFieldLabel').html();
-	$('#fileField').change(function()
-	{
-		if ( $(this).prop('files').length > 0)
-			$('#fileFieldLabel').html(fileFieldLabelText + $(this).prop('files')[0]['name']);
-		else $('#fileFieldLabel').html(fileFieldLabelText);
-	});
-	$('form#uploadForm').submit(function(e){
-		var formData = new FormData($(this)[0]);
-
-		$.ajax({
-			url: "uploads",
-			data: formData,
-			dataType: 'json',
-			type: 'POST',
-			async: false,
-			success: function(response) {
-				$('#viewFrame').empty();
-				source = $(response['html']).find('#content').html();
-				var v = $('#viewFrame');
-				v.append(source);
-				console.log(response);
-				$('#submitPosition').click(function(){submitPositonClick();});
-				$('#focusRing').draggable();
-				updateFocusRing();
-			},
-			error: function(error) {
-				console.log(error);
-			},
-			cache: false,
-       		contentType: false,
-       		processData: false
-		});
-		e.preventDefault();
-		return false;
-	});
+	if (type == 'upload')
+		uploadListeners();
+	else if (type == 'uploadSubmit')
+		gridPositionListeners();
 }
 
+// Effects: javascript needed once the upload view is created
+function uploadListeners()
+{
+	uploadFileLabeUpdater();
+	handleUploadSubmit();
+}
+
+
+function gridPositionListeners()
+{
+	$('#focusRing').draggable();
+	updateFocusRing();
+	handleRingResize();
+	$('#submitPosition').click(function(){submitPositionClick();});
+}

@@ -168,14 +168,12 @@ $('document').ready()
 		sizes : [65,35], 
 		gutterSize: gutterSize,		
 		onDragEnd : function(){
-			updateFocusRing();
 			remap();
 			if (hasCellBeenDrawn == true)
 				drawCellManager(currentCell);
 		} 
 	});
 
-	updateFocusRing();
 	remap();
 }
 </script>

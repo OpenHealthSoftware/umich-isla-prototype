@@ -48,3 +48,18 @@
     margin: 0;
 }
 
+
+#normalPrev
+{
+    height: 100%; 
+    width: 100%;
+    position:relative;
+}
+#nImg 
+{
+    height: auto; 
+    width: auto; 
+    max-width: 100%; 
+    max-height: 100%;
+}
+
