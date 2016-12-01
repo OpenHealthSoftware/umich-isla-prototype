@@ -1,8 +1,9 @@
 #addPicture
 {
     position: relative;
-    width: 100%;
-    height: 100%;
+    width: 80%;
+    padding-top: 5%;
+    margin: 0 auto;
 }
 
 .popUpBox
@@ -11,33 +12,37 @@
     height: 100%;
     width: 80%;
     margin: 0 auto;
-    overflow-y: scroll;
     font-size: 1.2em;
 }
 
-.popUpSection input, .popUpSection textarea, .popUpSection label, .popUpSection select, 
-.popUpSection option
-{
-    width: 95%;
-}
 .popUpSection input, .popUpSection textarea, .popUpSection select, 
 .popUpSection option
 {
-    padding: 1em 2em;
+    width: 100%;
+    height: 45px;
+    padding: 0 1em;
 }
+
+.popUpSection input, .popUpSection textarea
+{
+    width: calc(100% - (2em + 2px));    
+}
+
 
 .popUpSection
 {
-    width: 95%;
+    width: 100%;
     margin-bottom: 4%;
 }
 
 .pop-half
 {
-    width: 50%;
+    width: 45%;
     float: left;
 }
-
+#popHalfFirst{
+    margin-right:10%;
+}
 
 .inputfile {
 	width: 0.1px !important;
@@ -54,13 +59,50 @@
     background-color: #4CAF50;
     border: none;
     color: white;
-    padding: 1em 0 1em 2em;
     text-decoration: none;
     text-overflow: ellipsis;
     cursor: pointer;
     margin: 0;
+    	transition: .3s;
+   
+   width: calc(100% - 2em);
+    height: 45px;
+    padding: 0 1em; 
 }
 
+.popUpSection label
+{
+    margin-bottom: .7em;
+}
+
+#fileFieldLabel:hover{
+    	box-shadow: inset 0 0 0 3px rgba(0,0,0,.2);
+
+}
+
+#fileInner
+{
+    height: 100%;
+    width: 100%;
+}
+
+#fileInner span{
+    padding: 2%;
+    position: relative;
+    top: -15%;
+}
+
+#fileFieldLabel img{
+    height: 80%;
+    width: auto;
+    top: 15%;
+    position: relative;
+}
+
+#upload
+{
+    width: 100%;
+}
 
 #normalPrev
 {

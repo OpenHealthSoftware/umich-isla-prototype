@@ -34,14 +34,15 @@
 		</div>
 
 	{% else %}
-		<div id="addPicture" class="popUpBox">
+		<div id="addPicture">
 			<form  method="POST" enctype="multipart/form-data" id="uploadForm">
 				<input type="hidden" name="op" value="add">
 				<div id="fileCont" class="popUpSection">
+					{% set ico = url_for('static', filename='images/ic_file_upload_white_48px.svg') %} 
 					<input id="fileField" class="inputfile" type="file" name="img" accept="image/*" required>
-					<label for="fileField" id="fileFieldLabel">File: </label>
+					<label for="fileField" id="fileFieldLabel"><div id="fileInner"><img src="{{ico}}"><span id="fSpan">Choose a file...<span></div></label>
 				</div>
-				<div id="" class="popUpSection pop-half">
+				<div id="popHalfFirst" class="popUpSection pop-half">
 					<label for="imgType">Type: </label>
 					<select id="imgType" name="type" required>
 						<option value="patient">Patient Image (for grading)</option>
@@ -65,7 +66,7 @@
 					<textarea rows="4" cols="" name="comments" form="uploadForm" id="commentsField"></textarea>
 				</div>
 				<div id="" class="popUpSection">				
-					<input type="submit" value="Upload">
+					<input id="upload" type="submit" value="Upload">
 				</div>
 			</form>
 			<!--

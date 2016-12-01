@@ -4,12 +4,12 @@ function uploadFileLabeUpdater()
 {
 	$('document').ready()
 	{
-		var fileFieldLabelText = $('#fileFieldLabel').html();
+		var fileFieldLabelText = $('#fSpan').html();
 		$('#fileField').change(function()
 		{
 			if ( $(this).prop('files').length > 0)
-				$('#fileFieldLabel').html(fileFieldLabelText + $(this).prop('files')[0]['name']);
-			else $('#fileFieldLabel').html(fileFieldLabelText);
+				$('#fSpan').html("File: " + $(this).prop('files')[0]['name']);
+			else $('#fSpan').html(fileFieldLabelText);
 		});
 	}
 }

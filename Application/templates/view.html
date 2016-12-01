@@ -2,6 +2,7 @@
 {% block css %}
 <link rel="stylesheet" href="{{url_for('static', filename='css/carousel.css')}}"/>
 <link rel="stylesheet" href="{{url_for('static', filename='css/split.css')}}"/>
+<link rel="stylesheet" href="{{url_for('static', filename='css/index.css')}}"/>
 {% endblock %}
 {% block headnav %}{% endblock %}
 {% block content %}
@@ -33,13 +34,6 @@
 					<canvas id="norm_canvas" class="traceCanvas" width="0" height="0"></canvas>					
 				</div>
 				
-
-				{% if isGridded == false %}
-				<svg id="focusRing" class="" width="106" height="106">
-					<circle id="svgCirc" cx="53" cy="53" r="50" stroke="green" stroke-width="6" fill-opacity="0"/>
-					<circle id="svgCenter" cx="53" cy="53" r="4" stroke="red" stroke-width="2" fill-opacity="0"/>
-				</svg>
-				{% endif %}
 			</div>
 		</div>
 
@@ -67,7 +61,7 @@
 					</div><!-- END .cellRow -->
 
 					<div class="cellRow">
-						<div class="cellContainer" patient-shade-1>
+						<div class="cellContainer patient-shade-1">
 							<form id="gradeForm">
 								<input type="radio" name="grade" value="perfused">Perfused<br>
 								<input type="radio" name="grade" value="non-perfused">Non-Perfused<br>
@@ -76,8 +70,8 @@
 							<button id="submitGrade">Submit Grade</button>
 						</div>
 
-						<div id="gradingButtons" class="cellContainer">
-							<button id="nextNormalBtn" class="normal-shade-1" onclick="nextNormal()">See another Normal</button>
+						<div id="gradingButtons" class="cellContainer patient-shade-1">
+							<button id="nextNormalBtn" class="normal-shade-1" onclick="nextNormal()">Cycle Normal</button>
 							<button id="nextCell" onclick="nextCell()">Next Cell</button>
 						</div>
 					</div>
@@ -126,7 +120,12 @@
 		<div id="controlImgBar" class="carousel_container">
 			{% if controls|length > numPrev %}
 			{% endif %}
-			<div id='left_scroll'> < </div>
+			<div id='left_scroll' class="arrow">
+				<svg fill="#C0C0C0" height="48" viewBox="0 0 24 24" width="48">
+					<path d="M15.41 7.41L14 6l-6 6 6 6 1.41-1.41L10.83 12z"/>
+					<path d="M0 0h24v24H0z" fill="none"/>
+				</svg>
+			</div>
 			<div class='carousel_inner'>
 				<ul class='carousel_ul' id="controlImgCarouselUL">
 					{% for i in controls %}
@@ -140,13 +139,18 @@
 			{% if controls|length > numPrev %}
 			
 			{% endif %}
-			<div id="right_scroll"> > </div>
+			<div id="right_scroll" class="arrow">
+				<svg fill="#C0C0C0" height="48" viewBox="0 0 24 24" width="48">
+					<path d="M10 6L8.59 7.41 13.17 12l-4.58 4.59L10 18l6-6z"/>
+					<path d="M0 0h24v24H0z" fill="none"/>
+				</svg>
+			</div>
 		</div>
 	</div>
 
 	
 	<div id="viewFrameCont" class="">
-		<div id="exitFrame">X</div>
+		<div id="exitFrame"><button>Close</button></div>
 		<div id="viewFrame" ></div>
 	</div>
 	<script>

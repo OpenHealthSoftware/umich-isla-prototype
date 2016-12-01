@@ -6,9 +6,10 @@
 
 .carousel_inner {
 	float:left;
-	height: 100%;
+	height: calc(100% - 20px);
 	width:90%;
 	overflow: hidden;
+	padding: 10px 0 10px 0;
 }
 
 .carousel_ul {
@@ -47,6 +48,5 @@
 	float:left; 
 	height:100%; 
 	width:5%; 
-	background: #C0C0C0; 
 	cursor: pointer;
 }

@@ -1,7 +1,13 @@
+.imgCont
+{
+	width: 25.33%;
+	float: left;
+	margin: 4%;
+}
+
 .imgPrev
 {
-	width: 25%;
-	float: left;
+	width: 100%;
 }
 
 .imgPrev img {
@@ -11,6 +17,24 @@
 
 #uploadPrev
 {
-	height: 100px;
-	background-color: red;
+	position: relative;
+	background-color: #fff;
+	cursor: pointer;
+	box-shadow:0 1px 4px rgba(0, 0, 0, 0.3), 0 0 40px rgba(0, 0, 0, 0.1);
+		transition: .3s;
+}
+
+
+#uploadPrevInner
+{
+	position: absolute;
+	height: 50%;
+	width: 100%;
+	top: 25%;
+	text-align: center;
+}
+#uploadIcon{transition:.3s;}
+#uploadPrev:hover #uploadIcon
+{
+	fill: #343434;
 }

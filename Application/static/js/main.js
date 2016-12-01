@@ -533,6 +533,7 @@ function toggleNormalsBar()
 
 	$('#toggleNormalsBtn').html(btnLabel);
 	isControlBarOpen = !isControlBarOpen;
+	drawCellManager(currentCell); //resize
 }
 
 var areGridsShowing = true;
@@ -578,7 +579,15 @@ function switchToGradeView()
 		if (currentCell == 0)
 			nextCell();
 		// resize views
-		leftRightScreenSplit.setSizes([40,60]);
+
+		// Figure out what percentage width is required to display both images fully
+		var maxH = ($('#fullView').height() + $('#controlImgBar').height()) / 2;
+		var ratio = mainImg.width() / mainImg.height();
+		var width = ratio * maxH;
+		var leftScreenPercent = (width / $('#topScreen').width()) * 100;
+		var rightScreenPercent = 100 - leftScreenPercent;
+		
+		leftRightScreenSplit.setSizes([leftScreenPercent,rightScreenPercent]);
 		//make sure control bar is collapsed
 		if (isControlBarOpen)
 			toggleNormalsBar();
@@ -664,3 +673,4 @@ function gridPositionListeners()
 	handleRingResize();
 	$('#submitPosition').click(function(){submitPositionClick();});
 }
+
