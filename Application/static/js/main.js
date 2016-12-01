@@ -231,12 +231,16 @@ function toggleSettings()
 		s.animate({width: settingsDefaultWidth + '%'});
 		$('#gradeView').animate({width: gradeViewDefaultWidth + '%'}, 
 			function(){ drawCellManager(currentCell); });
+		$('#right').hide();
+		$('#left').show();
 	}
 	else 
 	{
 		s.animate({width: openWidth});
 		$('#gradeView').animate({width: openWidth}, 
 			function(){ drawCellManager(currentCell); });
+		$('#right').show();
+		$('#left').hide();
 	}
 	settingsOpen = !settingsOpen;
 
@@ -591,6 +595,7 @@ function switchToGradeView()
 		//make sure control bar is collapsed
 		if (isControlBarOpen)
 			toggleNormalsBar();
+		$('#gradeViewSwitchBtn').html("Switch to Full View");		
 	}
 	else
 	{
@@ -598,6 +603,7 @@ function switchToGradeView()
 		//make sure control bar gets opened
 		if (isControlBarOpen == false)
 			toggleNormalsBar();
+		$('#gradeViewSwitchBtn').html("Switch to Grade View");
 	}
 
 	// update data
@@ -649,6 +655,7 @@ function constructView(data, type)
 	source = $(data['html']).find('#content').html();
 	var v = $('#viewFrame');
 	v.append(source);
+	$('#viewFrameCont').css({ top : '10%', left : '10%', width:'80%',height: '80%'});	
 	$("#viewFrameCont").show();
 
 	// add necessary stuff
@@ -668,6 +675,8 @@ function uploadListeners()
 
 function gridPositionListeners()
 {
+	// resize view window
+	$('#viewFrameCont').animate({ top : '2%', left : '2%', width:'96%',height: '96%'});
 	$('#focusRing').draggable();
 	updateFocusRing();
 	handleRingResize();

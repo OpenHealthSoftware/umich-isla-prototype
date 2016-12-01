@@ -63,9 +63,9 @@
 					<div class="cellRow">
 						<div class="cellContainer patient-shade-1">
 							<form id="gradeForm">
-								<input type="radio" name="grade" value="perfused">Perfused<br>
-								<input type="radio" name="grade" value="non-perfused">Non-Perfused<br>
-								<input type="radio" name="grade" value="blockage">Blockage<br>
+								<input type="radio" name="grade" value="perfused" id="gradePerf"><label for="gradePerf">Perfused</label><br>
+								<input type="radio" name="grade" value="non-perfused" id="gradeNonPerf"><label for="gradeNonPerf">Non-Perfuse</label><br>
+								<input type="radio" name="grade" value="blockage" id="gradeBlock"><label for="gradeBlock">Blockage</label><br>
 							</form>
 							<button id="submitGrade">Submit Grade</button>
 						</div>
@@ -86,7 +86,12 @@
 				
 			</div> <!-- END #gradeView -->
 			<div id="settings" >
-				<div id="settingsIcon" onclick="toggleSettings()"><img src="{{url_for('static', filename='images/ic_settings_white_48px.svg')}}"></div>
+				<div id="settingsIcon" onclick="toggleSettings()">
+					<svg fill="#C0C0C0" height="48" viewBox="0 0 24 24" width="48">
+						<path id="left" d="M15.41 7.41L14 6l-6 6 6 6 1.41-1.41L10.83 12z"/>
+						<path id="right" style="display:none" d="M10 6L8.59 7.41 13.17 12l-4.58 4.59L10 18l6-6z"/>
+					</svg>
+				</div>
 				
 				<div id="menuCont">
 					<button id="menuBtn">Menu</button>
@@ -123,7 +128,6 @@
 			<div id='left_scroll' class="arrow">
 				<svg fill="#C0C0C0" height="48" viewBox="0 0 24 24" width="48">
 					<path d="M15.41 7.41L14 6l-6 6 6 6 1.41-1.41L10.83 12z"/>
-					<path d="M0 0h24v24H0z" fill="none"/>
 				</svg>
 			</div>
 			<div class='carousel_inner'>
@@ -142,7 +146,6 @@
 			<div id="right_scroll" class="arrow">
 				<svg fill="#C0C0C0" height="48" viewBox="0 0 24 24" width="48">
 					<path d="M10 6L8.59 7.41 13.17 12l-4.58 4.59L10 18l6-6z"/>
-					<path d="M0 0h24v24H0z" fill="none"/>
 				</svg>
 			</div>
 		</div>
