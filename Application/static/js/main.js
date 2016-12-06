@@ -472,7 +472,7 @@ function drawCell(cellId, canv, imgId, cellCoords, type)
 	var maxHeight = $('#rightScreen').height()
 		- ($('#gradeForm').outerHeight() + $('#submitGrade').outerHeight());
 		maxHeight /= 2;
-		maxHeight -= 12; //magic but aprox 4 * padding on .cellContainer
+		maxHeight -= 20; //magic but aprox 4 * padding on .cellContainer
 	while (ctx.canvas.height > maxHeight)
 	{
 		ctx.canvas.width -= 2;
@@ -683,3 +683,14 @@ function gridPositionListeners()
 	$('#submitPosition').click(function(){submitPositionClick();});
 }
 
+
+
+// Controls contrast of cells
+var ctSlide = $('#contrastSlider');
+ctSlide.change(function(){changeContrast()});
+function changeContrast()
+{
+	var curVal = ctSlide.val();
+	$('.cellCanvas').css('filter', 'contrast(' + curVal + '%)');
+	console.log(curVal);
+}
