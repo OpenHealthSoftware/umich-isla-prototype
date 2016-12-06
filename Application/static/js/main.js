@@ -20,8 +20,8 @@ var normImg = $('#normalImg');
 var mainCanv = document.getElementById('mainFA_canvas');
 var normCanv = document.getElementById('norm_canvas');
 var currentCell = 0;
-var GRID_ROWS = 5;
-var GRID_COLS = 5;
+var GRID_ROWS = 16;
+var GRID_COLS = 15;
 
 // COLORS
 

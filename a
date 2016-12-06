@@ -1,14 +1,29 @@
+Questions:
+what kind of info do you need:
+	-patient info and how to store it
+what resolution screens are you working on
+what browsers
+do you want to see the whole normal image?
+grading patients throughout time (need comparisons between?)
+are the images being used going to be the | Optos Scanning Laser Ophthalmoscopes models that have been transformed into a stereographic projection (identifiable as these have a dimension of 4000x4000 instead of 3900x3072)| ? If not, are the 3900x3072 images have the same pixel mapping?
+what do the graded files need to be like?
+
+Considerations:
+Putting the graded cell on top of the flipped cell
+displaying info for graded images
+see the full normal image
+
+
 distortion example:
-109572-04_FA_OD_7.png vs 109572-04_FA_OD_6.png
 109572-13_FA_OD_1 vs OD
 
-which flip was the mirroed cell? horizontal or vertical?
-only up
-
-grid placement (user drags where grid origin is)
-user interface
 
 issues list:
 low pri:
-consistent grid line width
 getting image data underneath grid
+
+
+# meeting 12/1
+between fovea and optic disc 4mm, .1 down
+
+superimposing

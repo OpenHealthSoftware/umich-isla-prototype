@@ -18,6 +18,3 @@ CREATE TABLE grids(
 	imgId CHAR(32) NOT NULL,
 	FOREIGN KEY(imgId) REFERENCES images(imgId) ON DELETE CASCADE
 );
-
-
-monday send email with thursday schedule

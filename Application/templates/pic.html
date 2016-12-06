@@ -1,8 +1,0 @@
-{% extends "base.html" %}
-{% block content %}
-    <h1>PIC</h1>
-    <div class="center fifty">
-    <a href="?picid={{prev}}">Prev</a><a href="?picid={{next}}">Next</a><br>
-    <img src="{{ url_for('static', filename='images/' + filename) }}" class="pic">
-</div>
-{% endblock %}

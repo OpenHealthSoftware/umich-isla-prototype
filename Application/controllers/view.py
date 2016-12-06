@@ -3,13 +3,12 @@ from imageProcessing import *
 from sqlFunctions import *
 from os import listdir
 from os.path import isfile, join
+from config import *
 from PIL import Image
 import os
 
 
 view = Blueprint('view', __name__, template_folder='templates', static_folder="static")
-GRID_PATH = './static/images/grid6.png'
-C_GRID_PATH = './static/images/grid6.jpg' #for contout need nonalpha
 UPLOAD_PATH = './static/images/uploads/'
 GRID_PREFIX = "grid_" # prefix that grid images will begin with
 
