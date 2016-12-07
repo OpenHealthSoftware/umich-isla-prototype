@@ -43,20 +43,23 @@
 					<div class="cellRow">
 						<div class="cellContainer patient-shade-2">
 							<canvas id="mainCellFlippedCanvas" class="cellCanvas" width="0" height="0"></canvas>
+							<p class="cellLabel">Selected Cell - Flipped</p>							
 						</div>
 						<div class="cellContainer normal-shade-2">
 							<canvas id="normalCellFlippedCanvas" class="cellCanvas" width="0" height="0"></canvas>
+							<p class="cellLabel">Normal Cell - Flipped</p>
 						</div>
 					</div> <!-- END .cellRow -->
 					
 					<div class="cellRow">					
 						<div id="gradeCell" class="cellContainer patient-shade-1">
-
 							<canvas id="cellViewCanvas" class="cellCanvas" width="0" height="0"></canvas>
+							<p class="cellLabel">Selected Cell</p>
 						</div>
 
 						<div id="normalCell" class="cellContainer normal-shade-1">
 							<canvas id="normalCellViewCanvas" class="cellCanvas" width="0" height="0"></canvas>
+							<p class="cellLabel">Normal Cell</p>		
 						</div>
 					</div><!-- END .cellRow -->
 
@@ -115,7 +118,12 @@
 				<button id="toggleGridsBtn" onclick="toggleGrids()">Hide Grids</button>
 				
 				<button id="gradeViewSwitchBtn" onclick="switchToGradeView()">Switch to Grade View</button>
-				<input id="contrastSlider" type="range" min="0" max="200" step="1" value="50">
+				
+				<div id="contrastSettings" class="">
+					Contrast: <span id="contrastOutputPercent">100</span>%<br>
+					<div id="contrastSlider" class=""></div><div id="cSlidFix"></div>
+				</div>
+				
 				
 			</div><!-- END #settings -->
 		</div><!-- END #rightScreen -->

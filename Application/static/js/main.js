@@ -537,6 +537,7 @@ function toggleNormalsBar()
 
 	$('#toggleNormalsBtn').html(btnLabel);
 	isControlBarOpen = !isControlBarOpen;
+	remap();
 	drawCellManager(currentCell); //resize
 }
 
@@ -686,11 +687,12 @@ function gridPositionListeners()
 
 
 // Controls contrast of cells
+$('#contrastSlider').slider({max: 200, min: 100, value: 100});
+$('#contrastSlider').children().first().attr('id', 'cSlideHandle');
 var ctSlide = $('#contrastSlider');
-ctSlide.change(function(){changeContrast()});
-function changeContrast()
+ctSlide.slider({change: function(event, ui){changeContrast(event,ui)}});
+function changeContrast(event, ui)
 {
-	var curVal = ctSlide.val();
-	$('.cellCanvas').css('filter', 'contrast(' + curVal + '%)');
-	console.log(curVal);
+	$('#contrastOutputPercent').html(ui.value);
+	$('.cellCanvas').css('filter', 'contrast(' + ui.value + '%)');
 }

@@ -260,6 +260,48 @@ input[type=button]:hover, input[type=submit]:hover, input[type=reset]:hover, but
 	fill: #FFF;
 }
 
+#contrastSlider
+{
+    border: none;
+    border-radius: 0;
+    background-color: #C0C0C0;
+	height: 42px;
+	/*fix out of bounds handle */
+	width: calc(100% - 42px);
+	float: left;
+}
+#cSlidFix
+{
+	background-color: #C0C0C0;
+	height: 42px;
+	width: 42px;
+	float:left;
+} 
+
+#contrastSlider ui-slider-handle, #contrastSlider ui-corner-all, #contrastSlider ui-state-default
+{
+	top: 0;
+}
+#cSlideHandle
+{
+	border: none;
+	background-color:red;
+}
+.ui-slider-horizontal .ui-slider-handle
+{
+	top:0;
+	margin-left:0;
+}
+.ui-slider .ui-slider-handle
+{
+	height: 42px;
+	width: 42px;
+}
+#cSlideHandle:hover, #cSlideHandle:active
+{
+	background-color:blue;
+	cursor: pointer;
+}
 
 #viewFrameCont
 {
