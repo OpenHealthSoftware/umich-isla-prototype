@@ -98,6 +98,7 @@ html, body, #fullwrap
 	position: relative;
 	width: 100%;
 	padding: .2em;
+	cursor: pointer;
 	text-align: center;
 	font-size: .8em;
 	color: #fff;
@@ -143,7 +144,10 @@ html, body, #fullwrap
 {
 	width: 100%;
 }
-
+.cellLabel
+{
+	margin: .2em;
+}
 
 #gradeCell form
 {

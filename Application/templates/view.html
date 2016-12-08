@@ -43,30 +43,8 @@
 		<div id="rightScreen" class="split split-horizontal content" >
 			<div id="gradeView">
 				<div id="cells" class="">
-					<div class="cellRow">
-						<div class="cellContainer patient-shade-2">
-							<canvas id="mainCellFlippedCanvas" class="cellCanvas" width="0" height="0"></canvas>
-							<p class="cellLabel">Selected Cell - Flipped</p>							
-						</div>
-						<div class="cellContainer normal-shade-2">
-							<canvas id="normalCellFlippedCanvas" class="cellCanvas" width="0" height="0"></canvas>
-							<p class="cellLabel">Normal Cell - Flipped</p>
-						</div>
-					</div> <!-- END .cellRow -->
-					
-					<div class="cellRow">					
-						<div id="gradeCell" class="cellContainer patient-shade-1">
-							<canvas id="cellViewCanvas" class="cellCanvas" width="0" height="0"></canvas>
-							<p class="cellLabel">Selected Cell</p>
-						</div>
 
-						<div id="normalCell" class="cellContainer normal-shade-1">
-							<canvas id="normalCellViewCanvas" class="cellCanvas" width="0" height="0"></canvas>
-							<p class="cellLabel">Normal Cell</p>		
-						</div>
-					</div><!-- END .cellRow -->
-
-					<div class="cellRow">
+					<div class="cellRow" id="gradeButtons"> <!-- Grading buttons -->
 						<div class="cellContainer patient-shade-1">
 							<form id="gradeForm">
 								<input type="radio" name="grade" value="perfused" id="gradePerf"><label for="gradePerf">Perfused</label><br>
@@ -82,7 +60,28 @@
 						</div>
 					</div>
 
-					
+					<div class="cellRow"><!-- Selected cells -->
+						<div id="gradeCell" class="cellContainer patient-shade-1">
+							<p class="cellLabel">Selected Cell</p>
+							<canvas id="cellViewCanvas" class="cellCanvas" width="0" height="0"></canvas>
+						</div>
+
+						<div id="normalCell" class="cellContainer normal-shade-1">
+							<p class="cellLabel">Normal Cell</p>							
+							<canvas id="normalCellViewCanvas" class="cellCanvas" width="0" height="0"></canvas>
+						</div>
+					</div><!-- END .cellRow -->
+
+					<div class="cellRow"> <!-- Flipped/mirrored cells -->
+						<div class="cellContainer patient-shade-2">
+							<canvas id="mainCellFlippedCanvas" class="cellCanvas" width="0" height="0"></canvas>
+							<p class="cellLabel">Selected Cell - Flipped</p>							
+						</div>
+						<div class="cellContainer normal-shade-2">
+							<canvas id="normalCellFlippedCanvas" class="cellCanvas" width="0" height="0"></canvas>
+							<p class="cellLabel">Normal Cell - Flipped</p>
+						</div>
+					</div> <!-- END .cellRow -->					
 				</div> <!-- END #cells -->
 
 				

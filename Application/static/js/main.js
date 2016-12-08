@@ -469,10 +469,12 @@ function drawCell(cellId, canv, imgId, cellCoords, type)
 	ctx.canvas.height = ctx.canvas.width * ratio;
 
 	// account for cells that are too high
-	var maxHeight = $('#rightScreen').height()
-		- ($('#gradeForm').outerHeight() + $('#submitGrade').outerHeight());
+	var maxHeight = $('#rightScreen').height();
+		maxHeight -= $('#gradeButtons').outerHeight();
+		maxHeight -= $('.cellLabel').outerHeight() * 2;
+		maxHeight -= parseInt($('.cellContainer').css('padding')) * 4;
 		maxHeight /= 2;
-		maxHeight -= 20; //magic but aprox 4 * padding on .cellContainer
+		maxHeight -= 12; //magic
 	while (ctx.canvas.height > maxHeight)
 	{
 		ctx.canvas.width -= 2;
@@ -697,3 +699,9 @@ function changeContrast(event, ui)
 	$('#contrastOutputPercent').html(ui.value);
 	$('.cellCanvas').css('filter', 'contrast(' + ui.value + '%)');
 }
+
+
+// User hide main img labels
+$('.imgLabel').click(function(){
+	$('.imgLabel p').toggle();
+});
