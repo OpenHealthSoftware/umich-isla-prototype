@@ -410,11 +410,11 @@ function drawCellManager(cellId)
 
 	// Highlighting
 	highlightCell(mainCoords, mainCanv, mainImg.width(), mainImg.height(), PATIENT_SHADE_1);
-	highlightCell(mainCoordsFlipped, mainCanv, mainImg.width(), mainImg.height(), PATIENT_SHADE_2);
+	highlightCell(mainCoordsFlipped, mainCanv, mainImg.width(), mainImg.height(), PATIENT_SHADE_2, "flippedCells");
 	if (selectedNormId != '')
 	{
 		highlightCell(n, normCanv, normImg.width(), normImg.height(), NORMAL_SHADE_1);
-		highlightCell(nF, normCanv, normImg.width(), normImg.height(), NORMAL_SHADE_2);
+		highlightCell(nF, normCanv, normImg.width(), normImg.height(), NORMAL_SHADE_2, "flippedCells");
 	}
 	
 
@@ -503,8 +503,9 @@ function drawCell(cellId, canv, imgId, cellCoords, type)
 
 // Effects: Highlights the perimeter of the cell onto the passed canvas, with the canvas being the 
 // same size as the passed jquery img
-function highlightCell(inCoords, canv, width, height, color)
+function highlightCell(inCoords, canv, width, height, color, strokeStyle)
 {
+	var strokeWidth = 3;
 	var c = canv.getContext("2d");
 	if (canv.width < 1)
 	{ 
@@ -512,12 +513,15 @@ function highlightCell(inCoords, canv, width, height, color)
 		canv.height = height;
 	}
 
+	if (strokeStyle == "flippedCells")
+		c.setLineDash([5,3]);
 	c.beginPath();
 	for (var i = 0; i < inCoords.length; i += 2)
 	{
 		c.lineTo(inCoords[i], inCoords[i+1]);
 	}
 	c.closePath();
+	c.lineWidth = strokeWidth;
 	c.strokeStyle = color;
 	c.stroke();
 }
