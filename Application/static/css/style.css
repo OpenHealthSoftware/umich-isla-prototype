@@ -93,6 +93,16 @@ html, body, #fullwrap
 	left: 0;
 }
 
+.imgLabel
+{
+	position: relative;
+	width: 100%;
+	padding: .2em;
+	text-align: center;
+	font-size: .8em;
+	color: #fff;
+}
+.imgLabel p {margin: 0;}
 
 
 

@@ -587,6 +587,7 @@ function switchToGradeView()
 
 		// Figure out what percentage width is required to display both images fully
 		var maxH = ($('#fullView').height() + $('#controlImgBar').height()) / 2;
+		maxH -= $('.imgLabel').height();
 		var ratio = mainImg.width() / mainImg.height();
 		var width = ratio * maxH;
 		var leftScreenPercent = (width / $('#topScreen').width()) * 100;
@@ -690,7 +691,7 @@ function gridPositionListeners()
 $('#contrastSlider').slider({max: 200, min: 100, value: 100});
 $('#contrastSlider').children().first().attr('id', 'cSlideHandle');
 var ctSlide = $('#contrastSlider');
-ctSlide.slider({change: function(event, ui){changeContrast(event,ui)}});
+ctSlide.slider({slide: function(event, ui){changeContrast(event,ui)}});
 function changeContrast(event, ui)
 {
 	$('#contrastOutputPercent').html(ui.value);
