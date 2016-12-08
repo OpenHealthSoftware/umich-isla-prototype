@@ -12,10 +12,6 @@ view = Blueprint('view', __name__, template_folder='templates', static_folder="s
 UPLOAD_PATH = './static/images/uploads/'
 GRID_PREFIX = "grid_" # prefix that grid images will begin with
 
-def getControlImages():
-	files = [f for f in listdir('./static/images/normals/') 
-		if isfile(join('./static/images/normals/', f)) and not os.path.basename(f).startswith(GRID_PREFIX)]
-	return files
 
 # Requires: the imgId in the database
 # Effects: forms list of data needs for a page
@@ -23,14 +19,21 @@ def getPageData(imgId):
 	
 	coords = processImageGrid(C_GRID_PATH)
 	image = getImageData(imgId)
-	controls = getControlImages()
+	controls = getControls(image['eye'])
 	gridData = getGridData(imgId)
+
+
+	# create src url for controls
+	controlsSrc = []
+	for i in controls:
+		temp = url_for('static', filename='images/normals/' + i['imgId'] + '.' + i['format'])
+		controlsSrc.append(temp)
 
 	data = {
 		"coords" : coords,
 		"img" : image,
 		"grid" : GRID_PATH,
-		"controls" : controls,
+		"controls" : controlsSrc,
 		"numPrev" : 5, #number of control images to show at once
 		"isGridded" : isfile(UPLOAD_PATH + 'grid_' + imgId + '.' + image['format']),
 		"xOffset" : 0,

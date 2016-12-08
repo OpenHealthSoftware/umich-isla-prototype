@@ -144,7 +144,7 @@
 					{% for i in controls %}
 					<li>
 					<div id="control{{loop.index}}" class="controlPrevItem" onclick="normalSelect(this.id)">
-						<img src="{{url_for('static', filename='images/normals/' +i)}}">
+						<img src="{{i}}">
 					</div>
 					</li>
 				{% endfor %}

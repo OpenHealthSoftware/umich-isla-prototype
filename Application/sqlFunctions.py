@@ -23,6 +23,11 @@ def getImageData(imgId):
 	results = cursor.fetchone()
 	return results
 
+def getControls(eye):
+	cursor.execute("SELECT * FROM images WHERE eye=? and type='normal'", (eye,) )
+	results = cursor.fetchall()
+	return results
+
 
 def getGridData(imgId):
 		cursor.execute("SELECT * FROM grids WHERE imgId=? LIMIT 1", (imgId,))

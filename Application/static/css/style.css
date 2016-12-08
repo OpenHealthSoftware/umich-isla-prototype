@@ -296,6 +296,7 @@ input[type=button]:hover, input[type=submit]:hover, input[type=reset]:hover, but
 {
 	height: 42px;
 	width: 42px;
+	z-index: 0;
 }
 #cSlideHandle:hover, #cSlideHandle:active
 {
