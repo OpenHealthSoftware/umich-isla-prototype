@@ -3,17 +3,7 @@
 
 env = dict(
 	host = '0.0.0.0',
-	port = 3000,
-	user = 'root', 
-	password = 'root',
-	db = '', 
-)
-
-sql = dict(
-	host = 'localhost',
-	user = 'root',
-	password = '',
-	db = 'kellogg',
+	port = 3000
 )
 
 # For file uploads

@@ -515,6 +515,8 @@ function highlightCell(inCoords, canv, width, height, color, strokeStyle)
 
 	if (strokeStyle == "flippedCells")
 		c.setLineDash([5,3]);
+	else
+		c.setLineDash([]);
 	c.beginPath();
 	for (var i = 0; i < inCoords.length; i += 2)
 	{

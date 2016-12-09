@@ -1,5 +1,0 @@
-scaling grid (keep grid lines same size)
-export data 
-sqlite3
-
-http://codepen.io/Reklino/full/raRaXq/

@@ -1,2 +1,0 @@
-a "show graded" toggle button. That way you can still see the whole image if you want
-a "show grid" toggle
