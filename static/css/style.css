@@ -274,47 +274,45 @@ input[type=button]:hover, input[type=submit]:hover, input[type=reset]:hover, but
 	fill: #FFF;
 }
 
+#contrastSettings
+{
+	height: 42px;
+	text-align: center;
+	color: #fff;
+	margin: 4px 2px;
+}
+
+#contrastSettings p{
+	margin: 0;
+	padding-top:.5em;
+	padding-bottom: .2em;
+	font-size: 13.3px;
+}
 #contrastSlider
 {
     border: none;
-    border-radius: 0;
-    background-color: #C0C0C0;
-	height: 42px;
-	/*fix out of bounds handle */
-	width: calc(100% - 42px);
+    border-radius: 9px;
+	height: 10px;
+	width: calc(100% - 18px);
 	float: left;
+	margin-left:9px;
+	background-color: #1f1e1e;
 }
-#cSlidFix
-{
-	background-color: #C0C0C0;
-	height: 42px;
-	width: 42px;
-	float:left;
-} 
 
-#contrastSlider ui-slider-handle, #contrastSlider ui-corner-all, #contrastSlider ui-state-default
+#cSlideBG
 {
-	top: 0;
+	border: none;
+	border-radius: 9px;
+    background-color: #C0C0C0;
 }
+
 #cSlideHandle
 {
 	border: none;
-	background-color:red;
-}
-.ui-slider-horizontal .ui-slider-handle
-{
-	top:0;
-	margin-left:0;
-}
-.ui-slider .ui-slider-handle
-{
-	height: 42px;
-	width: 42px;
-	z-index: 0;
-}
-#cSlideHandle:hover, #cSlideHandle:active
-{
-	background-color:blue;
+	border-radius: 9px;
+    background-color: #4CAF50;
+	width: 18px;
+	height: 18px;
 	cursor: pointer;
 }
 

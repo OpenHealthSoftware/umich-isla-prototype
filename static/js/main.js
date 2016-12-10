@@ -696,8 +696,9 @@ function gridPositionListeners()
 
 
 // Controls contrast of cells
-$('#contrastSlider').slider({max: 200, min: 100, value: 100});
-$('#contrastSlider').children().first().attr('id', 'cSlideHandle');
+$('#contrastSlider').slider({max: 200, min: 100, value: 100, range: "min"});
+$('#contrastSlider').children().first().attr('id', 'cSlideBG');
+$('#contrastSlider').children().first().next().attr('id', 'cSlideHandle');
 var ctSlide = $('#contrastSlider');
 ctSlide.slider({slide: function(event, ui){changeContrast(event,ui)}});
 function changeContrast(event, ui)
