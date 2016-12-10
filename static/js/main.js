@@ -6,7 +6,8 @@ exportData[0] = {
 		"perfusion" : "Perfusion",
 		"cell" : "Cell",
 		"gradeTime" : "Grade Time (s)",
-		"normalImgCompared": "Normal Image used in comparsion"
+		"normalImgCompared": "Normal Image used in comparsion",
+		"contrastVal" : "Contrast percentage used"
 	};
 startTime = 0;
 endTime = 0;
@@ -120,13 +121,16 @@ function isCellValid(cellId)
 	return true;
 }
 
+// Effects: creates associative array with graded cell data and adds it exportData
 document.getElementById('submitGrade').onclick = function()
 {
+	// Check validity
 	if (!isCellValid(currentCell))
 		return;
 	var formEls = $('input[name=grade]:checked').val();
 	if (!formEls) // no grade was selected
 		return;
+	
 	var t = new Date();
 	endTime = t.getTime();
 	var cellId = currentCell;
@@ -135,13 +139,15 @@ document.getElementById('submitGrade').onclick = function()
 	var normalId = normalSrc.split('/').pop();
 	if (selectedNormId == '')
 		normalId = "Null";
+	var contrast = $('#contrastSlider').slider("value");
 
 	// Create data object
 	var data = {
 		"perfusion" : $('input[name=grade]:checked').val(),
 		"cell" : cellId,
 		"gradeTime": gradingTime,
-		"normalImgCompared": normalId
+		"normalImgCompared": normalId,
+		"contrastVal" : contrast
 	};
 
 	exportData[cellId] = data;
