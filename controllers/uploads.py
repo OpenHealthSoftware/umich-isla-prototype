@@ -1,23 +1,25 @@
 from flask import *
 from imageProcessing import *
 from sqlFunctions import *
-from config import *
 import hashlib
 import os
 from os import listdir
 from os.path import isfile, join
 from PIL import Image
-
+import config
 
 uploads = Blueprint('uploads', __name__, template_folder='templates', static_folder="static")
 
-UPLOAD_FOLDER_P = 'images/uploads/'
-UPLOAD_FOLDER_NORM = 'images/normals/'
+UPLOAD_FOLDER_P = config.UPLOAD_FOLDER_P
+UPLOAD_FOLDER_NORM = config.UPLOAD_FOLDER_NORM
+GRID_PATH = config.GRID_PATH
+GRID_PREFIX = config.GRID_PREFIX
+
 
 # Effects: returns a extension name if it is valid
 def getExtension(filename):
 	ext = filename.rsplit('.', 1)[1]
-	if ext in ALLOWED_EXTENSIONS:
+	if ext in config.ALLOWED_EXTENSIONS:
 		return ext
 	else:
 		return ''
@@ -38,9 +40,9 @@ def uploadImg(request, type):
 	upFolder = ''
 	# type
 	if type == "normal":
-		upFolder = 'UPLOAD_FOLDER_NORM'
+		upFolder = UPLOAD_FOLDER_NORM
 	elif type == 'patient':
-		 upFolder = 'UPLOAD_FOLDER_P'
+		 upFolder = UPLOAD_FOLDER_P
 
 	# check if the post request has the file part
 	if 'img' not in request.files:
@@ -66,7 +68,7 @@ def uploadImg(request, type):
 		# save to database
 		insertImageToDB(fileExt, filename, refName, eye, comments, type)
 		# save to server
-		file.save(os.path.join(current_app.config.get(upFolder), filename + '.' + fileExt))
+		file.save(os.path.join(upFolder, filename + '.' + fileExt))
 	return filename + '.' + fileExt
 
 
@@ -105,7 +107,7 @@ def upload_route():
 		"type" : type,
 		"uploaded" : isUploaded,
 		"typePath" : folderPath,
-		"imgSrc" : url_for('static', filename=folderPath + imgFilename),
+		"imgSrc" : folderPath + imgFilename,
 		"imgId" : imgFilename.rsplit('.', 1)[0]
 	}
 
@@ -123,7 +125,7 @@ def createGriddedImage(originCoords, imgName, iFormat, xPerc, yPerc, type):
 		uploadPath = UPLOAD_FOLDER_NORM
 	else:
 		uploadPath = UPLOAD_FOLDER_P
-	uploadPath = '.' + url_for('static', filename=uploadPath)
+
 	grid = Image.open(GRID_PATH, 'r')
 	faImg = Image.open(uploadPath + imgName + iFormat, 'r')
 	fa_w, fa_h = faImg.size

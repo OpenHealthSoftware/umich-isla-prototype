@@ -3,14 +3,16 @@ from imageProcessing import *
 from sqlFunctions import *
 from os import listdir
 from os.path import isfile, join
-from config import *
 from PIL import Image
 import os
+import config
 
 
 view = Blueprint('view', __name__, template_folder='templates', static_folder="static")
-UPLOAD_PATH = './static/images/uploads/'
-GRID_PREFIX = "grid_" # prefix that grid images will begin with
+UPLOAD_PATH = config.UPLOAD_FOLDER_P
+GRID_PREFIX = config.GRID_PREFIX
+GRID_PATH = config.GRID_PATH
+C_GRID_PATH = config.C_GRID_PATH
 
 
 # Requires: the imgId in the database
