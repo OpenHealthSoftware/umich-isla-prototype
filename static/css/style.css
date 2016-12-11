@@ -228,7 +228,7 @@ input[type=button]:hover, input[type=submit]:hover, input[type=reset]:hover, but
 }
 #menuCont:hover #menuDropdownCont
 {
-	height: 220px;
+	height: calc(1.30952381 * 42px * 5); /* just a ratio I like */
 }
 #menuDropdownCont
 {

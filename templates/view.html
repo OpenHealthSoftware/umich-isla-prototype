@@ -106,6 +106,7 @@
 							<button onclick="router('patient')" class="patient-shade-1">Patients</button>
 							<button onclick="router('normal')" class="normal-shade-1">Normals</button>
 							<button onclick="router('upload')">Upload</button>
+							<button onclick="">Help / Info</button>
 						</div>
 					</div>
 				</div>
@@ -165,8 +166,9 @@
 	
 	<div id="viewFrameCont" class="">
 		<div id="exitFrame"><button>Close</button></div>
-		<div id="viewFrame" ></div>
+		<div id="viewFrame"></div>
 	</div>
+	
 	<script>
 		var xOffsetPercent = {{xOffset}}, yOffsetPercent = {{yOffset}};
 		var url_view = "{{url_for('main.main_route')}}";
