@@ -51,6 +51,7 @@ function updateFocusRing()
 	$('#focusRing').draggable({containment: arr,
 		cursor: 'move',
 		//cursorAt: { top: $('#focusRing').width(), left: $('#focusRing').width() /2},
+		start: function(){ $('#instruct').hide();},
 		stop: function(e, ui){
 			frX = ui.position.left;
 			frY = ui.position.top;

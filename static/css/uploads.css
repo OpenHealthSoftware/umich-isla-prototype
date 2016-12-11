@@ -145,11 +145,19 @@
     display: none;
 }
 
+#instruct
+{
+    position: absolute;
+    top: 0;
+    padding-left: 1em;
+    font-size: 1.3em;
+    color: #c0c0c0;
+}
 
 #focusRing
 {
 	position: absolute;
-	top: 0;
-	left:0;
+	top: 25%;
+	left:25%;
 	cursor: pointer;
 }
