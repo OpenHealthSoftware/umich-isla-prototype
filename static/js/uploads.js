@@ -96,7 +96,9 @@ function handleRingResize()
 	});
 }
 
-
+var opticDiskSubmit = false, foveaSubmit = false;
+// For storing optic disk submit data
+var xOffsetPercent_up, yOffsetPercent_up, xGridOffset, yGridOffset;
 function submitPositionClick()
 {
 		uploadMainImg = $('#nImg');
@@ -106,35 +108,63 @@ function submitPositionClick()
 		var y =  frY + (fr.width() / 2);
 
 		// Figure out the natural values for operation on full size image
-		xGridOffset = Math.floor(x * (uploadMainImg.get(0).naturalWidth / uploadMainImg.width()));
-		yGridOffset = Math.floor(y * (uploadMainImg.get(0).naturalHeight / uploadMainImg.height()));
-	
-		// Offset respective to current view scale
-		var gridW = uploadMainImg.width();
-		var gridH = uploadMainImg.height();
-		// Find coordinates for top-left corner of grid
-		x = x - (gridW  / 2);
-		y = y - (gridH  / 2);
-		var xOffsetPercent_up = x / uploadMainImg.width();
-		var yOffsetPercent_up = y / uploadMainImg.height();
-
+		var ringPosX = Math.floor(x * (uploadMainImg.get(0).naturalWidth / uploadMainImg.width()));
+		var ringPosY = Math.floor(y * (uploadMainImg.get(0).naturalHeight / uploadMainImg.height()));
+		
 		var type = $('#type').val();
 
-		$.ajax({
-			url: '/uploads/position',
-			data: { 'picName' : uploadMainImg.attr('alt'), 'x' : xGridOffset, 'y' : yGridOffset, 
-				'xPerc' : xOffsetPercent_up, 'yPerc': yOffsetPercent_up, 'type': type},
-			type: 'POST',
-			success: function(response) {
-				$('#loading').hide();
-				$('#continueOptions').show();
-			},
-			error: function(error) {
-				console.log(error);
-			}
-		});
-		// show after ajax request
-		$('#loading').show();
+		if (opticDiskSubmit == false)
+		{
+			opticDiskSubmit = true;
+			// Offset respective to current view scale
+			var gridW = uploadMainImg.width();
+			var gridH = uploadMainImg.height();
+			// Find coordinates for top-left corner of grid
+			x = x - (gridW  / 2);
+			y = y - (gridH  / 2);
+			xOffsetPercent_up = x / uploadMainImg.width();
+			yOffsetPercent_up = y / uploadMainImg.height();
+			xGridOffset = ringPosX;
+			yGridOffset = ringPosY;
+
+			// reset for fovea positioning
+			var instructions = $('#instruct').html().replace('optic disk', 'fovea');
+			var btnLabel = $('#submitPosition').html().replace('Optic Disk', 'Fovea');
+			$('#instruct').html(instructions);
+			$('#submitPosition').html(btnLabel);
+			$('#instruct').show();
+			fr.css({left:'25%', top:'25%'});
+		}
+		else if (foveaSubmit == false && opticDiskSubmit == true)
+		{
+			var fovX = ringPosX, fovY = ringPosY;
+			
+			$.ajax({
+				url: '/uploads/position',
+				data: { 
+							'picName' : uploadMainImg.attr('alt'), 
+							'x' : xGridOffset, 
+							'y' : yGridOffset, 
+							'xPerc' : xOffsetPercent_up, 
+							'yPerc': yOffsetPercent_up, 
+							'type': type, 
+							'foveaX' : fovX, 
+							'foveaY' : fovY},
+				type: 'POST',
+				success: function(response) {
+					$('#loading').hide();
+					$('#continueOptions').show();
+					//reset booleans incase user goes to upload more
+					foveaSubmit = false;
+					opticDiskSubmit = false;
+				},
+				error: function(error) {
+					console.log(error);
+				}
+			});
+			// show after ajax request
+			$('#loading').show();
+		}
 }
 
 

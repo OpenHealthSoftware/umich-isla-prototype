@@ -5,6 +5,7 @@ import sqlite3
 conn = sqlite3.connect('database.db', check_same_thread=False)
 conn.row_factory = sqlite3.Row
 cursor = conn.cursor()
+conn.execute("PRAGMA foreign_keys = ON")
 #cursor = db.cursor()
 
 
@@ -13,7 +14,6 @@ cursor = conn.cursor()
 def getImages(type):
 	cursor.execute("SELECT * FROM images WHERE type=\'" + type + "\' ORDER BY imgId DESC")
 	results = cursor.fetchall()
-	print "\n\nResults: ", results
 	return results
 
 
@@ -47,9 +47,9 @@ def insertImageToDB(inFormat, imgId, refName, eye, comments, type):
 
 
 
-def insertGridToDB(gridId, xOffset, yOffset, imgId):
-	cursor.execute("INSERT INTO grids (gridId, xOffset, yOffset, imgId) VALUES(?,?,?,?)",
-				(gridId, xOffset, yOffset, imgId)
+def insertGridToDB(gridId, xOffset, yOffset, imgId, scaleRatio):
+	cursor.execute("INSERT INTO grids (gridId, xOffset, yOffset, imgId, scaleRatio) VALUES(?,?,?,?,?)",
+				(gridId, xOffset, yOffset, imgId, scaleRatio)
 	)
 	conn.commit()
 	if (cursor.fetchall()):

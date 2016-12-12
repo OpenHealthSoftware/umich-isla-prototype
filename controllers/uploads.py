@@ -13,6 +13,7 @@ uploads = Blueprint('uploads', __name__, template_folder='templates', static_fol
 UPLOAD_FOLDER_P = config.UPLOAD_FOLDER_P
 UPLOAD_FOLDER_NORM = config.UPLOAD_FOLDER_NORM
 GRID_PATH = config.GRID_PATH
+C_GRID_PATH = config.C_GRID_PATH
 GRID_PREFIX = config.GRID_PREFIX
 
 
@@ -118,8 +119,9 @@ def upload_route():
 
 # Requires: FA image and grid images are their proper sizes, name of picture in database,
 # img file format, and the percentage offsets created by the user positioning data
-# Effects: puts the center of the grid on the specified location of the FA image
-def createGriddedImage(originCoords, imgName, iFormat, xPerc, yPerc, type):
+# Effects: puts the center of the grid on the specified location of the FA image, and scales grid
+# according to opticDisk <--> fovea position
+def createGriddedImage(originCoords, foveaCoords, imgName, iFormat, xPerc, yPerc, type):
 	# Load images
 	if type == "normal":
 		uploadPath = UPLOAD_FOLDER_NORM
@@ -130,9 +132,25 @@ def createGriddedImage(originCoords, imgName, iFormat, xPerc, yPerc, type):
 	faImg = Image.open(uploadPath + imgName + iFormat, 'r')
 	fa_w, fa_h = faImg.size
 
+	# Scale grid
+	# currently arbitrary, but works relative to all uploads
+	foveaToDisk = 4.0 #mm
+	eyeWidth = 24.0 #mm, typical eye diameter
+	percentDist = (foveaToDisk / eyeWidth) * .55
+	# distance = fov - disk = 16% of grid
+	distance = abs(originCoords[0] - foveaCoords[0])
+	gridWidth = distance / percentDist
+	gridHeight = (gridWidth / grid.size[0]) * grid.size[1]
+	gridHeight = int(gridHeight)
+	gridWidth = int(gridWidth)
+	scaleRatio = gridWidth / float(grid.size[0])
+	grid = grid.resize((gridWidth, gridHeight), Image.ANTIALIAS)
+
+	
+
 	# Calculate where grid goes and paste
 	grid_w, grid_h = grid.size
-	offset = (originCoords[0] - (grid_w  / 2) , originCoords[1] - (grid_h  / 2))
+	offset = (originCoords[0] - (grid_w  / 2), originCoords[1] - (grid_h  / 2))
 	rgba = grid.split()
 	alpha = rgba[len(rgba)-1]
 
@@ -140,9 +158,19 @@ def createGriddedImage(originCoords, imgName, iFormat, xPerc, yPerc, type):
 	croppedGrid.paste(grid, offset, mask=alpha)
 
 	gridId = GRID_PREFIX + imgName + iFormat
-	insertGridToDB(gridId, xPerc, yPerc, imgName)
+	xPerc = offset[0] / float(fa_w)
+	yPerc = offset[1] / float(fa_h)
+	insertGridToDB(gridId, xPerc, yPerc, imgName, scaleRatio)
 	png_info = grid.info
 	croppedGrid.save(uploadPath + gridId, **png_info)
+
+
+	# save version of grid for OpenCV contours
+	#contourGrid = Image.new('RGB', faImg.size, (255,255,255))
+	#contourGrid.paste(grid, offset, grid)
+	#contourGrid = contourGrid.convert('L') # convert to grayscale
+	#contourGrid = contourGrid.point(lambda x: 0 if x<200 else 255, '1') #convert to black and white
+	#contourGrid.save(C_GRID_PATH, "JPEG")
 	return uploadPath + gridId
 
 
@@ -153,9 +181,10 @@ def upload_position_route():
 	image = getImageData(imgName)
 	originCoords = [rForm['x'], rForm['y']]
 	originCoords = map(int, originCoords)
+	foveaCoords = map(int, [rForm['foveaX'], rForm['foveaY']])
 
-	newImgPath = createGriddedImage(originCoords, imgName, '.' + image['format'], rForm['xPerc'], 
-		rForm['yPerc'], rForm['type'])
+	newImgPath = createGriddedImage(originCoords, foveaCoords, imgName, '.' + image['format'], 
+		rForm['xPerc'], rForm['yPerc'], rForm['type'])
 	url = url_for('uploads.upload_route')
 	data = {'goto' : url}
 	return jsonify(**data)
