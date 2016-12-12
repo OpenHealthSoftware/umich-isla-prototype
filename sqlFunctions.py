@@ -58,6 +58,13 @@ def insertGridToDB(gridId, xOffset, yOffset, imgId, scaleRatio):
 		return False
 
 
+def insertGradeToDB(gradeFile, userId, imgId):
+	cursor.execute("INSERT OR IGNORE INTO grades (gradeFile, userId, imgId) VALUES (?,?,?)", 
+			(gradeFile, userId, imgId)
+	)
+	conn.commit()
+
+
 def deleteEntry(table, primaryKey, primaryVal):
 	cursor.execute("DELETE FROM " + table + " WHERE " + primaryKey + "=" + primaryVal);
 	conn.commit()

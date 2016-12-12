@@ -159,7 +159,9 @@ document.getElementById('submitGrade').onclick = function()
 		$(this)[0].checked = false;
 	});
 	
-
+	// Save grades to server
+	gradeExporter('autosave');
+	
 	nextCell();
 };
 
@@ -177,13 +179,31 @@ function exportDataToCSV(data)
 	return csvStr;
 }
 
+
 // Saves graded data to file
 $('#export').click(function()
 {
+	gradeExporter('clickedExport');
+});
+// Effects: Saves graded cells to CSV file. Depending on caller parameter, user warnings might not display
+function gradeExporter(caller)
+{
+	// Sends current grade data to server to be saved
+	if (caller == 'autosave')
+	{
+		var imgId = gup('p');
+		$.ajax({
+			url: '/saveGrading',
+			data: {'imgId': imgId, 'gradeData' :JSON.stringify(exportData)},
+			type: 'POST',
+			error: function(err){console.log("Autosave error", err)},
+		});
+		return;
+	}
 	// Alert if not all cells are graded
 	if (numCellsGraded < numCells)
 	{	
-		alert("Arer you sure? Not all of the cells have been graded.");
+		alert("Are you sure? Not all of the cells have been graded.");
 		//highlightUngradedCells();
 	}
 
@@ -192,13 +212,35 @@ $('#export').click(function()
 	var link = document.createElement("a");
 	link.setAttribute("href", "data:application/octet-stream," + encodedURI);
 	var date = new Date().toISOString(); // might need to get rid of : for windows
-	var graderId = "mav";
+
+	// get graderId
+	var graderId = "none";
+	$.ajax({
+		url: '/getUser',
+		data: {'caller': 'exportGrade'},
+		type: 'POST',
+		success: function(resp) {
+			graderId = resp['user'];
+		},
+		error: function(err){console.log(err)},
+		async: false
+	});
 	link.setAttribute("download", date + "_" + graderId + "_" + gup('p') +".csv");
 	document.body.appendChild(link); // Required for FF
 
 	link.click(); // This will download the data file
-	
-});
+
+	if (caller == 'clickedExport') // final save to server
+	{
+		var imgId = gup('p');
+		$.ajax({
+			url: '/saveGrading',
+			data: {'imgId': imgId, 'gradeData' :exportData},
+			type: 'POST',
+			error: function(err){console.log("Autosave error", err)},
+		});
+	}
+}
 
 function highlightUngradedCells()
 {

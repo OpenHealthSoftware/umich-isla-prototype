@@ -6,14 +6,14 @@ from os.path import isfile, join
 from PIL import Image
 import os
 import config
-
+import datetime
 
 view = Blueprint('view', __name__, template_folder='templates', static_folder="static")
 UPLOAD_PATH = config.UPLOAD_FOLDER_P
 GRID_PREFIX = config.GRID_PREFIX
 GRID_PATH = config.GRID_PATH
 C_GRID_PATH = config.C_GRID_PATH
-
+GRADES_PATH = config.GRADES_PATH
 
 # Requires: the imgId in the database
 # Effects: forms list of data needs for a page
@@ -121,3 +121,33 @@ def normal_data_route():
 	gridSrc = url_for('static', filename='images/normals/' + qr['gridId']) #gridID has file format
 	data = {'gridSrc' : gridSrc, 'x' : qr['xOffset'], 'y' : qr['yOffset'], 'scaleRatio': qr['scaleRatio']}
 	return jsonify(**data)
+
+
+@view.route('/getUser', methods=['GET', 'POST'])
+def get_user_route():
+	rForm = request.form
+	user = '[ not logged in ]'
+	if 'REMOTE_USER' in request.environ:
+		user = request.environ['REMOTE_USER']
+		if rForm['caller'] == 'exportGrade':
+			return jsonify({"user":user})
+	else: return jsonify({})
+
+
+# Assumes a grader won't grade the same image twice in one day. If they do, the previous will be overwritten
+@view.route('/saveGrading', methods=['GET', 'POST'])
+def save_grade_route():
+	
+    # if 'REMOTE_USER' in request.environ:
+	if True:
+		user = 'mav' #request.environ['REMOTE_USER']
+		imgId = request.form['imgId']
+		gradeData = request.form['gradeData']
+		date = datetime.datetime.today().strftime('%Y-%m-%d')
+		gradeFilename = date + '_' + user + '_' + imgId + ".txt"
+		insertGradeToDB(gradeFilename, user, imgId)
+		gradeFile = open(GRADES_PATH + gradeFilename, 'w')
+		gradeFile.write(gradeData)
+		gradeFile.close()
+		return ('', 204)
+	return ('Not logged in', 401)

@@ -15,3 +15,4 @@ ALLOWED_EXTENSIONS = set(['png', 'PNG', 'jpg', 'bmp', 'gif'])
 GRID_PATH = './static/images/grid15x16.png'
 C_GRID_PATH = './static/images/grid15x16.jpg' #for contout need nonalpha
 GRID_PREFIX = "grid_" # prefix that grid images will begin with
+GRADES_PATH = './static/grades/'
