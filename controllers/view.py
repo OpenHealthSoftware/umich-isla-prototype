@@ -38,12 +38,10 @@ def getPageData(imgId):
 		"controls" : controlsSrc,
 		"numPrev" : 5, #number of control images to show at once
 		"isGridded" : isfile(UPLOAD_PATH + 'grid_' + imgId + '.' + image['format']),
-		"xOffset" : 0,
-		"yOffset" : 0
+		"xOffset" : gridData['xOffset'],
+		"yOffset" : gridData['yOffset'],
+		"gridScaleRatio": gridData['scaleRatio']
 	}
-	if gridData:
-		data['xOffset'] = gridData['xOffset']
-		data['yOffset'] = gridData['yOffset']
 
 	return data
 
@@ -68,7 +66,8 @@ def main_route():
 			"controls" : '',
 			"numPrev" : 5, #number of control images to show at once
 			"xOffset" : 0,
-			"yOffset" : 0
+			"yOffset" : 0,
+			"gridScaleRatio" : 1
 		}
 		return render_template("view.html", **data)
 
@@ -120,5 +119,5 @@ def normal_data_route():
 	imgName = rForm['picName']
 	qr = getGridData(imgName)
 	gridSrc = url_for('static', filename='images/normals/' + qr['gridId']) #gridID has file format
-	data = {'gridSrc' : gridSrc, 'x' : qr['xOffset'], 'y' : qr['yOffset']}
+	data = {'gridSrc' : gridSrc, 'x' : qr['xOffset'], 'y' : qr['yOffset'], 'scaleRatio': qr['scaleRatio']}
 	return jsonify(**data)

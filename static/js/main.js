@@ -79,6 +79,7 @@ function remap()
 	var gridWidth = grid.width;
 	var gridNatWidth = grid.naturalWidth;
 	var ratio = gridWidth / gridNatWidth;
+	ratio = ratio * SCALE_GRID_RATIO;
 
 	xOffset = xOffsetPercent * mainImg.width();
 	yOffset = yOffsetPercent * mainImg.height();
@@ -280,14 +281,16 @@ function normalSelect(id)
 				$('#normalGrid').attr('src', response['gridSrc']);
 				xNormOffsetPercent = response['x'];
 				yNormOffsetPercent = response['y'];
+				SCALE_GRID_RATIO_NORMAL = response['scaleRatio']
 				$('#normalGrid').show();
-				$('#focusRing').hide();
 				remapNormal();
+
+				// Styling
 				if (selectedNormId != '')
 					$('#' + selectedNormId).removeClass("selected");
-
 				$('#' + id).addClass("selected");
 				selectedNormId = id;
+
 				if (currentCell != 0)
 					drawCellManager(currentCell);
 			},
@@ -331,6 +334,7 @@ function remapNormal()
 	var gridWidth = grid.width;
 	var gridNatWidth = grid.naturalWidth;
 	var ratio = gridWidth / gridNatWidth;
+	ratio = ratio * SCALE_GRID_RATIO_NORMAL;
 
 	xOffset = xNormOffsetPercent * img.width();
 	yOffset = yNormOffsetPercent * img.height();
