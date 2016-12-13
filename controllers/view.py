@@ -68,7 +68,8 @@ def main_route():
 			"numPrev" : 5, #number of control images to show at once
 			"xOffset" : 0,
 			"yOffset" : 0,
-			"gridScaleRatio" : 1
+			"gridScaleRatio" : 1,
+			"user" : request.environ['REMOTE_USER']			
 		}
 		return render_template("view.html", **data)
 
