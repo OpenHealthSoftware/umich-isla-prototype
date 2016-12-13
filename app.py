@@ -1,11 +1,12 @@
-from flask import Flask, render_template, session
+from flask import Flask, render_template, session, request
 import controllers
 import config
 
 
 
-# Initialize Flask app with the template folder address
-app = Flask(__name__, template_folder='templates')
+# Initialize Flask app
+#app = Flask(__name__, template_folder='templates', static_folder="static")
+app = Flask(__name__, template_folder='../public/templates', static_folder="../public/static")
 
 
 # Register the controllers

@@ -1,3 +1,6 @@
 Python 2.7
+opencv (Ubuntu: apt-get install python-opencv)
 Pip:
+	Numpy
+	Opencv
 	Pillow

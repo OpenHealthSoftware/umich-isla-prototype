@@ -2,8 +2,8 @@
 <html lang="en">
 <head>
 	<link rel="stylesheet" href="{{url_for('static', filename='css/jquery-ui.min.css')}}"/>
-	<link rel="stylesheet" href="/static/css/style.css"/>
-	<link rel="stylesheet" href="/static/css/uploads.css"/>
+	<link rel="stylesheet" href="{{url_for('static', filename='css/style.css')}}"/>
+	<link rel="stylesheet" href="{{url_for('static', filename='css/uploads.css')}}"/>
 	{% block css %}{% endblock %}
 
 	<title>{% block title %}Kellogg{% endblock %}</title>
