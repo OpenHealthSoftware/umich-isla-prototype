@@ -22,9 +22,16 @@ app.config['C_GRID_PATH'] = config.C_GRID_PATH
 app.config['GRID_PATH'] = config.GRID_PATH
 
 
+@app.route('/')
+def main_route():
+	user = '[ not logged in ]'
+	if ('REMOTE_USER' in request.environ):
+		user = request.environ['REMOTE_USER']
+		return redirect(url_for('view.main_route'')
 
 # Listen on external IPs
 # For us, listen to port 3000 so you can just run 'python app.py' to start the server
 if __name__ == '__main__':
 	# listen on external IPs
-	app.run(host=config.env['host'], port=config.env['port'], debug=True)
+	#app.run(host=config.env['host'], port=config.env['port'], debug=True)
+	app.run()
