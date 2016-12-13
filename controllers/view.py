@@ -40,7 +40,8 @@ def getPageData(imgId):
 		"isGridded" : isfile(UPLOAD_PATH + 'grid_' + imgId + '.' + image['format']),
 		"xOffset" : gridData['xOffset'],
 		"yOffset" : gridData['yOffset'],
-		"gridScaleRatio": gridData['scaleRatio']
+		"gridScaleRatio": gridData['scaleRatio'],
+		"user" : request.environ['REMOTE_USER']
 	}
 
 	return data

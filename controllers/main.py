@@ -18,6 +18,9 @@ def main_route():
 	type = ''
 	form = ''
 
+	if not request.form and not request.args:
+		return redirect(url_for('view.main_route'))
+
 	if request.method == 'POST' and request.form:
 		form = request.form
 		type = form['getContent']
