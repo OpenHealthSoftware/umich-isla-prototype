@@ -27,7 +27,7 @@ def main_route():
 	user = '[ not logged in ]'
 	if ('REMOTE_USER' in request.environ):
 		user = request.environ['REMOTE_USER']
-		return redirect(url_for('view.main_route'')
+		return redirect(url_for('view.main_route')
 
 # Listen on external IPs
 # For us, listen to port 3000 so you can just run 'python app.py' to start the server
