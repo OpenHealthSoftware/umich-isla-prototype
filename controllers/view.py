@@ -128,21 +128,16 @@ def normal_data_route():
 @view.route('/getUser', methods=['GET', 'POST'])
 def get_user_route():
 	rForm = request.form
-	user = '[ not logged in ]'
-	if 'REMOTE_USER' in request.environ:
+	user = ''
+	if request.form['caller'] == 'exportGrade':
 		user = request.environ['REMOTE_USER']
-		if rForm['caller'] == 'exportGrade':
-			return jsonify({"user":user})
-	else: return jsonify({})
-
+	return jsonify({"user":user})
 
 # Assumes a grader won't grade the same image twice in one day. If they do, the previous will be overwritten
 @view.route('/saveGrading', methods=['GET', 'POST'])
 def save_grade_route():
-	
-    # if 'REMOTE_USER' in request.environ:
-	if True:
-		user = 'mav' #request.environ['REMOTE_USER']
+	if 'REMOTE_USER' in request.environ:
+		user = request.environ['REMOTE_USER']
 		imgId = request.form['imgId']
 		gradeData = request.form['gradeData']
 		date = datetime.datetime.today().strftime('%Y-%m-%d')

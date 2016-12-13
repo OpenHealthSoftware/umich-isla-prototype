@@ -7,12 +7,13 @@ env = dict(
 )
 
 # For file uploads
-UPLOAD_FOLDER_P = './static/images/uploads/'
-UPLOAD_FOLDER_NORM = './static/images/normals/'
+STATIC_PATH = '../public/static'
+UPLOAD_FOLDER_P = STATIC_PATH + '/images/uploads/'
+UPLOAD_FOLDER_NORM = STATIC_PATH +'/images/normals/'
 ALLOWED_EXTENSIONS = set(['png', 'PNG', 'jpg', 'bmp', 'gif'])
 #GRID_PATH = './static/images/grid6.png'
 #C_GRID_PATH = './static/images/grid6.jpg' #for contout need nonalpha
-GRID_PATH = './static/images/grid15x16.png'
-C_GRID_PATH = './static/images/grid15x16.jpg' #for contout need nonalpha
+GRID_PATH = STATIC_PATH + '/images/grid15x16.png'
+C_GRID_PATH = STATIC_PATH + '/images/grid15x16.jpg' #for contout need nonalpha
 GRID_PREFIX = "grid_" # prefix that grid images will begin with
-GRADES_PATH = './static/grades/'
+GRADES_PATH = STATIC_PATH + '/grades/'

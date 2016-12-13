@@ -222,7 +222,7 @@ function gradeExporter(caller)
 		success: function(resp) {
 			graderId = resp['user'];
 		},
-		error: function(err){console.log(err)},
+		error: function(err){console.log("get user error", err)},
 		async: false
 	});
 	link.setAttribute("download", date + "_" + graderId + "_" + gup('p') +".csv");
@@ -235,7 +235,7 @@ function gradeExporter(caller)
 		var imgId = gup('p');
 		$.ajax({
 			url: '/saveGrading',
-			data: {'imgId': imgId, 'gradeData' :exportData},
+			data: {'imgId': imgId, 'gradeData' :JSON.stringify(exportData)},
 			type: 'POST',
 			error: function(err){console.log("Autosave error", err)},
 		});

@@ -3,10 +3,10 @@ import controllers
 import config
 
 
-
+STATIC_PATH = config.STATIC_PATH
 # Initialize Flask app
 #app = Flask(__name__, template_folder='templates', static_folder="static")
-app = Flask(__name__, template_folder='../public/templates', static_folder="../public/static")
+app = Flask(__name__, template_folder='../public/templates', static_folder=STATIC_PATH)
 
 
 # Register the controllers
