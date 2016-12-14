@@ -267,13 +267,13 @@ function highlightUngradedCells()
 
 
 var settingsOpen = false;
-var gradeViewDefaultWidth = Math.floor($('#gradeView').width() / $('#gradeView').parent().width() * 100);
-var settingsDefaultWidth = Math.floor($('#settings').width() / $('#settings').parent().width() * 100);
+var gradeViewDefaultWidth = Math.ceil($('#gradeView').width() / $('#gradeView').parent().width() * 100);
+var settingsDefaultWidth = Math.ceil($('#settings').width() / $('#settings').parent().width() * 100);
 // Effects: handles the transition between sliding between settings and cell grade divs
 function toggleSettings()
 {
 	var s = $('#settings');
-	var openWidth =  '43%';
+	var openWidth =  '45%';
 
 	if (settingsOpen)
 	{
