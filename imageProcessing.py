@@ -13,11 +13,7 @@ def processImageGrid(imgPath):
 
 	#cnt = contours[4]
 	im = cv2.drawContours(im, contours, -1, (0,255,0), 3)
-	#cv2.namedWindow("hello", cv2.WINDOW_NORMAL)
-	#cv2.imshow("hello", im)
-	#while True:
-	#	key = cv2.waitKey(1)
-	#	if key == 27: break
+
 	coordList = getCoordinateStrings(contours)
 	return coordList
 
@@ -30,7 +26,6 @@ def getCoordinateStrings(contours):
 
 	# Loop through the nested arrays
 	for cell in contours:
-		#print "\n\nNew:"
 		for coordArray in cell:
 			for coords in coordArray: # looks like [[x y]] ie coordArray[0] == [x y]
 				strList = map(str, coords)

@@ -40,8 +40,7 @@ def getPageData(imgId):
 		"isGridded" : isfile(UPLOAD_PATH + 'grid_' + imgId + '.' + image['format']),
 		"xOffset" : gridData['xOffset'],
 		"yOffset" : gridData['yOffset'],
-		"gridScaleRatio": gridData['scaleRatio'],
-		"user" : request.environ['REMOTE_USER']
+		"gridScaleRatio": gridData['scaleRatio']
 	}
 
 	return data
@@ -68,8 +67,7 @@ def main_route():
 			"numPrev" : 5, #number of control images to show at once
 			"xOffset" : 0,
 			"yOffset" : 0,
-			"gridScaleRatio" : 1,
-			"user" : request.environ['REMOTE_USER']			
+			"gridScaleRatio" : 1		
 		}
 		return render_template("view.html", **data)
 
