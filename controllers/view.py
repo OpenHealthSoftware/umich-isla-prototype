@@ -8,7 +8,7 @@ import os
 import config
 import datetime
 
-view = Blueprint('view', __name__, template_folder='templates')
+view = Blueprint('view', __name__)
 UPLOAD_PATH = config.UPLOAD_FOLDER_P
 GRID_PREFIX = config.GRID_PREFIX
 GRID_PATH = config.GRID_PATH

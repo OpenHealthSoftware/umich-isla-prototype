@@ -8,10 +8,11 @@ from os.path import isfile, join
 from PIL import Image
 import config
 
-uploads = Blueprint('uploads', __name__, template_folder='templates', static_folder="static")
+uploads = Blueprint('uploads', __name__)
 
 UPLOAD_FOLDER_P = config.UPLOAD_FOLDER_P
 UPLOAD_FOLDER_NORM = config.UPLOAD_FOLDER_NORM
+THUMBNAIL_PATH = config.THUMBNAIL_PATH
 GRID_PATH = config.GRID_PATH
 C_GRID_PATH = config.C_GRID_PATH
 GRID_PREFIX = config.GRID_PREFIX
@@ -65,11 +66,16 @@ def uploadImg(request, type):
 			refName = form['refName']
 		if form['comments']:
 			comments = form['comments']
+		
+		# create thumbnail
+		thumb = file
+		thumb.thumbnail((500,500), Image.ANTIALIAS)
 
 		# save to database
 		insertImageToDB(fileExt, filename, refName, eye, comments, type)
 		# save to server
 		file.save(os.path.join(upFolder, filename + '.' + fileExt))
+		file.save(os.path.join(THUMBNAIL_PATH, filename + '.' + fileExt))
 	return filename + '.' + fileExt
 
 

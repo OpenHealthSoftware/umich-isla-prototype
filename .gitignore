@@ -1,5 +1,6 @@
 static/images/normals/
 static/images/uploads/
+static/images/thumbnails/
 *.pyc
 
 ### For Server ###

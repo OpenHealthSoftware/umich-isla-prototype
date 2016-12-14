@@ -2,6 +2,8 @@ from flask import Flask, render_template, session, request
 import controllers
 import config
 import sys
+import os
+from PIL import Image
 
 STATIC_PATH = config.STATIC_PATH
 TEMPLATES_PATH = config.TEMPLATES_PATH
@@ -33,5 +35,16 @@ if __name__ == '__main__':
 	# listen on external IPs
 	if arg1 == 'localMav':
 		app.run(host=config.env['host'], port=config.env['port'], debug=True)
+	if arg1 == 'update':
+		updateThumbnails()
 	else: 
 		app.run()
+
+# Use when running locally so you generates thumbnails for images only uploaded to server
+def updateThumbnails():
+	files = os.listdir(config.UPLOAD_FOLDER_NORM)
+	for image in files:
+		path = os.path.join(config.UPLOAD_FOLDER_NORM, image)
+		i = Image.open(path)
+		i.thumbnail((500,500), Image.ANTIALIAS)
+		i.save(os.path.join(config.THUMBNAIL_PATH, image))

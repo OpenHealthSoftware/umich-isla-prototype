@@ -6,15 +6,14 @@ import config
 import hashlib
 import os
 
-main = Blueprint('main', __name__, template_folder='templates', static_folder="static")
+main = Blueprint('main', __name__)
 
-UPLOAD_FOLDER_P = 'images/uploads/'
-UPLOAD_FOLDER_NORM = 'images/normals/'
+THUMBNAIL_PATH = config.THUMBNAIL_PATH
 
 
 @main.route('/', methods=['GET', 'POST'])
 def main_route():
-	path = UPLOAD_FOLDER_P
+	path = THUMBNAIL_PATH
 	type = ''
 	form = ''
 
@@ -24,8 +23,6 @@ def main_route():
 	if request.method == 'POST' and request.form:
 		form = request.form
 		type = form['getContent']
-		if type == 'normal':
-			path = UPLOAD_FOLDER_NORM
 
 	images = []
 	if type:
