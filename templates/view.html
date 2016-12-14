@@ -106,7 +106,7 @@
 							<button onclick="router('patient')" class="patient-shade-1">Patients</button>
 							<button onclick="router('normal')" class="normal-shade-1">Normals</button>
 							<button onclick="router('upload')">Upload</button>
-							<button onclick="">Help / Info</button>
+							<button onclick="router('his')">Help / Info</button>
 						</div>
 					</div>
 				</div>
@@ -173,6 +173,7 @@
 		var xOffsetPercent = {{xOffset}}, yOffsetPercent = {{yOffset}};
 		var url_view = "{{url_for('main.main_route')}}";
 		var url_upload = "{{url_for('uploads.upload_route')}}";
+		var url_his =  "{{url_for('his.his_route')}}";
 		SCALE_GRID_RATIO = {{gridScaleRatio}};
 		SCALE_GRID_RATIO_NORMAL = 1;
 	</script>

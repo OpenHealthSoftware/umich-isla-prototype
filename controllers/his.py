@@ -10,4 +10,6 @@ def his_route():
 	data = {
 		"version" : gitTag
 	}
-	return render_template("help-info-settings.html", **data)
+
+	html = render_template("help-info-settings.html", **data)
+	return jsonify(html=html)

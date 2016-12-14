@@ -688,7 +688,9 @@ function router(target)
 		url = url_view;
 	else if (target == 'upload' || target == 'uploadSubmit')
 		url = url_upload;
-
+	else if (target == 'his')
+		url = url_his;
+		
 	$.ajax({
 			url: url,
 			data: { 'getContent' : target,  uploadForm: data},
