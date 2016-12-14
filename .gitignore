@@ -1,4 +1,9 @@
 static/images/normals/
 static/images/uploads/
 *.pyc
+
+### For Server ###
 database.db
+*.log
+*.lock
+version.txt
