@@ -267,20 +267,20 @@ function highlightUngradedCells()
 
 
 var settingsOpen = false;
-var gradeViewDefaultWidth = $('#gradeView').width() / $('#gradeView').parent().width() * 100;
-var settingsDefaultWidth = $('#settings').width() / $('#settings').parent().width() * 100;
+var gradeViewDefaultWidth = Math.floor($('#gradeView').width() / $('#gradeView').parent().width() * 100);
+var settingsDefaultWidth = Math.floor($('#settings').width() / $('#settings').parent().width() * 100);
 // Effects: handles the transition between sliding between settings and cell grade divs
 function toggleSettings()
 {
 	var s = $('#settings');
-	var openWidth =  '49%';
+	var openWidth =  '43%';
 
 	if (settingsOpen)
 	{
 		s.animate({width: settingsDefaultWidth + '%'});
 		$('#gradeView').animate({width: gradeViewDefaultWidth + '%'}, 
 			function(){ drawCellManager(currentCell); });
-		$('#right').hide();
+		$('#right').hide(); //switch arrow direction
 		$('#left').show();
 	}
 	else 
@@ -522,9 +522,10 @@ function drawCell(cellId, canv, imgId, cellCoords, type)
 
 	// account for cells that are too high
 	var maxHeight = $('#rightScreen').height();
+		maxHeight -= parseFloat($('#gradeView').css('padding-top')) * 2;
 		maxHeight -= $('#gradeButtons').outerHeight();
 		maxHeight -= $('.cellLabel').outerHeight() * 2;
-		maxHeight -= parseInt($('.cellContainer').css('padding')) * 4;
+		maxHeight -= parseInt($('.cellCanvas').css('padding')) * 4;
 		maxHeight /= 2;
 		maxHeight -= 12; //magic
 	while (ctx.canvas.height > maxHeight)
