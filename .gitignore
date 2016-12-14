@@ -1,3 +1,4 @@
 static/images/normals/
 static/images/uploads/
 *.pyc
+database.db
