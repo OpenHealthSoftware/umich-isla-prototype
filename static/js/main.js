@@ -49,7 +49,8 @@ $('document').ready()
 
 		$('area').each(function(){
 				var id = parseInt($(this).attr('id').split('_')[1]);
-				$(this).click(function(){drawCellManager(id)});
+				$(this).hover(function(){drawCellManager(id)});
+				$(this).click(function(){toggleQuickView();});
 		});
 }
 
@@ -345,8 +346,8 @@ function normalSelect(id)
 var xNormOffsetPercent = 0, yNormOffsetPercent = 0;
 var normCoords = [];
 
-var quickView = false;
-$('#quickViewBtn').unbind().click(function()
+var quickView = true;
+function toggleQuickView()
 {
 	var c = document.getElementById('cellViewCanvas');
 	if (quickView == false)
@@ -354,19 +355,22 @@ $('#quickViewBtn').unbind().click(function()
 		$('area').each(function(){$(this).unbind()});
 		$('area').each(function(){
 			var id = parseInt($(this).attr('id').split('_')[1]);
+			$(this).unbind('click');	
 			$(this).hover(function(){drawCellManager(id)});
+			$(this).click(function(){toggleQuickView();});
 		});
 	}
 	else {
 		$('area').each(function(){$(this).unbind()});
 			$('area').each(function(){
 				var id = parseInt($(this).attr('id').split('_')[1]);
+			$(this).unbind('hover');
 			$(this).click(function(){drawCellManager(id)});
 		});
 	}
 	quickView = !quickView;
 }
-);
+$('#quickViewBtn').click(function(){ toggleQuickView();});
 
 
 function remapNormal()
