@@ -59,7 +59,7 @@ $('document').ready()
 
 		$('area').each(function(){
 				var id = parseInt($(this).attr('id').split('_')[1]);
-				$(this).hover(function(){drawCellManager(id)});
+				$(this).mouseover(function(){drawCellManager(id)});
 				$(this).click(function(){toggleQuickView();});
 		});
 
@@ -416,7 +416,7 @@ function toggleQuickView()
 		$('area').each(function(){
 			var id = parseInt($(this).attr('id').split('_')[1]);
 			$(this).unbind('click');	
-			$(this).hover(function(){drawCellManager(id)});
+			$(this).mouseover(function(){drawCellManager(id)});
 			$(this).click(function(){toggleQuickView();});
 		});
 		// enable grid 
@@ -426,7 +426,7 @@ function toggleQuickView()
 		$('area').each(function(){$(this).unbind()});
 			$('area').each(function(){
 				var id = parseInt($(this).attr('id').split('_')[1]);
-			$(this).unbind('hover');
+			$(this).unbind('mouseover');
 			$(this).click(function(){drawCellManager(id)});
 		});
 	}
