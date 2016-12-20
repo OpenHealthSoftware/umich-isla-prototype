@@ -52,6 +52,9 @@ $('document').ready()
 				$(this).hover(function(){drawCellManager(id)});
 				$(this).click(function(){toggleQuickView();});
 		});
+
+		// get the git release version
+		document.get
 }
 
 
@@ -124,8 +127,12 @@ function isCellValid(cellId)
 }
 
 // Effects: creates associative array with graded cell data and adds it exportData
-document.getElementById('submitGrade').onclick = function()
+$('input:radio[name=grade]').change(function(){
+	setTimeout(function(){submitGrade()}, 200); //delay so the grader can see the selection for a bit
+})
+function submitGrade()
 {
+	console.log("submitted grade for cell " + currentCell);
 	// Check validity
 	if (!isCellValid(currentCell))
 		return;
@@ -197,6 +204,14 @@ function gradeExporter(caller)
 			url: '/saveGrading',
 			data: {'imgId': imgId, 'gradeData' :JSON.stringify(exportData)},
 			type: 'POST',
+			success:  function()
+			{
+				var time = new Date(new Date().getTime()).toLocaleTimeString();
+				var numCellsMessage = ' cells are graded.';
+				if (numCellsGraded <= 1)
+					numCellsMessage = ' cell is graded';
+				$('#autoSaveNotif').html('Autosaved ' + time + '. ' + numCellsGraded + numCellsMessage);
+			},
 			error: function(err){console.log("Autosave error", err)},
 		});
 		return;
