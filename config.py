@@ -6,6 +6,8 @@ env = dict(
 	port = 3000
 )
 
+VERSION_FILE = './version.txt'
+
 # For file uploads
 STATIC_PATH = '../public/static'
 TEMPLATES_PATH = '../public/templates'

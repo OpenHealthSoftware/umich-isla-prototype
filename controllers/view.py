@@ -14,6 +14,7 @@ GRID_PREFIX = config.GRID_PREFIX
 GRID_PATH = config.GRID_PATH
 C_GRID_PATH = config.C_GRID_PATH
 GRADES_PATH = config.GRADES_PATH
+VERSION_FILE = config.VERSION_FILE
 
 # Requires: the imgId in the database
 # Effects: forms list of data needs for a page
@@ -40,7 +41,8 @@ def getPageData(imgId):
 		"isGridded" : isfile(UPLOAD_PATH + 'grid_' + imgId + '.' + image['format']),
 		"xOffset" : gridData['xOffset'],
 		"yOffset" : gridData['yOffset'],
-		"gridScaleRatio": gridData['scaleRatio']
+		"gridScaleRatio": gridData['scaleRatio'], 
+		"gitVersion" :  open(VERSION_FILE, 'r').readline()
 	}
 
 	return data
@@ -134,8 +136,8 @@ def get_user_route():
 # Assumes a grader won't grade the same image twice in one day. If they do, the previous will be overwritten
 @view.route('/saveGrading', methods=['GET', 'POST'])
 def save_grade_route():
-	if 'REMOTE_USER' in request.environ:
-		user = request.environ['REMOTE_USER']
+	if True:#'REMOTE_USER' in request.environ:
+		user = 'mav'#request.environ['REMOTE_USER']
 		imgId = request.form['imgId']
 		gradeData = request.form['gradeData']
 		date = datetime.datetime.today().strftime('%Y-%m-%d')

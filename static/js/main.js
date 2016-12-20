@@ -3,11 +3,12 @@
 exportData = {};
 // For exporting to csv, give the key names => column names
 exportData[0] = { 
-		"perfusion" : "Perfusion",
-		"cell" : "Cell",
-		"gradeTime" : "Grade Time (s)",
-		"normalImgCompared": "Normal Image used in comparsion",
-		"contrastVal" : "Contrast percentage used"
+		perfusion : "Perfusion",
+		cell : "Cell",
+		gradeTime: "Grade Time (s)",
+		normalImgCompared: "Normal Image used in comparsion",
+		contrastVal : "Contrast percentage used",
+		version: "Git Version"
 	};
 startTime = 0;
 endTime = 0;
@@ -195,11 +196,12 @@ function submitGrade()
 
 	// Create data object
 	var data = {
-		"perfusion" : $('input[name=grade]:checked').val(),
-		"cell" : cellId,
-		"gradeTime": gradingTime,
-		"normalImgCompared": normalId,
-		"contrastVal" : contrast
+		perfusion : $('input[name=grade]:checked').val(),
+		cell : cellId,
+		gradeTime: gradingTime,
+		normalImgCompared: normalId,
+		contrastVal : contrast,
+		version: VERSION
 	};
 
 	exportData[cellId] = data;
@@ -263,7 +265,7 @@ function gradeExporter(caller)
 	if (numCellsGraded < numCells)
 	{	
 		alert("Are you sure? Not all of the cells have been graded.");
-		//highlightUngradedCells();
+		highlightUngradedCells();
 	}
 
 	var data = exportDataToCSV(exportData);
@@ -318,7 +320,7 @@ function highlightUngradedCells()
 		if (!exportData[cellId]) //cell hasn't' been graded
 		{
 			cellCoords = parseHTMLAreaCoords($(this).prop('id'));
-			highlightCell(cellCoords, mainCanv, mainImg.width(), mainImg.height(), "red");
+			highlightCell(cellCoords, mainCanv, mainImg.width(), mainImg.height(), "red", "",  1);
 		}
 	});
 }
@@ -618,9 +620,12 @@ function drawCell(cellId, canv, imgId, cellCoords, type)
 
 // Effects: Highlights the perimeter of the cell onto the passed canvas, with the canvas being the 
 // same size as the passed jquery img
-function highlightCell(inCoords, canv, width, height, color, strokeStyle)
+function highlightCell(inCoords, canv, width, height, color, strokeStyle, inStrokeWidth)
 {
 	var strokeWidth = 3;
+	if (arguments.length == 7 && arguments[6])
+		strokeWidth = inStrokeWidth;
+	
 	var c = canv.getContext("2d");
 	if (canv.width < 1)
 	{ 
