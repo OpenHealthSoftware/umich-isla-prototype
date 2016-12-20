@@ -149,7 +149,8 @@ function submitPositionClick()
 							'yPerc': yOffsetPercent_up, 
 							'type': type, 
 							'foveaX' : fovX, 
-							'foveaY' : fovY},
+							'foveaY' : fovY
+						},
 				type: 'POST',
 				success: function(response) {
 					$('#loading').hide();

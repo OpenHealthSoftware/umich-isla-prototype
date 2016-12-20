@@ -16,7 +16,7 @@ if len(sys.argv) > 1 and sys.argv[1] == 'localMav':
 	TEMPLATES_PATH = './templates'
 UPLOAD_FOLDER_P = STATIC_PATH + '/images/uploads/'
 UPLOAD_FOLDER_NORM = STATIC_PATH +'/images/normals/'
-THUMBNAIL_PATH = 'images/thumbnails/'
+THUMBNAIL_PATH = STATIC_PATH + '/images/thumbnails/'
 ALLOWED_EXTENSIONS = set(['png', 'PNG', 'jpg', 'bmp', 'gif'])
 GRID_PATH = STATIC_PATH + '/images/grid15x16.png'
 C_GRID_PATH = STATIC_PATH + '/images/grid15x16.jpg' #for contout need nonalpha

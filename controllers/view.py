@@ -42,8 +42,8 @@ def getPageData(imgId):
 		"controls" : controls,
 		"numPrev" : 5, #number of control images to show at once
 		"isGridded" : isfile(UPLOAD_PATH + 'grid_' + imgId + '.' + image['format']),
-		"xOffset" : gridData['xOffset'],
-		"yOffset" : gridData['yOffset'],
+		"xOffset" : gridData['xOffsetPerc'],
+		"yOffset" : gridData['yOffsetPerc'],
 		"gridScaleRatio": gridData['scaleRatio'], 
 		"gitVersion" :  open(VERSION_FILE, 'r').readline()
 	}
@@ -124,7 +124,7 @@ def normal_data_route():
 	imgName = rForm['picName']
 	qr = getGridData(imgName)
 	gridSrc = url_for('static', filename='images/normals/' + qr['gridId']) #gridID has file format
-	data = {'gridSrc' : gridSrc, 'x' : qr['xOffset'], 'y' : qr['yOffset'], 'scaleRatio': qr['scaleRatio']}
+	data = {'gridSrc' : gridSrc, 'x' : qr['xOffsetPerc'], 'y' : qr['yOffsetPerc'], 'scaleRatio': qr['scaleRatio']}
 	return jsonify(**data)
 
 
@@ -139,8 +139,8 @@ def get_user_route():
 # Assumes a grader won't grade the same image twice in one day. If they do, the previous will be overwritten
 @view.route('/saveGrading', methods=['GET', 'POST'])
 def save_grade_route():
-	if True:#'REMOTE_USER' in request.environ:
-		user = 'mav'#request.environ['REMOTE_USER']
+	if REMOTE_USER' in request.environ:
+		user = request.environ['REMOTE_USER']
 		imgId = request.form['imgId']
 		gradeData = request.form['gradeData']
 		date = datetime.datetime.today().strftime('%Y-%m-%d')

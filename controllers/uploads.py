@@ -67,15 +67,18 @@ def uploadImg(request, type):
 		if form['comments']:
 			comments = form['comments']
 		
-		# create thumbnail
-		thumb = file
-		thumb.thumbnail((500,500), Image.ANTIALIAS)
+
 
 		# save to database
 		insertImageToDB(fileExt, filename, refName, eye, comments, type)
 		# save to server
 		file.save(os.path.join(upFolder, filename + '.' + fileExt))
-		file.save(os.path.join(THUMBNAIL_PATH, filename + '.' + fileExt))
+		
+		#
+		thumb = Image.open(os.path.join(upFolder, filename + '.' + fileExt))
+		thumb.thumbnail((500,500), Image.ANTIALIAS)
+		thumb.save(os.path.join(THUMBNAIL_PATH, filename + '.' + fileExt))
+		
 	return filename + '.' + fileExt
 
 
@@ -128,6 +131,7 @@ def upload_route():
 # Effects: puts the center of the grid on the specified location of the FA image, and scales grid
 # according to opticDisk <--> fovea position
 def createGriddedImage(originCoords, foveaCoords, imgName, iFormat, xPerc, yPerc, type):
+
 	# Load images
 	if type == "normal":
 		uploadPath = UPLOAD_FOLDER_NORM
@@ -166,7 +170,8 @@ def createGriddedImage(originCoords, foveaCoords, imgName, iFormat, xPerc, yPerc
 	gridId = GRID_PREFIX + imgName + iFormat
 	xPerc = offset[0] / float(fa_w)
 	yPerc = offset[1] / float(fa_h)
-	insertGridToDB(gridId, xPerc, yPerc, imgName, scaleRatio)
+	insertGridToDB(gridId, xPerc, yPerc, imgName, scaleRatio, originCoords[0], originCoords[1], 
+		foveaCoords[0], foveaCoords[1])
 	png_info = grid.info
 	croppedGrid.save(uploadPath + gridId, **png_info)
 

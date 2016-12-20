@@ -47,9 +47,10 @@ def insertImageToDB(inFormat, imgId, refName, eye, comments, type):
 
 
 
-def insertGridToDB(gridId, xOffset, yOffset, imgId, scaleRatio):
-	cursor.execute("INSERT INTO grids (gridId, xOffset, yOffset, imgId, scaleRatio) VALUES(?,?,?,?,?)",
-				(gridId, xOffset, yOffset, imgId, scaleRatio)
+def insertGridToDB(gridId, xOffsetPerc, yOffsetPerc, imgId, scaleRatio, xDisc, yDisc, xFovea, yFovea):
+	cursor.execute("INSERT INTO grids (gridId, xOffsetPerc, yOffsetPerc, imgId, scaleRatio, xDisc, \
+				yDisc, xFovea, yFovea) VALUES(?,?,?,?,?,?,?,?,?)", 
+				(gridId, xOffsetPerc, yOffsetPerc, imgId, scaleRatio, xDisc, yDisc, xFovea, yFovea)
 	)
 	conn.commit()
 	if (cursor.fetchall()):
