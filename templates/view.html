@@ -22,6 +22,11 @@
 	<div id="topScreen" class="split split-vertical" >
 		<div id="leftScreen" class="split split-horizontal content" >
 			<div id="fullView">
+				{% if not img['imgId'] %}
+						<button onclick="router('patient')" class="patient-shade-1 btn-large">Click to Grade an Image</button>
+						<button onclick="router('upload')" class="btn-large">Click to Upload an Image</button>
+				{%  else %}
+
 				{% set faSrc = url_for('static', filename='images/uploads/' + img['imgId'] + '.' + img['format']) %}
 				{% set gridSrc = url_for('static', filename='images/uploads/grid_' + img['imgId'] + '.' + img['format']) %}
 				<div id="mainImgLabel" class="imgLabel patient-shade-1"><p>Grade Image</p></div>
@@ -36,11 +41,14 @@
 					<img id="normalGrid" class="pic overlay grid" src="" >
 					<canvas id="norm_canvas" class="traceCanvas" width="0" height="0"></canvas>					
 				</div>
-				
+				{% endif %}
 			</div>
 		</div>
 
-		<div id="rightScreen" class="split split-horizontal content" >
+		{% if not img['imgId'] %}
+		{% set lock = 'lock' %}
+		{% endif %}
+		<div id="rightScreen" class="split split-horizontal content {{lock}}" >
 			<div id="gradeView">
 				<div id="cells" class="">
 
@@ -138,7 +146,7 @@
 	</div><!-- END #topScreen -->
 
 
-	<div id="bottomScreen" class="split split-vertical content" >
+	<div id="bottomScreen" class="split split-vertical content {{lock}}" >
 		<div id="controlImgBar" class="carousel_container">
 			{% if controls|length > numPrev %}
 			{% endif %}
@@ -166,7 +174,7 @@
 				</svg>
 			</div>
 		</div>
-	</div>
+	</div> <!-- END #bottomScreen -->
 
 	
 	<div id="viewFrameCont" class="">

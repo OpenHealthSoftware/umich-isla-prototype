@@ -16,6 +16,16 @@ C_GRID_PATH = config.C_GRID_PATH
 GRADES_PATH = config.GRADES_PATH
 VERSION_FILE = config.VERSION_FILE
 
+# Effects: returns a list of control image src
+def getControls(eye):
+	controls = getControlsFromDb(eye)
+	# create src url for controls
+	controlsSrc = []
+	for i in controls:
+		temp = url_for('static', filename='images/normals/' + i['imgId'] + '.' + i['format'])
+		controlsSrc.append(temp)
+	return controlsSrc
+
 # Requires: the imgId in the database
 # Effects: forms list of data needs for a page
 def getPageData(imgId):
@@ -25,18 +35,11 @@ def getPageData(imgId):
 	controls = getControls(image['eye'])
 	gridData = getGridData(imgId)
 
-
-	# create src url for controls
-	controlsSrc = []
-	for i in controls:
-		temp = url_for('static', filename='images/normals/' + i['imgId'] + '.' + i['format'])
-		controlsSrc.append(temp)
-
 	data = {
 		"coords" : coords,
 		"img" : image,
 		"grid" : GRID_PATH,
-		"controls" : controlsSrc,
+		"controls" : controls,
 		"numPrev" : 5, #number of control images to show at once
 		"isGridded" : isfile(UPLOAD_PATH + 'grid_' + imgId + '.' + image['format']),
 		"xOffset" : gridData['xOffset'],
@@ -65,7 +68,7 @@ def main_route():
 			"coords" : [],
 			"img" : {'imgId' : '', 'format' : ''},
 			"grid" : '',
-			"controls" : '',
+			"controls" : getControls('left') + getControls('right'),
 			"numPrev" : 5, #number of control images to show at once
 			"xOffset" : 0,
 			"yOffset" : 0,

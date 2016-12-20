@@ -23,7 +23,7 @@ def getImageData(imgId):
 	results = cursor.fetchone()
 	return results
 
-def getControls(eye):
+def getControlsFromDb(eye):
 	cursor.execute("SELECT * FROM images WHERE eye=? and type='normal'", (eye,) )
 	results = cursor.fetchall()
 	return results

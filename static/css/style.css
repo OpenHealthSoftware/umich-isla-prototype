@@ -31,6 +31,14 @@ html, body, #fullwrap
 	background-color: #343434;
 }
 
+.lock
+{
+	pointer-events: none;
+	background-color: rgba(0,0,0,.2);
+	z-index: 2;
+}
+.negZ {z-index: -1;}
+
 #fullwrap
 {
 	position: absolute;
@@ -176,6 +184,12 @@ input[type=button], input[type=submit], input[type=reset], button
     margin: 4px 2px;
     cursor: pointer;
 	transition: .3s;
+}
+
+.btn-large
+{
+	font-size: 1.5em;
+	padding: 2em;
 }
 
 input[type=button]:hover, input[type=submit]:hover, input[type=reset]:hover, button:hover
