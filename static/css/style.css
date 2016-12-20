@@ -36,7 +36,6 @@ html, body, #fullwrap
 {
 	pointer-events: none;
 	background-color: rgba(0,0,0,.2);
-	z-index: 2;
 }
 
 #fullwrap

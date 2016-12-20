@@ -89,11 +89,11 @@ function keydownRouter(e)
 		case KEYS.three:
 			enterGrade(2);
 			break;
-		case KEYS.right:
-			break;
 		case KEYS.left:
+			cycleNormal(-1);
 			break;
 		case KEYS.right:
+			cycleNormal(1);		
 			break;
 		case KEYS.shift:
 			break;
@@ -674,8 +674,9 @@ function toggleGrids()
 	areGridsShowing = !areGridsShowing;
 }
 
-// Effects: selects / shows the next normal
-function nextNormal()
+// Requires: postive or negative value to step by
+// Effects: selects / shows the next or previous normal
+function cycleNormal(step)
 {
 	if (selectedNormId == '')
 	{
@@ -684,9 +685,11 @@ function nextNormal()
 	}
 	// get current id num 
 	var idNum = parseInt(selectedNormId.split('control')[1]);	
-	idNum++;
-	if (idNum <= $('#controlImgCarouselUL li').length)
+	idNum += step;
+	if (idNum > 0 && idNum <= $('#controlImgCarouselUL li').length)
 		normalSelect('control' + idNum);
+	else if (idNum == 0)
+		normalSelect('control' + $('#controlImgCarouselUL li').length);
 	else normalSelect('control1');
 }
 
@@ -699,7 +702,7 @@ function switchToGradeView()
 	{
 		// Make sure to have a normal selected
 		if (selectedNormId == '')
-			nextNormal();
+			cycleNormal(1);
 		// Make sure a cell is selected
 		if (currentCell == 0)
 			nextCell();
