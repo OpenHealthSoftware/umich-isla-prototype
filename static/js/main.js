@@ -31,7 +31,16 @@ var PATIENT_SHADE_2 = '#F8E187';
 var NORMAL_SHADE_1 = '#0E96F1';
 var NORMAL_SHADE_2 = '#87CBF8';
 
-
+// Keys for listener
+var KEYS = {
+	one: 49,
+	two: 50,
+	three: 51,
+	left: 37,
+	right: 39,
+	shift: 16,
+	spacebar: 32
+}
 
 $('document').ready()
 {
@@ -54,9 +63,43 @@ $('document').ready()
 		});
 
 		// get the git release version
-		document.get
-}
 
+
+		$(window).keydown(keydownRouter);
+}
+function enterGrade(optionIndex)
+{
+	var radioForm = $('input[name=grade]');
+	if (optionIndex < 0 || optionIndex >= radioForm.length)
+		return;
+	radioForm[optionIndex].checked = true;
+	submitGrade();
+}
+function keydownRouter(e)
+{
+	switch (e.which) 
+	{
+		case KEYS.one:
+			enterGrade(0);
+			break;
+		case KEYS.two:
+			enterGrade(1);
+			break;
+		case KEYS.three:
+			enterGrade(2);
+			break;
+		case KEYS.right:
+			break;
+		case KEYS.left:
+			break;
+		case KEYS.right:
+			break;
+		case KEYS.shift:
+			break;
+		case KEYS.spacebar:
+			break;
+	}
+}
 
 window.onresize = function(){remap();};
 
