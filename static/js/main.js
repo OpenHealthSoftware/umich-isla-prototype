@@ -254,7 +254,7 @@ function gradeExporter(caller)
 				var time = new Date(new Date().getTime()).toLocaleTimeString();
 				var numCellsMessage = ' cells are graded.';
 				if (numCellsGraded <= 1)
-					numCellsMessage = ' cell is graded';
+					numCellsMessage = ' cell is graded.';
 				$('#autoSaveNotif').html('Autosaved ' + time + '. ' + numCellsGraded + numCellsMessage);
 			},
 			error: function(err){console.log("Autosave error", err)},
@@ -588,7 +588,7 @@ function drawCell(cellId, canv, imgId, cellCoords, type)
 
 	// account for cells that are too high
 	var maxHeight = $('#rightScreen').height();
-		maxHeight -= parseFloat($('#gradeView').css('padding-top')) * 2;
+		maxHeight -= $('#menuBar').outerHeight();
 		maxHeight -= $('#gradeButtons').outerHeight();
 		maxHeight -= $('.cellLabel').outerHeight() * 2;
 		maxHeight -= parseInt($('.cellCanvas').css('padding')) * 4;
@@ -653,22 +653,11 @@ function highlightCell(inCoords, canv, width, height, color, strokeStyle, inStro
 var isControlBarOpen = true;
 function toggleNormalsBar()
 {
-	var btnLabel = $('#toggleNormalsBtn').html();
 	if (isControlBarOpen)
-	{
 		topBotScreenSplit.collapse(1);
-		btnLabel = btnLabel.replace('Hide', 'Show');
-	}
 	else 
-	{
 		topBotScreenSplit.setSizes([75,25]);
-		btnLabel = btnLabel.replace('Show', 'Hide');
-	}
-
-	$('#toggleNormalsBtn').html(btnLabel);
 	isControlBarOpen = !isControlBarOpen;
-	remap();
-	drawCellManager(currentCell); //resize
 }
 
 var areGridsShowing = true;
@@ -702,6 +691,7 @@ function nextNormal()
 }
 
 var isGradeView = false;
+var controlBarHeight = $('#controlImgBar').height();
 // Effects: Transitions the interface to the grading view
 function switchToGradeView()
 {
@@ -716,7 +706,8 @@ function switchToGradeView()
 		// resize views
 
 		// Figure out what percentage width is required to display both images fully
-		var maxH = ($('#fullView').height() + $('#controlImgBar').height()) / 2;
+		controlBarHeight = $('#controlImgBar').height(); // save user pref
+		var maxH = ($('#fullView').height() + controlBarHeight) / 2;
 		maxH -= $('.imgLabel').height();
 		var ratio = mainImg.width() / mainImg.height();
 		var width = ratio * maxH;
@@ -731,7 +722,16 @@ function switchToGradeView()
 	}
 	else
 	{
-		leftRightScreenSplit.setSizes([65,35]);
+
+		// Figure out what percentage width is required to one image fully
+		var maxH = $('#fullView').height() - controlBarHeight;
+		maxH -= $('.imgLabel').height();
+		var ratio = mainImg.width() / mainImg.height();
+		var width = ratio * maxH;
+		var leftScreenPercent = (width / $('#topScreen').width()) * 100;
+		var rightScreenPercent = 100 - leftScreenPercent;
+
+		leftRightScreenSplit.setSizes([leftScreenPercent, rightScreenPercent]);
 		//make sure control bar gets opened
 		if (isControlBarOpen == false)
 			toggleNormalsBar();

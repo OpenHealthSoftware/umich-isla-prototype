@@ -49,6 +49,24 @@
 		{% set lock = 'lock' %}
 		{% endif %}
 		<div id="rightScreen" class="split split-horizontal content {{lock}}" >
+			<div id="menuBar">
+				<button id="toggleGridsBtn" class="menu-btn" onclick="toggleGrids()">Hide Grids</button>		
+				<button id="quickViewBtn" class="menu-btn">Quick View</button>
+				<button id="toggleUngradedCellBtn" class="menu-btn" onclick="highlightUngradedCells()">Ungraded Cells</button>		
+				<div id="menuCont">
+					<button id="menuBtn" class="menu-btn">Menu</button>
+					<div id="menuDropdownCont">
+						<div id="menuDropdown">
+							<button id="export">Export Grade</button>
+							<button onclick="router('patient')" class="patient-shade-1">Patients</button>
+							<button onclick="router('normal')" class="normal-shade-1">Normals</button>
+							<button onclick="router('upload')">Upload</button>
+							<button onclick="router('his')">Help / Info</button>
+						</div>
+					</div>
+				</div>	<!-- END #menuCont -->
+			</div> <!-- END #menuBar -->
+					
 			<div id="gradeView">
 				<div id="cells" class="">
 
@@ -59,9 +77,14 @@
 								<input type="radio" name="grade" value="non-perfused" id="gradeNonPerf"><label for="gradeNonPerf">Non-Perfused</label><br>
 								<input type="radio" name="grade" value="blockage" id="gradeBlock"><label for="gradeBlock">Blockage</label><br>
 							</form>
+							<div id="contrastSettings" class="">
+								<p>Contrast: <span id="contrastOutputPercent">100</span>%</p>
+								<div id="contrastSlider" class=""></div><div id="cSlidFix"></div>
+							</div>
 						</div>
-
+				
 						<div id="gradingButtons" class="cellContainer patient-shade-1">
+							<div id="autoSaveNotif" class=""></div>
 							<button id="nextNormalBtn" class="normal-shade-1" onclick="nextNormal()">Cycle Normal</button>
 							<button id="nextCell" onclick="nextCell()">Next Cell</button>
 						</div>
@@ -107,41 +130,8 @@
 				</div>
 			</div>
 			
-
-			<div id="settings" >
-				
-				<div id="menuCont">
-					<button id="menuBtn">Menu</button>
-					<div id="menuDropdownCont">
-						<div id="menuDropdown">
-							<button id="export">Export Grade</button>
-							<button onclick="router('patient')" class="patient-shade-1">Patients</button>
-							<button onclick="router('normal')" class="normal-shade-1">Normals</button>
-							<button onclick="router('upload')">Upload</button>
-							<button onclick="router('his')">Help / Info</button>
-						</div>
-					</div>
-				</div>
-				
 			
-
-				
-
-				<button id="quickViewBtn">Quick View</button>
-				<button id="toggleUngradedCellBtn" onclick="highlightUngradedCells()">Ungraded Cells</button>
-				<button id="toggleNormalsBtn" class="normal-shade-1" onclick="toggleNormalsBar()">Hide Normal Images</button>				
-				<button id="toggleGridsBtn" onclick="toggleGrids()">Hide Grids</button>
-				
-				<button id="gradeViewSwitchBtn" onclick="switchToGradeView()">Switch to Grade View</button>
-				
-				<div id="contrastSettings" class="">
-					<p>Contrast: <span id="contrastOutputPercent">100</span>%</p>
-					<div id="contrastSlider" class=""></div><div id="cSlidFix"></div>
-				</div>
-				
-				<div id="autoSaveNotif" class=""></div>
-				
-			</div><!-- END #settings -->
+			<button id="gradeViewSwitchBtn" onclick="switchToGradeView()">Switch to Grade View</button>			
 		</div><!-- END #rightScreen -->
 	</div><!-- END #topScreen -->
 
@@ -194,6 +184,7 @@
 	{% endif %}
 
 {% endblock %}
+
 
 {% block js %}
 <script src="{{url_for('static', filename='js/carousel.js')}}"></script>
