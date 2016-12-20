@@ -29,6 +29,15 @@ arg1 =''
 if len(sys.argv) > 1:
 	arg1 = sys.argv[1]
 
+# Use when running locally so you generates thumbnails for images only uploaded to server
+def updateThumbnails():
+	files = os.listdir(config.UPLOAD_FOLDER_NORM)
+	for image in files:
+		path = os.path.join(config.UPLOAD_FOLDER_NORM, image)
+		i = Image.open(path)
+		i.thumbnail((500,500), Image.ANTIALIAS)
+		i.save(os.path.join(config.THUMBNAIL_PATH, image))
+
 # Listen on external IPs
 # For us, listen to port 3000 so you can just run 'python app.py' to start the server
 if __name__ == '__main__':
@@ -40,11 +49,3 @@ if __name__ == '__main__':
 	else: 
 		app.run()
 
-# Use when running locally so you generates thumbnails for images only uploaded to server
-def updateThumbnails():
-	files = os.listdir(config.UPLOAD_FOLDER_NORM)
-	for image in files:
-		path = os.path.join(config.UPLOAD_FOLDER_NORM, image)
-		i = Image.open(path)
-		i.thumbnail((500,500), Image.ANTIALIAS)
-		i.save(os.path.join(config.THUMBNAIL_PATH, image))

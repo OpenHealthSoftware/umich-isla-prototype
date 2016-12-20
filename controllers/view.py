@@ -139,7 +139,7 @@ def get_user_route():
 # Assumes a grader won't grade the same image twice in one day. If they do, the previous will be overwritten
 @view.route('/saveGrading', methods=['GET', 'POST'])
 def save_grade_route():
-	if REMOTE_USER' in request.environ:
+	if 'REMOTE_USER' in request.environ:
 		user = request.environ['REMOTE_USER']
 		imgId = request.form['imgId']
 		gradeData = request.form['gradeData']
