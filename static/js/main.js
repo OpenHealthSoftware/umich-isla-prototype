@@ -63,11 +63,10 @@ $('document').ready()
 				$(this).click(function(){toggleQuickView();});
 		});
 
-		// get the git release version
-
-
+		// keyboard shortcutes
 		$(window).keydown(keydownRouter);
 }
+// Effects: selects the radio button at index optionIndex and submits that as the grade
 function enterGrade(optionIndex)
 {
 	var radioForm = $('input[name=grade]');
@@ -76,6 +75,7 @@ function enterGrade(optionIndex)
 	radioForm[optionIndex].checked = true;
 	submitGrade();
 }
+
 function keydownRouter(e)
 {
 	switch (e.which) 
@@ -410,7 +410,7 @@ var quickView = true;
 function toggleQuickView()
 {
 	var c = document.getElementById('cellViewCanvas');
-	if (quickView == false)
+	if (quickView == false) // turn on quickview
 	{
 		$('area').each(function(){$(this).unbind()});
 		$('area').each(function(){
@@ -419,6 +419,8 @@ function toggleQuickView()
 			$(this).hover(function(){drawCellManager(id)});
 			$(this).click(function(){toggleQuickView();});
 		});
+		// enable grid 
+		if (areGridsShowing == false) toggleGrids();
 	}
 	else {
 		$('area').each(function(){$(this).unbind()});
