@@ -1,10 +1,10 @@
-static/images/normals/
-static/images/uploads/
-static/images/thumbnails/
+public/static/images/normals/
+public/static/images/uploads/
+public/static/images/thumbnails/
 *.pyc
 
 ### For Server ###
-database.db
+application/database.db
 *.log
 *.lock
-version.txt
+application/version.txt

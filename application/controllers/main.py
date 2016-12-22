@@ -8,12 +8,9 @@ import os
 
 main = Blueprint('main', __name__)
 
-THUMBNAIL_PATH = config.THUMBNAIL_PATH
-
 
 @main.route('/', methods=['GET', 'POST'])
 def main_route():
-	path = THUMBNAIL_PATH
 	type = ''
 	form = ''
 
@@ -32,9 +29,9 @@ def main_route():
 
 	data = {
 		"images" : images,
-		"imgPath" : path,
 		"type" : type
 	}
+
 	if form and form['getContent']:
 		html = render_template("index.html", **data)
 		return jsonify(html=html)

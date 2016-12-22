@@ -25,7 +25,7 @@
 		{% if type == 'patient' %}
 		<a href="view?p={{p['imgId']}}" class="aPrev">
 			<div id="imgPrev{{loop.index}}" class="imgPrev">
-				<img src="{{ imgPath + p['imgId'] + '.' + p['format'] }}">
+				<img src="{{ url_for('static', filename='images/thumbnails/' + p['imgId'] + '.' + p['format']) }}">
 			</div>
 		</a>
 			{% if graded %}
@@ -36,7 +36,7 @@
 			{% endif %}
 		{% else %}
 			<div id="imgPrev{{loop.index}}" class="imgPrev">
-				<img src="{{ imgPath + p['imgId'] + '.' + p['format'] }}">
+				<img src="{{ url_for('static', filename='images/thumbnails/' + p['imgId'] + '.' + p['format']) }}">
 			</div>
 		{% endif %}
 		

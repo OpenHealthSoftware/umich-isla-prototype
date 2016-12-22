@@ -6,10 +6,9 @@ import os
 from PIL import Image
 
 STATIC_PATH = config.STATIC_PATH
-TEMPLATES_PATH = config.TEMPLATES_PATH
 # Initialize Flask app
 #app = Flask(__name__, template_folder='templates', static_folder="static")
-app = Flask(__name__, template_folder=TEMPLATES_PATH, static_folder=STATIC_PATH)
+app = Flask(__name__, template_folder='templates', static_folder=STATIC_PATH)
 
 
 # Register the controllers
@@ -44,8 +43,6 @@ if __name__ == '__main__':
 	# listen on external IPs
 	if arg1 == 'localMav':
 		app.run(host=config.env['host'], port=config.env['port'], debug=True)
-	if arg1 == 'update':
-		updateThumbnails()
 	else: 
 		app.run()
 

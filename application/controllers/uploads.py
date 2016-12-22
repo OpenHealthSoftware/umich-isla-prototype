@@ -12,7 +12,9 @@ uploads = Blueprint('uploads', __name__)
 
 UPLOAD_FOLDER_P = config.UPLOAD_FOLDER_P
 UPLOAD_FOLDER_NORM = config.UPLOAD_FOLDER_NORM
-THUMBNAIL_PATH = config.THUMBNAIL_PATH
+F_UPLOAD_FOLDER_P = config.F_UPLOAD_FOLDER_P
+F_UPLOAD_FOLDER_NORM = config.F_UPLOAD_FOLDER_NORM
+THUMBNAIL_PATH = config.F_THUMBNAIL_PATH
 GRID_PATH = config.GRID_PATH
 C_GRID_PATH = config.C_GRID_PATH
 GRID_PREFIX = config.GRID_PREFIX
@@ -42,9 +44,9 @@ def uploadImg(request, type):
 	upFolder = ''
 	# type
 	if type == "normal":
-		upFolder = UPLOAD_FOLDER_NORM
+		upFolder = F_UPLOAD_FOLDER_NORM
 	elif type == 'patient':
-		 upFolder = UPLOAD_FOLDER_P
+		 upFolder = F_UPLOAD_FOLDER_P
 
 	# check if the post request has the file part
 	if 'img' not in request.files:
@@ -134,9 +136,9 @@ def createGriddedImage(originCoords, foveaCoords, imgName, iFormat, xPerc, yPerc
 
 	# Load images
 	if type == "normal":
-		uploadPath = UPLOAD_FOLDER_NORM
+		uploadPath = F_UPLOAD_FOLDER_NORM
 	else:
-		uploadPath = UPLOAD_FOLDER_P
+		uploadPath = F_UPLOAD_FOLDER_P
 
 	grid = Image.open(GRID_PATH, 'r')
 	faImg = Image.open(uploadPath + imgName + iFormat, 'r')

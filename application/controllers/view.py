@@ -45,7 +45,7 @@ def getPageData(imgId):
 		"xOffset" : gridData['xOffsetPerc'],
 		"yOffset" : gridData['yOffsetPerc'],
 		"gridScaleRatio": gridData['scaleRatio'], 
-		"gitVersion" :  open(VERSION_FILE, 'r').readline()
+		"gitVersion" :  open(VERSION_FILE, 'r').readline().replace('\n', '')
 	}
 
 	return data

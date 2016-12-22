@@ -10,13 +10,12 @@ VERSION_FILE = './version.txt'
 
 # For file uploads
 STATIC_PATH = '../public/static'
-TEMPLATES_PATH = '../public/templates'
-if len(sys.argv) > 1 and sys.argv[1] == 'localMav':
-	STATIC_PATH = './static'
-	TEMPLATES_PATH = './templates'
-UPLOAD_FOLDER_P = STATIC_PATH + '/images/uploads/'
-UPLOAD_FOLDER_NORM = STATIC_PATH +'/images/normals/'
-THUMBNAIL_PATH = STATIC_PATH + '/images/thumbnails/'
+F_UPLOAD_FOLDER_P = STATIC_PATH + '/images/uploads/'
+F_UPLOAD_FOLDER_NORM = STATIC_PATH +'/images/normals/'
+F_THUMBNAIL_PATH = STATIC_PATH + '/images/thumbnails/'
+UPLOAD_FOLDER_P = 'images/uploads/' # from static
+UPLOAD_FOLDER_NORM = 'images/normals/' # from static
+THUMBNAIL_PATH = 'images/thumbnails/' # from static
 ALLOWED_EXTENSIONS = set(['png', 'PNG', 'jpg', 'bmp', 'gif'])
 GRID_PATH = STATIC_PATH + '/images/grid15x16.png'
 C_GRID_PATH = STATIC_PATH + '/images/grid15x16.jpg' #for contout need nonalpha
