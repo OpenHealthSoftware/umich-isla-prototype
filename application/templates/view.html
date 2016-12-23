@@ -67,7 +67,7 @@
 				<div id="cells" class="">
 
 					<div class="cellRow" id="gradeButtons"> <!-- Grading buttons -->
-						<div class="cellContainer patient-shade-1">
+						<div class="cellContainer">
 							<form id="gradeForm">
 								<input type="radio" name="grade" value="perfused" id="gradePerf"><label for="gradePerf">Perfused</label><br>
 								<input type="radio" name="grade" value="non-perfused" id="gradeNonPerf"><label for="gradeNonPerf">Non-Perfused</label><br>
@@ -79,33 +79,35 @@
 							</div>
 						</div>
 				
-						<div id="gradingButtons" class="cellContainer patient-shade-1">
+						<div id="gradingButtons" class="cellContainer">
 							<div id="autoSaveNotif" class=""></div>
 							<button id="nextNormalBtn" class="normal-shade-1" onclick="cycleNormal(1)">Cycle Normal</button>
 							<button id="nextCell" onclick="nextCell()">Next Cell</button>
 						</div>
 					</div>
 
-					<div class="cellRow"><!-- Selected cells -->
-						<div id="gradeCell" class="cellContainer patient-shade-1">
+					<div class="cellRow">
+						<div class="cellContainer">
 							<p class="cellLabel">Selected Cell</p>
+						</div>
+					</div>
+
+					<div class="cellRow"><!-- Selected cells -->
+						<div id="gradeCell" class="cellContainer" style="width: auto">
 							<canvas id="cellViewCanvas" class="cellCanvas" width="0" height="0"></canvas>
 						</div>
 
-						<div id="normalCell" class="cellContainer normal-shade-1">
-							<p class="cellLabel">Normal Cell</p>							
+						<div id="normalCell" class="cellContainer">			
 							<canvas id="normalCellViewCanvas" class="cellCanvas" width="0" height="0"></canvas>
 						</div>
 					</div><!-- END .cellRow -->
 
 					<div class="cellRow"> <!-- Flipped/mirrored cells -->
-						<div class="cellContainer patient-shade-2">
-							<canvas id="mainCellFlippedCanvas" class="cellCanvas" width="0" height="0"></canvas>
-							<p class="cellLabel">Selected Cell - Flipped</p>							
+						<div class="cellContainer" style="width: auto">
+							<canvas id="mainCellFlippedCanvas" class="cellCanvas" width="0" height="0"></canvas>						
 						</div>
-						<div class="cellContainer normal-shade-2">
+						<div class="cellContainer">
 							<canvas id="normalCellFlippedCanvas" class="cellCanvas" width="0" height="0"></canvas>
-							<p class="cellLabel">Normal Cell - Flipped</p>
 						</div>
 					</div> <!-- END .cellRow -->					
 				</div> <!-- END #cells -->
