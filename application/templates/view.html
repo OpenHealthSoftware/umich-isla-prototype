@@ -20,8 +20,8 @@
 		<div id="leftScreen" class="split split-horizontal content" >
 			<div id="fullView">
 				{% if not img['imgId'] %}
-						<button onclick="router('patient')" class="patient-shade-1 btn-large">Click to Grade an Image</button>
-						<button onclick="router('upload')" class="btn-large">Click to Upload an Image</button>
+						<button onclick="router('patient')" class="patient-shade-1 btn-large">Click to Grade an Existing Image</button>
+						<button onclick="router('upload')" class="btn-large">Click to Upload a New Control or Patient Image</button>
 				{%  else %}
 
 				{% set faSrc = url_for('static', filename='images/uploads/' + img['imgId'] + '.' + img['format']) %}
