@@ -23,8 +23,8 @@ def getImageData(imgId):
 	results = cursor.fetchone()
 	return results
 
-def getControlsFromDb(eye):
-	cursor.execute("SELECT * FROM images WHERE eye=? and type='normal'", (eye,) )
+def getControlsFromDb(side):
+	cursor.execute("SELECT * FROM images WHERE side=? and type='normal'", (side,) )
 	results = cursor.fetchall()
 	return results
 
@@ -54,9 +54,9 @@ def isImageGraded(imgId):
 
 # Effects: Runs a MySQL query that inserts a photo into the photo table
 # returns true if successful
-def insertImageToDB(inFormat, imgId, refName, eye, comments, type):
-	cursor.execute("INSERT INTO images (format, imgId, referenceName, eye, comments, type)" + 
-		"VALUES (?,?,?,?,?,?)", (inFormat, imgId, refName, eye, comments, type) )
+def insertImageToDB(inFormat, imgId, refName, side, comments, type):
+	cursor.execute("INSERT INTO images (format, imgId, referenceName, side, comments, type)" + 
+		"VALUES (?,?,?,?,?,?)", (inFormat, imgId, refName, side, comments, type) )
 	conn.commit()
 	if (cursor.fetchall()):
 		return True

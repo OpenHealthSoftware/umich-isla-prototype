@@ -5,7 +5,7 @@ CREATE TABLE images(
 	imgId CHAR(32) NOT NULL,
 	format CHAR(3) NOT NULL,
 	referenceName CHAR(250),
-	eye CHAR(5) NOT NULL,
+	side CHAR(5) NOT NULL,
 	comments TEXT,
 	type VARCHAR(7) NOT NULL,
 	PRIMARY KEY(imgId)

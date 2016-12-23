@@ -21,8 +21,8 @@ USER = 'mav'
 #	USER = request.environ['REMOTE_USER']
 
 # Effects: returns a list of control image src
-def getControls(eye):
-	controls = getControlsFromDb(eye)
+def getControls(side):
+	controls = getControlsFromDb(side)
 	# create src url for controls
 	controlsSrc = []
 	for i in controls:
@@ -36,7 +36,7 @@ def getPageData(imgId):
 	
 	coords = processImageGrid(C_GRID_PATH)
 	image = getImageData(imgId)
-	controls = getControls(image['eye'])
+	controls = getControls(image['side'])
 	gridData = getGridData(imgId)
 	gradeSession = getGradesFromUser(USER, imgId)
 

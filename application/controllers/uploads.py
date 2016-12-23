@@ -60,7 +60,7 @@ def uploadImg(request, type):
 	if file and fileExt: # If file and extension aren't null
 		filename = generateFilename(file.filename)
 
-		eye = form['eye']
+		side = form['side']
 		refName = ''
 		comments = ''
 
@@ -72,7 +72,7 @@ def uploadImg(request, type):
 
 
 		# save to database
-		insertImageToDB(fileExt, filename, refName, eye, comments, type)
+		insertImageToDB(fileExt, filename, refName, side, comments, type)
 		# save to server
 		file.save(os.path.join(upFolder, filename + '.' + fileExt))
 		
