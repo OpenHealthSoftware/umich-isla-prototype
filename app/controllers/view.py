@@ -17,8 +17,6 @@ GRADES_PATH = config.GRADES_PATH
 VERSION_FILE = config.VERSION_FILE
 
 USER = 'nullUser'
-if request.environ['REMOTE_USER']:
-	USER = request.environ['REMOTE_USER']
 NUM_NORM_PREV = 5
 
 # Effects: returns a list of control image src
@@ -60,6 +58,9 @@ def getPageData(imgId):
 
 @view.route('/view', methods=['GET', 'POST'])
 def main_route():
+	if request.environ['REMOTE_USER']:
+		USER = request.environ['REMOTE_USER']
+
 	gradeView = True
 	data = {}
 
