@@ -35,7 +35,7 @@ def getGridData(imgId):
 		return results
 
 def getGradesFromUser(userId, imgId):
-	cursor.execute("SELECT * FROM grades WHERE userId=? AND imgId=? ORDER BY gradeId ASC", 
+	cursor.execute("SELECT * FROM grades WHERE userId=? AND imgId=? AND finishedGrading='false' ORDER BY gradeId ASC", 
 		(userId, imgId))
 	results = cursor.fetchall()
 	return results
@@ -43,6 +43,13 @@ def getGradesFromUser(userId, imgId):
 def getGradesFromId(gradeId):
 	cursor.execute("SELECT * FROM grades where gradeId=? LIMIT 1", (gradeId,))
 	results = cursor.fetchone()
+	return results
+
+
+def isImageGraded(imgId):
+	cursor.execute("SELECT * FROM grades where imgId=? AND finishedGrading='true'", (imgId,))
+	#cursor.execute("SELECT * FROM grades where imgId=? GROUP BY userId", (imgId,))
+	results = cursor.fetchall()
 	return results
 
 # Effects: Runs a MySQL query that inserts a photo into the photo table

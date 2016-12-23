@@ -27,8 +27,15 @@ def main_route():
 	else:
 		images = getImages('patient')
 
+	imageGrades = {}
+	for i in images:
+		results = isImageGraded(i['imgId'])
+		imageGrades[i['imgId']] = results
+	
+	print "\n\n\n\n", imageGrades, "\n\n\n"
 	data = {
 		"images" : images,
+		"imageGrades": imageGrades,
 		"type" : type
 	}
 
