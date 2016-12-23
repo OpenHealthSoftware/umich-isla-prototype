@@ -119,14 +119,6 @@
 				
 			</div> <!-- END #gradeView -->
 
-			<div id="wrap-settingsIcon" class="">
-				<div id="settingsIcon" onclick="toggleSettings()">
-					<svg fill="#C0C0C0" height="48" viewBox="0 0 24 24" width="48">
-						<path id="left" d="M15.41 7.41L14 6l-6 6 6 6 1.41-1.41L10.83 12z"/>
-						<path id="right" style="display:none" d="M10 6L8.59 7.41 13.17 12l-4.58 4.59L10 18l6-6z"/>
-					</svg>
-				</div>
-			</div>
 			
 			
 			<button id="gradeViewSwitchBtn" onclick="switchToGradeView()">Switch to Grade View</button>			
@@ -172,16 +164,18 @@
 
 	{% if gradeSessions %}
 	<div id="form-popup" class="popup">
+		<div id="wrap-form">
 		<h3>It looks like you have graded this image before. You can select from some of your saved data or start a new session.</h3>
 		<form id="loadGradeForm">
 			{% for g in gradeSessions %}
 			<input type="radio" name="gradeSession" value={{g['gradeId']}} id="{{g['gradeId']}}">
-			<label for="{{g['gradeId']}}">Time: {{g['timestamp']}} Cells Graded: {{g['cellsGraded']}} Session: {{g['sessionId']}}</label><br/>
+			<label for="{{g['gradeId']}}">Time: {{g['timestamp']}} UTC  |  Cells Graded: {{g['cellsGraded']}}  |  Session: {{g['sessionId']}}</label><br/>
 			{% endfor %}
 			<input type="radio" name="gradeSession" value="-1" id="newOption">
 			<label for="newOption">New grading session</label>
 		</form>
 		<button id="loadGradeBtn" onclick="loadGrades()">Select</button>
+		</div>
 	</div>
 	{% endif %}
 
