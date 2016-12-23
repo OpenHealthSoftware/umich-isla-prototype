@@ -16,10 +16,10 @@ C_GRID_PATH = config.C_GRID_PATH
 GRADES_PATH = config.GRADES_PATH
 VERSION_FILE = config.VERSION_FILE
 
-USER = 'mav'
+USER = 'nullUser'
+if request.environ['REMOTE_USER']:
+	USER = request.environ['REMOTE_USER']
 NUM_NORM_PREV = 5
-#if request.environ['REMOTE_USER']:
-#	USER = request.environ['REMOTE_USER']
 
 # Effects: returns a list of control image src
 def getControls(side):
