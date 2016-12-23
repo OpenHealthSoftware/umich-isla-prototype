@@ -17,6 +17,7 @@ GRADES_PATH = config.GRADES_PATH
 VERSION_FILE = config.VERSION_FILE
 
 USER = 'mav'
+NUM_NORM_PREV = 5
 #if request.environ['REMOTE_USER']:
 #	USER = request.environ['REMOTE_USER']
 
@@ -45,7 +46,7 @@ def getPageData(imgId):
 		"img" : image,
 		"grid" : GRID_PATH,
 		"controls" : controls,
-		"numPrev" : 5, #number of control images to show at once
+		"numPrev" : NUM_NORM_PREV, #number of control images to show at once
 		"xOffset" : gridData['xOffsetPerc'],
 		"yOffset" : gridData['yOffsetPerc'],
 		"gridScaleRatio": gridData['scaleRatio'], 
@@ -74,7 +75,7 @@ def main_route():
 			"img" : {'imgId' : '', 'format' : ''},
 			"grid" : '',
 			"controls" : getControls('left') + getControls('right'),
-			"numPrev" : 5, #number of control images to show at once
+			"numPrev" : NUM_NORM_PREV, #number of control images to show at once
 			"xOffset" : 0,
 			"yOffset" : 0,
 			"gridScaleRatio" : 1,
