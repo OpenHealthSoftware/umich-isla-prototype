@@ -34,6 +34,17 @@ def getGridData(imgId):
 		results = cursor.fetchone()
 		return results
 
+def getGradesFromUser(userId, imgId):
+	cursor.execute("SELECT * FROM grades WHERE userId=? AND imgId=? ORDER BY gradeId ASC", 
+		(userId, imgId))
+	results = cursor.fetchall()
+	return results
+
+def getGradesFromId(gradeId):
+	cursor.execute("SELECT * FROM grades where gradeId=? LIMIT 1", (gradeId,))
+	results = cursor.fetchone()
+	return results
+
 # Effects: Runs a MySQL query that inserts a photo into the photo table
 # returns true if successful
 def insertImageToDB(inFormat, imgId, refName, eye, comments, type):
@@ -59,13 +70,21 @@ def insertGridToDB(gridId, xOffsetPerc, yOffsetPerc, imgId, scaleRatio, xDisc, y
 		return False
 
 
-def insertGradeToDB(gradeFile, userId, imgId):
-	cursor.execute("INSERT OR IGNORE INTO grades (gradeFile, userId, imgId) VALUES (?,?,?)", 
-			(gradeFile, userId, imgId)
+def insertGradeToDB(gradeFile, userId, imgId, cellsG, finished, session):
+	cursor.execute("INSERT OR REPLACE INTO grades (gradeFile, userId, imgId, cellsGraded, " +
+			"finishedGrading, sessionId) VALUES (?,?,?,?,?,?)", (gradeFile, userId, imgId, cellsG, finished, session)
 	)
 	conn.commit()
+	return cursor.lastrowid
 
 
 def deleteEntry(table, primaryKey, primaryVal):
 	cursor.execute("DELETE FROM " + table + " WHERE " + primaryKey + "=" + primaryVal);
 	conn.commit()
+
+
+def updateGradeInDB(gradeId, cellsGraded, finished):
+	cursor.execute("UPDATE grades SET cellsGraded=?, finishedGrading=? WHERE gradeId=?", 
+			(cellsGraded, finished, gradeId))
+	conn.commit()
+	

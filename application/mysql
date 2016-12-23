@@ -25,10 +25,14 @@ CREATE TABLE grids(
 );
 
 CREATE TABLE grades(
+	gradeId INTEGER,
 	gradeFile CHAR(65) NOT NULL,
 	userId CHAR(12) NOT NULL,
 	imgId CHAR(32) NOT NULL,
 	timestamp DATETIME DEFAULT CURRENT_TIMESTAMP,
-	PRIMARY KEY(gradeFile),
+	cellsGraded VARCHAR(8) NOT NULL,
+	finishedGrading BOOLEAN NOT NULL,
+	sessionId INT NOT NULL,
+	PRIMARY KEY(gradeId),
 	FOREIGN KEY(imgId) REFERENCES images(imgId)
 );

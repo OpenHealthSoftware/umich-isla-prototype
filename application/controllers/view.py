@@ -16,6 +16,10 @@ C_GRID_PATH = config.C_GRID_PATH
 GRADES_PATH = config.GRADES_PATH
 VERSION_FILE = config.VERSION_FILE
 
+USER = 'mav'
+#if request.environ['REMOTE_USER']:
+#	USER = request.environ['REMOTE_USER']
+
 # Effects: returns a list of control image src
 def getControls(eye):
 	controls = getControlsFromDb(eye)
@@ -34,6 +38,7 @@ def getPageData(imgId):
 	image = getImageData(imgId)
 	controls = getControls(image['eye'])
 	gridData = getGridData(imgId)
+	gradeSession = getGradesFromUser(USER, imgId)
 
 	data = {
 		"coords" : coords,
@@ -41,11 +46,11 @@ def getPageData(imgId):
 		"grid" : GRID_PATH,
 		"controls" : controls,
 		"numPrev" : 5, #number of control images to show at once
-		"isGridded" : isfile(UPLOAD_PATH + 'grid_' + imgId + '.' + image['format']),
 		"xOffset" : gridData['xOffsetPerc'],
 		"yOffset" : gridData['yOffsetPerc'],
 		"gridScaleRatio": gridData['scaleRatio'], 
-		"gitVersion" :  open(VERSION_FILE, 'r').readline().replace('\n', '')
+		"gitVersion" :  open(VERSION_FILE, 'r').readline().replace('\n', ''),
+		"gradeSessions": gradeSession
 	}
 
 	return data
@@ -72,7 +77,7 @@ def main_route():
 			"numPrev" : 5, #number of control images to show at once
 			"xOffset" : 0,
 			"yOffset" : 0,
-			"gridScaleRatio" : 1		
+			"gridScaleRatio" : 1,
 		}
 		return render_template("view.html", **data)
 
@@ -131,23 +136,39 @@ def normal_data_route():
 @view.route('/getUser', methods=['GET', 'POST'])
 def get_user_route():
 	rForm = request.form
-	user = ''
 	if request.form['caller'] == 'exportGrade':
-		user = request.environ['REMOTE_USER']
-	return jsonify({"user":user})
+		return jsonify({"user": USER})
+	else: return jsonify({"user":"error"})
 
-# Assumes a grader won't grade the same image twice in one day. If they do, the previous will be overwritten
 @view.route('/saveGrading', methods=['GET', 'POST'])
 def save_grade_route():
-	if 'REMOTE_USER' in request.environ:
-		user = request.environ['REMOTE_USER']
-		imgId = request.form['imgId']
-		gradeData = request.form['gradeData']
-		date = datetime.datetime.today().strftime('%Y-%m-%d')
-		gradeFilename = date + '_' + user + '_' + imgId + ".txt"
-		insertGradeToDB(gradeFilename, user, imgId)
-		gradeFile = open(GRADES_PATH + gradeFilename, 'w')
-		gradeFile.write(gradeData)
-		gradeFile.close()
-		return ('', 204)
-	return ('Not logged in', 401)
+	imgId = request.form['imgId']
+	gradeData = request.form['gradeData']
+	gradeId = request.form['gradeId']
+	print "\n\n\n\n", gradeId, "\n\n\n"
+	finished = request.form['finished']
+	cellsGraded = request.form['cellsGraded']
+	date = datetime.datetime.today().strftime('%Y-%m-%d')
+
+	inDatabase = getGradesFromId(gradeId)
+	session = ''
+	if not inDatabase:
+		session = len(getGradesFromUser(USER, imgId)) + 1
+		gradeFilename = date + '_' + USER + '_' + imgId + '_' + str(session) + '.json'
+		gradeId = insertGradeToDB(gradeFilename, USER, imgId, cellsGraded, finished, session)
+	else: 
+		session = inDatabase['sessionId']
+		updateGradeInDB(gradeId, cellsGraded, finished)
+
+	gradeFilename = date + '_' + USER + '_' + imgId + '_' + str(session) + '.json'
+	gradeFile = open(GRADES_PATH + gradeFilename, 'w')
+	gradeFile.write(gradeData)
+	gradeFile.close()
+	return jsonify({'gradeId': gradeId})
+
+
+@view.route('/loadGrade', methods=['GET', 'POST'])
+def load_grade_route():
+	gradeRow = getGradesFromId(request.form['gradeId'])
+	gradeJSON = open(GRADES_PATH + gradeRow['gradeFile'], 'r').read()
+	return gradeJSON

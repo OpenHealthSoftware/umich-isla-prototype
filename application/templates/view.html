@@ -7,11 +7,8 @@
 {% block headnav %}{% endblock %}
 {% block content %}
 	
-
-	{% if upload %}
-		<h1>testing</h1>
 	
-	{% else %}
+
 	<map name="map" id="gridMap">
 	{% for i in coords %}
 		<area id="cell_{{loop.index}}" shape="poly" coords="{{i}}" >
@@ -32,7 +29,7 @@
 				<div id="mainImgLabel" class="imgLabel patient-shade-1"><p>Grade Image</p></div>
 				<div style="position:relative;">
 					<img  id="mainFA_image" class="pic" src="{{faSrc}}">
-					<img src="{{gridSrc}}" id="grid" class="pic overlay grid" usemap="#map" {% if isGridded == true %}style="display:block"{% endif%}>
+					<img src="{{gridSrc}}" id="grid" class="pic overlay grid" usemap="#map" style="display:block">
 					<canvas id="mainFA_canvas" class="traceCanvas" width="0" height="0"></canvas>
 				</div>
 				<div id="mainNormalImgLabel" class="imgLabel normal-shade-1"><p>Normal Image</p></div>				
@@ -167,11 +164,26 @@
 	</div> <!-- END #bottomScreen -->
 
 	
-	<div id="viewFrameCont" class="">
+	<div id="viewFrameCont" class="popup">
 		<div id="exitFrame"><button>Close</button></div>
 		<div id="viewFrame"></div>
 	</div>
-	
+
+	{% if gradeSessions %}
+	<div id="form-popup" class="popup">
+		<h3>It looks like you have graded this image before. You can select from some of your saved data or start a new session.</h3>
+		<form id="loadGradeForm">
+			{% for g in gradeSessions %}
+			<input type="radio" name="gradeSession" value={{g['gradeId']}} id="{{g['gradeId']}}">
+			<label for="{{g['gradeId']}}">Time: {{g['timestamp']}} Cells Graded: {{g['cellsGraded']}} Session: {{g['sessionId']}}</label><br/>
+			{% endfor %}
+			<input type="radio" name="gradeSession" value="-1" id="newOption">
+			<label for="newOption">New grading session</label>
+		</form>
+		<button id="loadGradeBtn" onclick="loadGrades()">Select</button>
+	</div>
+	{% endif %}
+
 	<script>
 		var xOffsetPercent = {{xOffset}}, yOffsetPercent = {{yOffset}};
 		var url_view = "{{url_for('main.main_route')}}";
@@ -180,8 +192,9 @@
 		SCALE_GRID_RATIO = {{gridScaleRatio}};
 		SCALE_GRID_RATIO_NORMAL = 1;
 		var VERSION = '{{gitVersion}}';
+		var GRADE_ID = -1;
 	</script>
-	{% endif %}
+
 
 {% endblock %}
 
