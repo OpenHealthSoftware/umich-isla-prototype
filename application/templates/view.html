@@ -53,7 +53,6 @@
 					<button id="menuBtn" class="menu-btn">Menu</button>
 					<div id="menuDropdownCont">
 						<div id="menuDropdown">
-							<button id="export">Export Grade</button>
 							<button onclick="router('patient')" class="patient-shade-1">Patients</button>
 							<button onclick="router('normal')" class="normal-shade-1">Normals</button>
 							<button onclick="router('upload')">Upload</button>
@@ -158,8 +157,18 @@
 
 	
 	<div id="viewFrameCont" class="popup">
-		<div id="exitFrame"><button>Close</button></div>
-		<div id="viewFrame"></div>
+		<div id="exitFrame" class="exitFrame"><button>Close</button></div>
+		<div id="viewFrame" class="viewFrame"></div>
+	</div>
+
+	<div id="continueFrameCont" class="popup">
+		<div id="exitContinueFrame" class="exitFrame"><button>Close</button></div>
+		<div id="viewContinueFrame" class="viewFrame">
+			<br/><br/>
+			You have graded all of the cells. Choose an option to continue.<br/>
+			<button id="export">Export grade to file</button>
+			<button onclick="router('patient')" class="patient-shade-1">Grade another image</button>
+		</div>
 	</div>
 
 	{% if gradeSessions %}
