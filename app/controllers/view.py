@@ -149,6 +149,8 @@ def get_user_route():
 
 @view.route('/saveGrading', methods=['GET', 'POST'])
 def save_grade_route():
+	if request.environ['REMOTE_USER']:
+			USER = request.environ['REMOTE_USER']
 	imgId = request.form['imgId']
 	gradeData = request.form['gradeData']
 	gradeId = request.form['gradeId']
