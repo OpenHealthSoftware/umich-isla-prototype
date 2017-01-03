@@ -32,6 +32,9 @@ def getControls(side):
 # Requires: the imgId in the database
 # Effects: forms list of data needs for a page
 def getPageData(imgId):
+
+	if request.environ['REMOTE_USER']:
+		USER = request.environ['REMOTE_USER']
 	
 	coords = processImageGrid(C_GRID_PATH)
 	image = getImageData(imgId)
@@ -139,6 +142,8 @@ def normal_data_route():
 def get_user_route():
 	rForm = request.form
 	if request.form['caller'] == 'exportGrade':
+		if request.environ['REMOTE_USER']:
+			USER = request.environ['REMOTE_USER']
 		return jsonify({"user": USER})
 	else: return jsonify({"user":"error"})
 
