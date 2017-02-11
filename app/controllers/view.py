@@ -7,6 +7,7 @@ from PIL import Image
 import os
 import config
 import datetime
+import util
 
 view = Blueprint('view', __name__)
 UPLOAD_PATH = config.UPLOAD_FOLDER_P
@@ -16,7 +17,6 @@ C_GRID_PATH = config.C_GRID_PATH
 GRADES_PATH = config.GRADES_PATH
 VERSION_FILE = config.VERSION_FILE
 
-USER = 'nullUser'
 NUM_NORM_PREV = 5
 
 # Effects: returns a list of control image src
@@ -33,14 +33,13 @@ def getControls(side):
 # Effects: forms list of data needs for a page
 def getPageData(imgId):
 
-	if request.environ['REMOTE_USER']:
-		USER = request.environ['REMOTE_USER']
+	user = util.get_current_user()
 	
 	coords = processImageGrid(C_GRID_PATH)
 	image = getImageData(imgId)
 	controls = getControls(image['side'])
 	gridData = getGridData(imgId)
-	gradeSession = getGradesFromUser(USER, imgId)
+	gradeSession = getGradesFromUser(user, imgId)
 
 	data = {
 		"coords" : coords,
@@ -61,8 +60,6 @@ def getPageData(imgId):
 
 @view.route('/view', methods=['GET', 'POST'])
 def main_route():
-	if request.environ['REMOTE_USER']:
-		USER = request.environ['REMOTE_USER']
 
 	gradeView = True
 	data = {}
@@ -142,15 +139,14 @@ def normal_data_route():
 def get_user_route():
 	rForm = request.form
 	if request.form['caller'] == 'exportGrade':
-		if request.environ['REMOTE_USER']:
-			USER = request.environ['REMOTE_USER']
-		return jsonify({"user": USER})
+		user = util.get_current_user()
+		return jsonify({"user": user})
 	else: return jsonify({"user":"error"})
 
 @view.route('/saveGrading', methods=['GET', 'POST'])
 def save_grade_route():
-	if request.environ['REMOTE_USER']:
-			USER = request.environ['REMOTE_USER']
+	user = util.get_current_user()
+
 	imgId = request.form['imgId']
 	gradeData = request.form['gradeData']
 	gradeId = request.form['gradeId']
@@ -162,14 +158,14 @@ def save_grade_route():
 	inDatabase = getGradesFromId(gradeId)
 	session = ''
 	if not inDatabase:
-		session = len(getGradesFromUser(USER, imgId)) + 1
-		gradeFilename = date + '_' + USER + '_' + imgId + '_' + str(session) + '.json'
-		gradeId = insertGradeToDB(gradeFilename, USER, imgId, cellsGraded, finished, session)
+		session = len(getGradesFromUser(user, imgId)) + 1
+		gradeFilename = date + '_' + user + '_' + imgId + '_' + str(session) + '.json'
+		gradeId = insertGradeToDB(gradeFilename, user, imgId, cellsGraded, finished, session)
 	else: 
 		session = inDatabase['sessionId']
 		updateGradeInDB(gradeId, cellsGraded, finished)
 
-	gradeFilename = date + '_' + USER + '_' + imgId + '_' + str(session) + '.json'
+	gradeFilename = date + '_' + user + '_' + imgId + '_' + str(session) + '.json'
 	gradeFile = open(GRADES_PATH + gradeFilename, 'w')
 	gradeFile.write(gradeData)
 	gradeFile.close()
