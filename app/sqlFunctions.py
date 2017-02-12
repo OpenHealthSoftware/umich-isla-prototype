@@ -9,7 +9,6 @@ conn.execute("PRAGMA foreign_keys = ON")
 #cursor = db.cursor()
 
 
-
 # Effects: Runs a MySQL query that returns all images in the database
 def getImages(type):
 	cursor.execute("SELECT * FROM images WHERE type=\'" + type + "\' ORDER BY imgId DESC")
