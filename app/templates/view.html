@@ -115,6 +115,12 @@
 				
 				<div style="clear:both;"></div>
 				
+				<div id="associatedFeatures">
+					{% for a in associatedFeatures %}
+					<input type="checkbox" id="option_{{a.optionId}}" name="associatedFeature" value="{{a.name}}">{{a.name}}<br>
+					{% endfor %}
+				</div>
+				
 				
 			</div> <!-- END #gradeView -->
 

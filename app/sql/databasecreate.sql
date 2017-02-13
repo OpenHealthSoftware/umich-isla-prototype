@@ -74,11 +74,22 @@ CREATE TABLE grades(
 
 
 -- contains example images for grading associated features
-CREATE TABLE examples(
-	exampleId INTEGER NOT NULL,
+CREATE TABLE optionExamples(
+	optionId INTEGER NOT NULL,
 	type VARCHAR(50) NOT NULL,
 	filename VARCHAR(54) NOT NULL,
 	format CHAR(3) NOT NULL,
 
-	PRIMARY KEY(exampleId)
+	PRIMARY KEY(optionId),
+	FOREIGN KEY(type) REFERENCES optionType(name)
+);
+
+
+-- defines what options are available
+CREATE TABLE optionType(
+	optionId INTEGER NOT NULL,
+	name VARCHAR(30) NOT NULL UNIQUE,
+	description TEXT,
+	
+	PRIMARY KEY(optionId)
 );

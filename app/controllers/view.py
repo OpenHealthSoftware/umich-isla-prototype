@@ -29,6 +29,8 @@ def getControls(side):
 		controlsSrc.append(temp)
 	return controlsSrc
 
+
+
 # Requires: the imgId in the database
 # Effects: forms list of data needs for a page
 def getPageData(imgId):
@@ -40,6 +42,7 @@ def getPageData(imgId):
 	controls = getControls(image['side'])
 	gridData = getGridData(imgId)
 	gradeSession = getGradesFromUser(user, imgId)
+	associatedFeatures = getOptions()
 
 	data = {
 		"coords" : coords,
@@ -51,7 +54,8 @@ def getPageData(imgId):
 		"yOffset" : gridData['yOffsetPerc'],
 		"gridScaleRatio": gridData['scaleRatio'], 
 		"gitVersion" :  open(VERSION_FILE, 'r').readline().replace('\n', ''),
-		"gradeSessions": gradeSession
+		"gradeSessions": gradeSession,
+		"associatedFeatures": associatedFeatures
 	}
 
 	return data

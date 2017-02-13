@@ -37,6 +37,19 @@ INSERT INTO "grades" VALUES(6,'2017-01-03_chrisnolan_c23b63023c6af2ede13646890c3
 INSERT INTO "grades" VALUES(7,'2017-01-09_timburton_c23b63023c6af2ede13646890c34dfac_1.json','timburton','c23b63023c6af2ede13646890c34dfac','2017-01-10 01:01:14','2/240','false',1);
 
 
+INSERT INTO "optionType" (name, description) VALUES
+('Capillary loss', ''),
+('Capillary dilatation', ''),
+('IRMA', ''),
+('Narrowing/pruning', ''),
+('Arteriolar staining', ''),
+('Arteriolar contour', ''),
+('Leakage', ''),
+('New vessel', ''),
+('Artifact', ''),
+('Not sure', '');
+
+
 
 
 

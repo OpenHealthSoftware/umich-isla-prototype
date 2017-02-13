@@ -8,6 +8,10 @@ cursor = conn.cursor()
 conn.execute("PRAGMA foreign_keys = ON")
 #cursor = db.cursor()
 
+# gets the options for checkboxes
+def getOptions():
+	cursor.execute("SELECT * FROM optionType")
+	return cursor.fetchall()
 
 # Effects: Runs a MySQL query that returns all images in the database
 def getImages(type):
