@@ -16,6 +16,7 @@ app.register_blueprint(controllers.main)
 app.register_blueprint(controllers.view)
 app.register_blueprint(controllers.uploads)
 app.register_blueprint(controllers.his)
+app.register_blueprint(controllers.account)
 
 # Config
 app.config['UPLOAD_FOLDER_P'] = config.UPLOAD_FOLDER_P
@@ -24,9 +25,7 @@ app.config['GRID_PREFIX'] = config.GRID_PREFIX
 app.config['C_GRID_PATH'] = config.C_GRID_PATH
 app.config['GRID_PATH'] = config.GRID_PATH
 
-arg1 =''
-if len(sys.argv) > 1:
-	arg1 = sys.argv[1]
+
 
 # Use when running locally so you generates thumbnails for images only uploaded to server
 def updateThumbnails():
@@ -37,11 +36,12 @@ def updateThumbnails():
 		i.thumbnail((500,500), Image.ANTIALIAS)
 		i.save(os.path.join(config.THUMBNAIL_PATH, image))
 
+
 # Listen on external IPs
 # For us, listen to port 3000 so you can just run 'python app.py' to start the server
 if __name__ == '__main__':
 	# listen on external IPs
-	if arg1 == 'localMav':
+	if len(sys.argv) > 1: # only arguments will be pased to development
 		app.run(host=config.env['host'], port=config.env['port'], debug=True)
 	else: 
 		app.run()
