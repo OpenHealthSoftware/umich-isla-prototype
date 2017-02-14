@@ -67,7 +67,7 @@
 
 					<div class="cellRow" id="gradeButtons"> <!-- Grading buttons -->
 						<div class="cellContainer">
-							<form id="gradeForm">
+							<form id="gradeForm" class="submit-input-container">
 								<input type="radio" name="grade" value="perfused" id="gradePerf"><label for="gradePerf">Perfused</label><br>
 								<input type="radio" name="grade" value="non-perfused" id="gradeNonPerf"><label for="gradeNonPerf">Non-Perfused</label><br>
 								<input type="radio" name="grade" value="blockage" id="gradeBlock"><label for="gradeBlock">Blockage</label><br>
@@ -115,9 +115,12 @@
 				
 				<div style="clear:both;"></div>
 				
-				<div id="associatedFeatures">
+				<div id="associatedFeatures" class="submit-input-container">
 					{% for a in associatedFeatures %}
-					<input type="checkbox" id="option_{{a.optionId}}" name="associatedFeature" value="{{a.name}}">{{a.name}}<br>
+					<div class="option-box-element">
+						<input class="optional-input" type="checkbox" id="option_{{a.optionId}}" name="associatedFeature" value="{{a.name}}">
+						<label for="option_{{a.optionId}}">{{a.name}}</label>
+					</div>
 					{% endfor %}
 				</div>
 				
