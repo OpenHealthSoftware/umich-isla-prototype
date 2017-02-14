@@ -24,7 +24,7 @@ env = dict(
 VERSION_FILE = './version.txt'
 
 # For file uploads
-STATIC_PATH = '../public/static'
+STATIC_PATH = 'static'
 F_UPLOAD_FOLDER_P = STATIC_PATH + '/images/uploads/'
 F_UPLOAD_FOLDER_NORM = STATIC_PATH +'/images/normals/'
 F_THUMBNAIL_PATH = STATIC_PATH + '/images/thumbnails/'

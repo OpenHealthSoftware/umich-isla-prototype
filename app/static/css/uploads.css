@@ -1,0 +1,163 @@
+#addPicture
+{
+    position: relative;
+    width: 80%;
+    padding-top: 5%;
+    margin: 0 auto;
+}
+
+.popUpBox
+{
+    position: relative;
+    height: 100%;
+    width: 80%;
+    margin: 0 auto;
+    font-size: 1.2em;
+}
+
+.popUpSection input, .popUpSection textarea, .popUpSection select, 
+.popUpSection option
+{
+    width: 100%;
+    height: 45px;
+    padding: 0 1em;
+}
+
+.popUpSection input, .popUpSection textarea
+{
+    width: calc(100% - (2em + 2px));    
+}
+
+
+.popUpSection
+{
+    width: 100%;
+    margin-bottom: 4%;
+}
+
+.pop-half
+{
+    width: 45%;
+    float: left;
+}
+#popHalfFirst{
+    margin-right:10%;
+}
+
+.inputfile {
+	width: 0.1px !important;
+	height: 0.1px;
+	opacity: 0;
+	overflow: hidden;
+	position: absolute;
+	z-index: -1;
+}
+
+#fileFieldLabel
+{
+    display: inline-block;
+    background-color: #4CAF50;
+    border: none;
+    color: white;
+    text-decoration: none;
+    text-overflow: ellipsis;
+    cursor: pointer;
+    margin: 0;
+    	transition: .3s;
+   
+   width: calc(100% - 2em);
+    height: 45px;
+    padding: 0 1em; 
+}
+
+.popUpSection label
+{
+    margin-bottom: .7em;
+}
+
+#fileFieldLabel:hover{
+    	box-shadow: inset 0 0 0 3px rgba(0,0,0,.2);
+
+}
+
+#fileInner
+{
+    height: 100%;
+    width: 100%;
+}
+
+#fileInner span{
+    padding: 2%;
+    position: relative;
+    top: -15%;
+}
+
+#fileFieldLabel img{
+    height: 80%;
+    width: auto;
+    top: 15%;
+    position: relative;
+}
+
+#upload
+{
+    width: 100%;
+}
+
+#normalPrev
+{
+    height: 100%;
+    width: 100%;
+    position:relative;
+}
+
+#uploadImgCont
+{
+    height: calc(100% - 50px); /*50px = aprox btn size */
+    width: 100%;
+}
+#nImg 
+{
+    height: auto; 
+    width: auto; 
+    max-width: 100%; 
+    max-height: 100%;
+}
+
+#loading
+{
+    position: absolute;
+    top: calc(50% - 100px);
+    left: calc(50% - 100px);
+    width: 200px;
+    height: 200px;
+    background-color: red;
+    display: none;
+}
+
+#continueOptions
+{
+    position: absolute;
+    height: 25%;
+    width: 50%;
+    top: calc(75% / 2);
+    left: 25%;
+    display: none;
+}
+
+#instruct
+{
+    position: absolute;
+    top: 0;
+    padding-left: 1em;
+    font-size: 1.3em;
+    color: #c0c0c0;
+}
+
+#focusRing
+{
+	position: absolute;
+	top: 25%;
+	left:25%;
+	cursor: pointer;
+}

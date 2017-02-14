@@ -36,7 +36,7 @@ def getControls(side):
 def getPageData(imgId):
 
 	user = util.get_current_user()
-	
+	print C_GRID_PATH
 	coords = processImageGrid(C_GRID_PATH)
 	image = getImageData(imgId)
 	controls = getControls(image['side'])
