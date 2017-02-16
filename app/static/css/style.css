@@ -40,7 +40,7 @@ html, body, #fullwrap
 
 
 
-#leftScreen {height: 100%;}
+#wrapMainScreen, #leftScreen {height: 100%;}
 
 #fullView
 {

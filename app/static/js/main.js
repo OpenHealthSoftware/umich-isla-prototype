@@ -806,7 +806,6 @@ function switchToGradeView()
 		// Figure out what percentage width is required to display both images fully
 		controlBarHeight = $('#controlImgBar').height(); // save user pref
 		var maxH = ($('#fullView').height() + controlBarHeight) / 2;
-		maxH -= $('.imgLabel').height();
 		var ratio = mainImg.width() / mainImg.height();
 		var width = ratio * maxH;
 		var leftScreenPercent = (width / $('#topScreen').width()) * 100;
@@ -823,7 +822,6 @@ function switchToGradeView()
 
 		// Figure out what percentage width is required to one image fully
 		var maxH = $('#fullView').height() - controlBarHeight;
-		maxH -= $('.imgLabel').height();
 		var ratio = mainImg.width() / mainImg.height();
 		var width = ratio * maxH;
 		var leftScreenPercent = (width / $('#topScreen').width()) * 100;
@@ -935,11 +933,6 @@ function changeContrast(event, ui)
 	$('.cellCanvas').css('filter', 'contrast(' + ui.value + '%)');
 }
 
-
-// User hide main img labels
-$('.imgLabel').click(function(){
-	$('.imgLabel p').toggle();
-});
 
 
 

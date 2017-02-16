@@ -9,15 +9,12 @@
 	
 	
 
-	<map name="map" id="gridMap">
-	{% for i in coords %}
-		<area id="cell_{{loop.index}}" shape="poly" coords="{{i}}" >
-	{% endfor %}
-	</map>
 	
+	
+	<div id="wrapMenuBar"></div><!-- END #wrapMenuBar -->
 
-	<div id="topScreen" class="split split-vertical" >
-		<div id="leftScreen" class="split split-horizontal content" >
+	<div id="wrapMainScreen">
+		<div id="leftScreen" class="split split-horizontal" >
 			<div id="fullView">
 				{% if not img['imgId'] %}
 						<button onclick="router('patient')" class="patient-shade-1 btn-large">Click to Grade an Existing Image</button>
@@ -26,13 +23,11 @@
 
 				{% set faSrc = url_for('static', filename='images/uploads/' + img['imgId'] + '.' + img['format']) %}
 				{% set gridSrc = url_for('static', filename='images/uploads/grid_' + img['imgId'] + '.' + img['format']) %}
-				<div id="mainImgLabel" class="imgLabel patient-shade-1"><p>Grade Image</p></div>
 				<div style="position:relative;">
 					<img  id="mainFA_image" class="pic" src="{{faSrc}}">
 					<img src="{{gridSrc}}" id="grid" class="pic overlay grid" usemap="#map" style="display:block">
 					<canvas id="mainFA_canvas" class="traceCanvas" width="0" height="0"></canvas>
 				</div>
-				<div id="mainNormalImgLabel" class="imgLabel normal-shade-1"><p>Normal Image</p></div>				
 				<div id="mainNormal">
 					<img id="normalImg" class="pic" src="">
 					<img id="normalGrid" class="pic overlay grid" src="" >
@@ -45,7 +40,7 @@
 		{% if not img['imgId'] %}
 		{% set lock = 'lock' %}
 		{% endif %}
-		<div id="rightScreen" class="split split-horizontal content {{lock}}" >
+		<div id="rightScreen" class="split split-horizontal {{lock}}" >
 			<div id="menuBar">
 				<button id="toggleGridsBtn" class="menu-btn" onclick="toggleGrids()">Hide Grids</button>		
 				<button id="toggleUngradedCellBtn" class="menu-btn" onclick="highlightUngradedCells()">Ungraded Cells</button>		
@@ -61,7 +56,37 @@
 					</div>
 				</div>	<!-- END #menuCont -->
 			</div> <!-- END #menuBar -->
+			
+			<div id="wrapCellControl">
+				
+				<div id="cellPreview">
 					
+				</div>
+				<div id="cellTools">
+					
+				</div>
+				<div id="libraryPreview" class="hidden"></div>
+
+			</div><!-- END #wrapCellControl -->
+
+			<div id="wrapGradeOptions">
+				<div id="primaryGrade" class="firstClassOptions">
+					
+				</div>
+
+				<div id="secondaryGrades">
+					<div id="wrapAssociatedOptions" class="secondClassOptions">
+						<div></div>
+					</div>
+					<div id="definitionsToolbar">
+						
+					</div>
+				</div> <!-- END #secondaryGrades -->
+
+			</div><!--END #wrapGradeOptions -->
+
+			<div id="wrapGradeSubmit"></div>
+
 			<div id="gradeView">
 				<div id="cells" class="">
 
@@ -129,41 +154,12 @@
 
 			
 			
-			<button id="gradeViewSwitchBtn" onclick="switchToGradeView()">Switch to Grade View</button>			
 		</div><!-- END #rightScreen -->
-	</div><!-- END #topScreen -->
 
+		<div id="wrapSideBar"></div><!-- END #wrapSideBar -->
+	</div><!-- END #wrapMainScreen -->
 
-	<div id="bottomScreen" class="split split-vertical content {{lock}}" >
-		<div id="controlImgBar" class="carousel_container">
-			{% if controls|length > numPrev %}
-			{% endif %}
-			<div id='left_scroll' class="arrow">
-				<svg fill="#C0C0C0" height="48" viewBox="0 0 24 24" width="48">
-					<path d="M15.41 7.41L14 6l-6 6 6 6 1.41-1.41L10.83 12z"/>
-				</svg>
-			</div>
-			<div class='carousel_inner'>
-				<ul class='carousel_ul' id="controlImgCarouselUL">
-					{% for i in controls %}
-					<li>
-					<div id="control{{loop.index}}" class="controlPrevItem" onclick="normalSelect(this.id)">
-						<img src="{{i}}">
-					</div>
-					</li>
-				{% endfor %}
-			</div>
-			{% if controls|length > numPrev %}
-			
-			{% endif %}
-			<div id="right_scroll" class="arrow">
-				<svg fill="#C0C0C0" height="48" viewBox="0 0 24 24" width="48">
-					<path d="M10 6L8.59 7.41 13.17 12l-4.58 4.59L10 18l6-6z"/>
-				</svg>
-			</div>
-		</div>
-	</div> <!-- END #bottomScreen -->
-
+	<div id="wrapStatusBar"></div><!-- END #wrapStatusBar -->
 	
 	<div id="viewFrameCont" class="popup">
 		<div id="exitFrame" class="exitFrame"><button>Close</button></div>
@@ -197,6 +193,12 @@
 	</div>
 	{% endif %}
 
+	<map name="map" id="gridMap">
+	{% for i in coords %}
+		<area id="cell_{{loop.index}}" shape="poly" coords="{{i}}" >
+	{% endfor %}
+	</map>
+
 	<script>
 		var xOffsetPercent = {{xOffset}}, yOffsetPercent = {{yOffset}};
 		var url_view = "{{url_for('main.main_route')}}";
@@ -223,21 +225,9 @@ $('document').ready()
 {
 	var gutterSize = 7;
 
-	var topBotScreenSplit = Split(['#topScreen', '#bottomScreen'], {
-		direction: 'vertical',
-		gutterSize: gutterSize,
-		sizes : [75,25],
-		onDragEnd : function(){
-			remap();
-			// User dragged control bar open
-			if (isControlBarOpen == false)
-				toggleNormalsBar();
-		} 
-	});
-
 	var leftRightScreenSplit = Split(['#leftScreen', '#rightScreen'], { 
 		sizes : [45,55], 
-		gutterSize: gutterSize,		
+		gutterSize: gutterSize,
 		onDragEnd : function(){
 			remap();
 			if (hasCellBeenDrawn == true)
