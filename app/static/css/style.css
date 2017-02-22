@@ -45,7 +45,7 @@ html, body, #fullwrap
 
 #wrapMainScreen
 {
-	height: calc(100% - var(--menu-height) - 10px);
+	height: calc(100% - var(--menu-height) - 20px);
 	margin-top: var(--menu-height);
 	padding: 10px;
 }
@@ -434,12 +434,12 @@ input[type=button]:hover, input[type=submit]:hover, input[type=reset]:hover, but
 	max-height: 300px;
 	float: left;
 }
-.ratio {
+.maintain-ratio {
   width: 50%; /* width of element inside .ratio */
   display: inline-block;
   position: relative;
 }
-.ratio:after {
+.maintain-ratio:after {
   padding-top: 100%;  /* 1:1 ratio */
   display: block;
   content: '';
@@ -492,11 +492,12 @@ input[type=button]:hover, input[type=submit]:hover, input[type=reset]:hover, but
 }
 #wrapGradeOptions
 {
-	height: calc(100% - 242px);
+	height: calc(100% - 376px);
 	width: 100%;
 }
 #primaryGrade{
 	height: var(--button-height);
+	position: relative;
 }
 
 .firstClassOptions input { display: none; }
@@ -507,21 +508,22 @@ input[type=button]:hover, input[type=submit]:hover, input[type=reset]:hover, but
 	/* TODO: bottom of scroll bar gets hidden */
 }
 #wrapAssociatedOptions { height: 100%; }
-#associatedFeatures { width: 70%; }
+#associatedFeatures { width: 100%; }
 .secondClassOptions
 {
 	padding: 10px;
 }
 .secondClassOptions input { display: none; }
 
-
 .option-box-element
 {
 	position: relative;
 	height: var(--slim-el-height);
-	width: 100%;
+	width: 70%;
+	float: left;
 	background-color: blue;
 }
+.option-box-element:last-child, .example-box-element:last-child{margin-bottom:0;}
 .options-label
 {
 	position:relative;
@@ -531,4 +533,67 @@ input[type=button]:hover, input[type=submit]:hover, input[type=reset]:hover, but
 	display: inline-block;
 	background-color:green;
 	line-height: calc(var(--button-height) - 13.33px / 2); /* TODO: fix hacky*/
+}
+.example-box-element
+{
+	position: relative;
+	width: calc(30% - 15px);
+	height: var(--slim-el-height);
+	left: 15px;
+	float: left;
+	background-color: white;
+}
+.wrapExampleSelection
+{
+	position: relative;
+	margin: 0 auto;
+	width: 93px;
+	height: 100%;
+}
+.wrapExampleSelection svg { float: left; width: 34px;}
+.selectExampleBtn
+{
+	position: relative;
+	width: 25px;
+	height: 25px;
+	/*left: calc(50% - 12.5px);*/
+	top: calc( (var(--slim-el-height) - 25px) / 2);
+	float: left;
+	background-color: grey;
+}
+
+
+#wrapGradeSubmit { width: 100%; }
+
+
+/* ### examples library */
+.asscFeatureEl {display: none;}
+#associatedFeatureExample
+{
+	position: absolute;
+	width: 100%;
+	height: 100%;
+}
+#asscFtNameExampleInfo
+{
+	width: 100%;
+	height: 42px;
+	background-color:white;
+	position: absolute;
+	transition: .3s;
+	z-index:2;
+}
+#asscFtNameExampleInfo p
+{
+	text-overflow: ellipsis;
+	overflow: hidden;
+	white-space: nowrap;
+}
+#asscFtNameExampleInfo:hover
+{
+	height: auto;
+}
+#asscFtNameExampleInfo:hover > p{
+	overflow: visible;
+	white-space: normal;
 }
