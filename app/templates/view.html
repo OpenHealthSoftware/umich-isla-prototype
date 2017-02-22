@@ -11,7 +11,20 @@
 
 	
 	
-	<div id="wrapMenuBar"></div><!-- END #wrapMenuBar -->
+	<div id="wrapMenuBar">
+		<div id="dropMenu1" class="wrap-menu">
+			<button id="menuBtn" class="menu-btn">Menu</button>
+			<div id="menuDropdownCont" class="wrap-drop-down">
+				<div id="menuDropdown" class="drop-down">
+					<button onclick="router('patient')" class="patient-shade-1">Patients</button>
+					<button onclick="router('normal')" class="normal-shade-1">Normals</button>
+					<button onclick="router('upload')">Upload</button>
+					<button onclick="router('his')">Help / Info</button>
+				</div>
+			</div>
+		</div> <!-- END #menuBar -->
+
+	</div><!-- END #wrapMenuBar -->
 
 	<div id="wrapMainScreen">
 		<div id="leftScreen" class="split split-horizontal" >
@@ -41,30 +54,30 @@
 		{% set lock = 'lock' %}
 		{% endif %}
 		<div id="rightScreen" class="split split-horizontal {{lock}}" >
-			<div id="menuBar">
-				<button id="toggleGridsBtn" class="menu-btn" onclick="toggleGrids()">Hide Grids</button>		
-				<button id="toggleUngradedCellBtn" class="menu-btn" onclick="highlightUngradedCells()">Ungraded Cells</button>		
-				<div id="menuCont">
-					<button id="menuBtn" class="menu-btn">Menu</button>
-					<div id="menuDropdownCont">
-						<div id="menuDropdown">
-							<button onclick="router('patient')" class="patient-shade-1">Patients</button>
-							<button onclick="router('normal')" class="normal-shade-1">Normals</button>
-							<button onclick="router('upload')">Upload</button>
-							<button onclick="router('his')">Help / Info</button>
-						</div>
-					</div>
-				</div>	<!-- END #menuCont -->
-			</div> <!-- END #menuBar -->
 			
 			<div id="wrapCellControl">
 				
-				<div id="cellPreview">
-					
+				<div id="cellPreview" class="cellControlModule">
+					<canvas id="cellViewCanvas" class="cellCanvas" width="0" height="0"></canvas>
 				</div>
-				<div id="cellTools">
-					
+				<div id="cellTools" class="cellControlModule">
+					<div id="cellNavigator" class="margin-bottom-small">
+						<button id="prevCell" class="half-width button-row-el" onclick="nextCell(-1)">Prev Cell</button>						
+						<button id="nextCell" class="half-width button-row-el" onclick="nextCell()">Next Cell</button>
+					</div>
+					<div id="wrapContrastControl" class="margin-bottom-small">
+						<div id="contrastSliderLabel">
+							<p>Contrast: <span id="contrastOutputPercent">100</span>%</p>
+						</div>
+						<div id="wrapContrastSlider">
+							<div id="contrastSlider" class=""></div><div id="cSlidFix"></div>
+						</div>
+					</div>
+					<div id="wrapCellStats">
+						
+					</div>
 				</div>
+				
 				<div id="libraryPreview" class="hidden"></div>
 
 			</div><!-- END #wrapCellControl -->
@@ -97,16 +110,12 @@
 								<input type="radio" name="grade" value="non-perfused" id="gradeNonPerf"><label for="gradeNonPerf">Non-Perfused</label><br>
 								<input type="radio" name="grade" value="blockage" id="gradeBlock"><label for="gradeBlock">Blockage</label><br>
 							</form>
-							<div id="contrastSettings" class="">
-								<p>Contrast: <span id="contrastOutputPercent">100</span>%</p>
-								<div id="contrastSlider" class=""></div><div id="cSlidFix"></div>
-							</div>
+							
 						</div>
 				
 						<div id="gradingButtons" class="cellContainer">
 							<div id="autoSaveNotif" class=""></div>
 							<button id="nextNormalBtn" class="normal-shade-1" onclick="cycleNormal(1)">Cycle Normal</button>
-							<button id="nextCell" onclick="nextCell()">Next Cell</button>
 						</div>
 					</div>
 
@@ -117,9 +126,7 @@
 					</div>
 
 					<div class="cellRow"><!-- Selected cells -->
-						<div id="gradeCell" class="cellContainer" style="width: auto">
-							<canvas id="cellViewCanvas" class="cellCanvas" width="0" height="0"></canvas>
-						</div>
+						
 
 						<div id="normalCell" class="cellContainer">			
 							<canvas id="normalCellViewCanvas" class="cellCanvas" width="0" height="0"></canvas>

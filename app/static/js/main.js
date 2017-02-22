@@ -639,6 +639,25 @@ function drawCellManager(cellId)
 	document.getElementById('gradeCell').style.display = "block";	
 }
 
+// Requires: ratio = { x: width, y: height}
+// Effects: returns the dimensions of a ratio that can be fit inside a given size i.e. bounded by (maxWidth, maxHeight)
+function scaleTo(ratio, maxWidth, maxHeight)
+{
+	var xToYratio = ratio.x / ratio.y;
+	var yToXratio = ratio.y / ratio.x;
+	var newDimensions = { x: 0, y: 0};
+	var scaler = 1;
+
+	if (xToYratio >= yToXratio)
+	{
+		scaler = maxWidth / ratio.x;
+	} else {
+		scaler = maxHeight / ratio.y;
+	}
+	newDimensions.x = ratio.x * scaler;
+	newDimensions.y = ratio.y * scaler;
+	return newDimensions;
+}
 
 
 // Requires: id of the cell to be drawn, the canvas to draw on, the source image id, the coordinates, and what type (normal or patient)
@@ -677,24 +696,10 @@ function drawCell(cellId, canv, imgId, cellCoords, type)
 	var ctx = canv.getContext("2d");
 	var img = document.getElementById(imgId);
 	// Set canvas dimensions
-	ctx.canvas.width = $('#gradeView').width() * .47; //.47 = .cellContainer width
-	var ratio = cellHeight / cellWidth;
-	ctx.canvas.height = ctx.canvas.width * ratio;
+	var dim = scaleTo({x:cellWidth, y:cellHeight}, $('#cellPreview').width(), $('#cellPreview').height());
 
-	// account for cells that are too high
-	var maxHeight = $('#rightScreen').height();
-		maxHeight -= $('#menuBar').outerHeight();
-		maxHeight -= $('#gradeButtons').outerHeight();
-		maxHeight -= $('.cellLabel').outerHeight() * 2;
-		maxHeight -= parseInt($('.cellCanvas').css('padding')) * 4;
-		maxHeight /= 2;
-		maxHeight -= 12; //magic
-	while (ctx.canvas.height > maxHeight)
-	{
-		ctx.canvas.width -= 2;
-		ctx.canvas.height = ctx.canvas.width * ratio;
-	}
-
+	ctx.canvas.height = dim.y;
+	ctx.canvas.width = dim.x;
 
 	//Since canvas is pulling image data as native size use difference
 	var diff = img.naturalWidth / img.width;
