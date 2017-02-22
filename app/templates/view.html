@@ -54,62 +54,76 @@
 		{% set lock = 'lock' %}
 		{% endif %}
 		<div id="rightScreen" class="split split-horizontal {{lock}}" >
-			
-			<div id="wrapCellControl">
-				
-				<div id="cellPreview" class="cellControlModule">
-					<canvas id="cellViewCanvas" class="cellCanvas" width="0" height="0"></canvas>
-				</div>
-				<div id="cellTools" class="cellControlModule">
-					<div id="cellNavigator" class="margin-bottom-small">
-						<button id="prevCell" class="half-width button-row-el" onclick="nextCell(-1)">Prev Cell</button>						
-						<button id="nextCell" class="half-width button-row-el" onclick="nextCell()">Next Cell</button>
-					</div>
-					<div id="wrapContrastControl" class="margin-bottom-small">
-						<div id="contrastSliderLabel">
-							<p>Contrast: <span id="contrastOutputPercent">100</span>%</p>
-						</div>
-						<div id="wrapContrastSlider">
-							<div id="contrastSlider" class=""></div><div id="cSlidFix"></div>
-						</div>
-					</div>
-					<div id="wrapCellStats">
-						
-					</div>
-				</div>
-				
-				<div id="libraryPreview" class="hidden"></div>
-
-			</div><!-- END #wrapCellControl -->
-
-			<div id="wrapGradeOptions">
-				<div id="primaryGrade" class="firstClassOptions">
+			<div id="wrapGrading">
+				<div id="wrapCellControl" class="margin-bottom-small">
 					
-				</div>
-
-				<div id="secondaryGrades">
-					<div id="wrapAssociatedOptions" class="secondClassOptions">
-						<div></div>
+					<div class="ratio">
+					<div id="cellPreview" class="cellControlModule">
+						<canvas id="cellViewCanvas" class="cellCanvas" width="0" height="0"></canvas>
+					</div></div><div class="ratio">
+					<div id="cellTools" class="cellControlModule">
+						<div id="cellNavigator" class="margin-bottom-small">
+							<button id="prevCell" class="half-width button-row-el" onclick="nextCell(-1)">Prev Cell</button>						
+							<button id="nextCell" class="half-width button-row-el" onclick="nextCell()">Next Cell</button>
+						</div>
+						<div id="wrapContrastControl" class="margin-bottom-small">
+							<div id="contrastSliderLabel">
+								<p>Contrast: <span id="contrastOutputPercent">100</span>%</p>
+							</div>
+							<div id="wrapContrastSlider">
+								<div id="contrastSlider" class=""></div><div id="cSlidFix"></div>
+							</div>
+						</div>
+						<div id="wrapCellStats">
+							
+						</div>
+					</div><!-- END #cellTools -->
 					</div>
-					<div id="definitionsToolbar">
-						
+					
+					<div id="libraryPreview" class="hidden"></div>
+
+				</div><!-- END #wrapCellControl -->
+
+				<div id="wrapGradeOptions">
+					<div id="primaryGrade" class="firstClassOptions margin-bottom-small">
+						<form id="gradeForm" class="submit-input-container">
+							<input type="radio" name="grade" value="perfused" id="gradePerf">
+							<input type="radio" name="grade" value="non-perfused" id="gradeNonPerf">
+							<input type="radio" name="grade" value="blockage" id="gradeBlock">
+							<label for="gradePerf" class="button button-row-el third-width">Perfused</label>
+							<label for="gradeNonPerf" class="button button-row-el third-width">Non-Perfused</label>
+							<label for="gradeBlock" class="button button-row-el third-width">Blockage</label>
+						</form>
 					</div>
-				</div> <!-- END #secondaryGrades -->
 
-			</div><!--END #wrapGradeOptions -->
+					<div id="secondaryGrades">
+						<div id="wrapAssociatedOptions" class="secondClassOptions">
+							<div id="associatedFeatures" class="submit-input-container">
+								{% for a in associatedFeatures %}
+								<div class="option-box-element margin-bottom-small">
+									<input class="optional-input" type="checkbox" id="option_{{a.optionId}}" name="associatedFeature" value="{{a.name}}">
+									<label for="option_{{a.optionId}}" class="checkbox"></label>
+									<label for="option_{{a.optionId}}" class="options-label">{{a.name}}</label>
+								</div>
+								{% endfor %}
+							</div>
+						</div>
+						<div id="definitionsToolbar">
+							
+						</div>
+					</div> <!-- END #secondaryGrades -->
 
-			<div id="wrapGradeSubmit"></div>
+				</div><!--END #wrapGradeOptions -->
+
+				<div id="wrapGradeSubmit"></div>
+			</div> <!-- END #wrapGrading -->
 
 			<div id="gradeView">
 				<div id="cells" class="">
 
 					<div class="cellRow" id="gradeButtons"> <!-- Grading buttons -->
 						<div class="cellContainer">
-							<form id="gradeForm" class="submit-input-container">
-								<input type="radio" name="grade" value="perfused" id="gradePerf"><label for="gradePerf">Perfused</label><br>
-								<input type="radio" name="grade" value="non-perfused" id="gradeNonPerf"><label for="gradeNonPerf">Non-Perfused</label><br>
-								<input type="radio" name="grade" value="blockage" id="gradeBlock"><label for="gradeBlock">Blockage</label><br>
-							</form>
+							
 							
 						</div>
 				
@@ -147,14 +161,7 @@
 				
 				<div style="clear:both;"></div>
 				
-				<div id="associatedFeatures" class="submit-input-container">
-					{% for a in associatedFeatures %}
-					<div class="option-box-element">
-						<input class="optional-input" type="checkbox" id="option_{{a.optionId}}" name="associatedFeature" value="{{a.name}}">
-						<label for="option_{{a.optionId}}">{{a.name}}</label>
-					</div>
-					{% endfor %}
-				</div>
+				
 				
 				
 			</div> <!-- END #gradeView -->

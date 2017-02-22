@@ -240,15 +240,7 @@ html, body, #fullwrap
 	bottom: 0;
 	padding-top: 1em;
 }
-#gradeForm
-{
-	padding-top: .5em;
-}
-#gradeForm input
-{
-	cursor:pointer;
-	margin: .5em;
-}
+
 
 #gradeForm label{
 	cursor:pointer;
@@ -257,7 +249,7 @@ html, body, #fullwrap
 
 
 
-input[type=button], input[type=submit], input[type=reset], button 
+input[type=button], input[type=submit], input[type=reset], button, .button
 {
     background-color: #4CAF50;
     width: calc(100% - 4px);
@@ -269,6 +261,13 @@ input[type=button], input[type=submit], input[type=reset], button
     cursor: pointer;
 	transition: .3s;
 }
+/* To match non-button elements*/
+.button 
+{
+	padding: 1em 0 1em 0;
+	font: 13.33px Arial;
+	text-align: center;
+}
 
 .btn-large
 {
@@ -276,7 +275,7 @@ input[type=button], input[type=submit], input[type=reset], button
 	padding: 2em;
 }
 
-input[type=button]:hover, input[type=submit]:hover, input[type=reset]:hover, button:hover
+input[type=button]:hover, input[type=submit]:hover, input[type=reset]:hover, button:hover, .button:hover
 {
 	box-shadow: inset 0 0 0 3px rgba(0,0,0,.2);
 }
@@ -404,25 +403,51 @@ input[type=button]:hover, input[type=submit]:hover, input[type=reset]:hover, but
 }
 
 
-.half-width{
-	width: 50%;
+.checkbox
+{
+	position: absolute;
+	width: calc(var(--slim-el-height) - 10px);
+	height: calc(var(--slim-el-height) - 10px);
+	padding: 5px;
+	background-color:red;
 }
+.checkbox:after
+{
+	position: absolute;
+	width: 25px;
+	height: 25px;
+	content: '';
+	background-color: blue;
+}
+
+
+.half-width{ width: 50%; }
+.third-width{ width: 33.33%; }
+
 .margin-top-small {margin-top: 15px;}
 .margin-bottom-small {margin-bottom: 15px;}
 
 .cellControlModule{
-	position: relative;
-	width: 50%;
+	width: 100%;
 	max-width: 300px;
 	height: 100%;
 	max-height: 300px;
 	float: left;
 }
+.ratio {
+  width: 50%; /* width of element inside .ratio */
+  display: inline-block;
+  position: relative;
+}
+.ratio:after {
+  padding-top: 100%;  /* 1:1 ratio */
+  display: block;
+  content: '';
+}
 
 #wrapCellControl
 {
 	width: 100%;
-	height: 33.33%;
 	max-height: 300px;
 }
 
@@ -454,4 +479,56 @@ input[type=button]:hover, input[type=submit]:hover, input[type=reset]:hover, but
 	top: 135px;
 	bottom: 0;
 	background-color: blue;
+}
+
+
+
+/* ### Grading section */
+#wrapGrading 
+{
+	height: 100%;
+	width: 100%; 
+	max-width: 600px;
+}
+#wrapGradeOptions
+{
+	height: calc(100% - 242px);
+	width: 100%;
+}
+#primaryGrade{
+	height: var(--button-height);
+}
+
+.firstClassOptions input { display: none; }
+#secondaryGrades
+{ 
+	height: calc(100% - var(--button-height) - 15px);
+	overflow: auto;
+	/* TODO: bottom of scroll bar gets hidden */
+}
+#wrapAssociatedOptions { height: 100%; }
+#associatedFeatures { width: 70%; }
+.secondClassOptions
+{
+	padding: 10px;
+}
+.secondClassOptions input { display: none; }
+
+
+.option-box-element
+{
+	position: relative;
+	height: var(--slim-el-height);
+	width: 100%;
+	background-color: blue;
+}
+.options-label
+{
+	position:relative;
+	width: calc(100% - 10px - var(--button-height));
+	height: 100%;
+	left: calc(10px + var(--button-height));
+	display: inline-block;
+	background-color:green;
+	line-height: calc(var(--button-height) - 13.33px / 2); /* TODO: fix hacky*/
 }
