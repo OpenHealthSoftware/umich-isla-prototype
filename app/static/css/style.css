@@ -4,6 +4,7 @@
 	--normal-shade-2: #8befff;
 	--patient-shade-1:#F1C40F;
 	--patient-shade-2:#f8e187;
+	--background-shade: #343434;
 	--menu-height: 30px;
 	--button-height: 42px;
 	--slim-el-height: 35px;
@@ -267,6 +268,11 @@ input[type=button], input[type=submit], input[type=reset], button, .button
 	padding: 1em 0 1em 0;
 	font: 13.33px Arial;
 	text-align: center;
+	transition: .3s;
+}
+.button-selected
+{
+	background-color: red !important;
 }
 
 .btn-large
@@ -406,20 +412,31 @@ input[type=button]:hover, input[type=submit]:hover, input[type=reset]:hover, but
 .checkbox
 {
 	position: absolute;
-	width: calc(var(--slim-el-height) - 10px);
-	height: calc(var(--slim-el-height) - 10px);
-	padding: 5px;
-	background-color:red;
+	width: calc(var(--slim-el-height) - 8px);
+	height: calc(var(--slim-el-height) - 8px);
+	padding: 4px;
+	background-color:#808080;
+	cursor: pointer;
 }
 .checkbox:after
 {
 	position: absolute;
-	width: 25px;
-	height: 25px;
+	width: 29px;
+	height: 29px;
+	top: 3px;
+	left: 3px;
 	content: '';
-	background-color: blue;
+	background-color: var(--background-shade);
 }
-
+.checkbox-selected
+{
+	position:absolute;	
+	width: 21px;
+	height: 21px;
+	margin: 3px;
+	background-color: #808080;	
+	z-index: 6;
+}
 
 .half-width{ width: 50%; }
 .third-width{ width: 33.33%; }
@@ -521,18 +538,20 @@ input[type=button]:hover, input[type=submit]:hover, input[type=reset]:hover, but
 	height: var(--slim-el-height);
 	width: 70%;
 	float: left;
-	background-color: blue;
+	/*background-color: blue;*/
 }
 .option-box-element:last-child, .example-box-element:last-child{margin-bottom:0;}
 .options-label
 {
 	position:relative;
-	width: calc(100% - 10px - var(--button-height));
+	width: calc(100% - 20px - var(--button-height));
 	height: 100%;
 	left: calc(10px + var(--button-height));
+	padding-left: 10px;
 	display: inline-block;
-	background-color:green;
+	background-color:grey;
 	line-height: calc(var(--button-height) - 13.33px / 2); /* TODO: fix hacky*/
+	cursor: pointer;
 }
 .example-box-element
 {
@@ -608,7 +627,7 @@ input[type=button]:hover, input[type=submit]:hover, input[type=reset]:hover, but
 }
 .selectedAssociatedFeature
 {
-	background-color:red !important;
+	background-color: #1c1c1c !important;
 }
 
 

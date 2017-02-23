@@ -75,7 +75,7 @@ CREATE TABLE grades(
 
 -- contains example images for grading associated features
 CREATE TABLE optionExamples(
-	optionId INTEGER NOT NULL,
+	optionExId INTEGER NOT NULL,
 	type VARCHAR(50) NOT NULL,
 	filename VARCHAR(54) NOT NULL,
 	format CHAR(3) NOT NULL,

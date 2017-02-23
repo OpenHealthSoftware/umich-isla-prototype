@@ -10,6 +10,7 @@ exportData[0] = {
 	normalImgCompared: "Normal Image used in comparsion",
 	contrastVal : "Contrast percentage used",
 };
+libraryExamplesUsed = {};
 startTime = 0;
 endTime = 0;
 numCellsGraded = 0;
@@ -173,9 +174,20 @@ function isCellValid(cellId)
 }
 
 // Effects: creates associative array with graded cell data and adds it exportData
-$('input:radio[name=grade]').change(function(){
-	setTimeout(function(){submitGrade()}, 200); //delay so the grader can see the selection for a bit
+// $('input:radio[name=grade]').change(function(){
+// 	setTimeout(function(){submitGrade()}, 200); //delay so the grader can see the selection for a bit
+// })
+
+
+$('.options-label, .checkbox').mouseup(function(){
+	$(this).parent().find('.check-select').toggleClass('checkbox-selected');
+});
+$('#gradeForm .button').mouseup(function(){
+
+	$('#gradeForm .button-selected').removeClass('button-selected');
+	$(this).addClass('button-selected');
 })
+
 
 // names of input that will be submitted for a grade
 // recordedInput = [
@@ -201,8 +213,7 @@ function isInputFilled(el)
 		case 'radio':
 		{	
 			// see if others in group are checked
-			if (el.attr('type') === "radio" && 
-				$('input[name=' + el.attr('name') + ']:checked').val() === "")
+			if (!$('input[name=' + el.attr('name') + ']:checked').val())
 				isFilled = false;
 			break;
 		}
@@ -231,7 +242,13 @@ function resetInput(els)
 			el[0].checked = false;
 		else el.val("");
 	}
+	resetInputGUI();
 }
+function resetInputGUI()
+{
+	$('.checkbox-selected, .button-selected').removeClass('checkbox-selected button-selected');
+}
+
 
 function submitGrade()
 {
@@ -248,6 +265,7 @@ function submitGrade()
 	}); 
 	var inputValues = [];
 
+	// check if input is optional or not, and get values
 	for (var i = 0; i < recordedInput.length; i++)
 	{
 		var el = recordedInput[i];
@@ -262,7 +280,7 @@ function submitGrade()
 		{
 			// dont add unchecked radio values
 			if (el.attr('type') === "radio" && el.is(":checked") === false)
-				continue;			
+				continue;
 			else inputValues.push(el.val());
 		}
 	}
@@ -272,6 +290,7 @@ function submitGrade()
 	endTime = t.getTime();
 	var cellId = currentCell;
 	var gradingTime = (endTime - startTime) / 1000;
+
 	var normalSrc = normImg.attr('src');
 	var normalId = normalSrc.split('/').pop();
 	if (selectedNormId == '')
@@ -284,6 +303,7 @@ function submitGrade()
 		cell : cellId,
 		gradeTime: gradingTime,
 		normalImgCompared: normalId,
+	//	optionsCompared: libraryExamplesUsed, TODO
 		contrastVal : contrast,
 	};
 
@@ -294,8 +314,8 @@ function submitGrade()
 	resetInput(recordedInput);
 	
 	// Save grades to server
-	gradeExporter('autosave');
-
+	//gradeExporter('autosave');
+	console.log(data);
 	if (numCellsGraded == numCells)
 	{
 		$('#continueFrameCont').show();
@@ -439,11 +459,14 @@ function highlightUngradedCells()
 
 
 
-function nextCell()
+function nextCell(itr)
 {
-	if (isCellValid(currentCell + 1))
-		currentCell++;
+	if (!itr)
+		itr = 1;
+	if (isCellValid(currentCell + itr))
+		currentCell += itr;
 	else currentCell = 1;
+	console.log(currentCell, itr);
 	drawCellManager(currentCell);
 }
 
@@ -519,8 +542,6 @@ function toggleQuickView()
 	}
 	quickView = !quickView;
 }
-$('#quickViewBtn').click(function(){ toggleQuickView();});
-
 
 function remapNormal()
 {
@@ -588,9 +609,9 @@ function drawCellManager(cellId)
 	var normId = normImg.prop('id');
 
 	var patientCanvas = document.getElementById('cellViewCanvas');
-	var patientFlippedCanvas = document.getElementById('mainCellFlippedCanvas');
-	var normalCanvas = document.getElementById('normalCellViewCanvas');
-	var normalFlippedCanvas = document.getElementById('normalCellFlippedCanvas');
+	// var patientFlippedCanvas = document.getElementById('mainCellFlippedCanvas');
+	// var normalCanvas = document.getElementById('normalCellViewCanvas');
+	// var normalFlippedCanvas = document.getElementById('normalCellFlippedCanvas');
 
 
 	// convert cellId to row col 
@@ -611,24 +632,9 @@ function drawCellManager(cellId)
 	var n = [], nF = [];	
 
 	drawCell(cellId, patientCanvas, mainId, mainCoords, "patient");
-	drawCell(mirrorCell, patientFlippedCanvas, mainId, mainCoordsFlipped, "patient", "flipped");
-	if (selectedNormId != '')
-	{
-		for (var i in normCoords[cellId-1]) n.push(normCoords[cellId-1][i]); // Since slice seems to cause bugs
-		for (var i in normCoords[mirrorCell-1]) nF.push(normCoords[mirrorCell-1][i]);
-		drawCell(cellId, normalCanvas, normId, n, "normal");
-		drawCell(mirrorCell, normalFlippedCanvas, normId, nF, "normal", "flipped");
-	}
 
 	// Highlighting
 	highlightCell(mainCoords, mainCanv, mainImg.width(), mainImg.height(), PATIENT_SHADE_1);
-	highlightCell(mainCoordsFlipped, mainCanv, mainImg.width(), mainImg.height(), PATIENT_SHADE_2, "flippedCells");
-	if (selectedNormId != '')
-	{
-		highlightCell(n, normCanv, normImg.width(), normImg.height(), NORMAL_SHADE_1);
-		highlightCell(nF, normCanv, normImg.width(), normImg.height(), NORMAL_SHADE_2, "flippedCells");
-	}
-	
 
 	// Updates 
 	console.log("Grading cell " + cellId);
@@ -636,7 +642,6 @@ function drawCellManager(cellId)
 	currentCell = cellId;
 	hasCellBeenDrawn = true;
 
-	document.getElementById('gradeCell').style.display = "block";	
 }
 
 // Requires: ratio = { x: width, y: height}
@@ -981,18 +986,17 @@ function loadGrades()
 
 //$('.selectExampleBtn').click(function(){toggleExample($(this))});
 var currentExampleName;
+var currentExampleId;
 function toggleExample(el,name)
 {
 	el = $(el);
-	console.log(el, name);
-	currentExampleName = name;
 
 	// if not showing
 	var associatedFeaturesDom = $('.asscFeatureEl');
 	if (associatedFeaturesDom.is(':visible') === false)
 	{
 		// ajax request to get info
-		api_getExample(currentExampleName, function(){
+		api_getExample(name, function(){
 			// show related elements after ajax is success
 			associatedFeaturesDom.show();
 			el.siblings('.asscFeatureEl2').css({'opacity': 1});
@@ -1009,6 +1013,13 @@ function toggleExample(el,name)
 	}
 }
 
+// libraryExamplesUsed = 
+// {
+// 	"name" : [
+// 		{ "exampleImgId": x, "timeUsed": y},
+
+// 	]
+// }
 function api_getExample(name, successCallback)
 {
 	$.ajax({
@@ -1016,10 +1027,24 @@ function api_getExample(name, successCallback)
 			type: 'POST',
 			success:  function(resp)
 			{
+				var name = resp["name"];
 				$('#associatedFeaturePreview').attr('src', resp['imgSrc']);
-				$('#asscFtName').html(resp['name']);
+				$('#asscFtName').html(name);
 				$('#asscFtDesc').html(resp['desc']);
 
+				// start recording time looking at new example
+				// var startTime = new Date();
+				// stateTime = startTime.getTime();
+				// libraryExamplesUsed[name].push(
+				// 	{"exampleImgId": resp['optionExId'], "timeUsed": startTime}
+				// );
+				// // end time for old example
+				// libraryExamplesUsed[currentExampleName].
+
+				// update current values
+				currentExampleId = resp['optionExId'];
+				currentExampleName = name;
+				
 				successCallback();
 			},
 			error: function(err){console.log("Fetch example error", err)},

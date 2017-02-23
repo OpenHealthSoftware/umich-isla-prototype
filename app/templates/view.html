@@ -109,7 +109,7 @@
 								{% for a in associatedFeatures %}
 								<div class="option-box-element margin-bottom-small">
 									<input class="optional-input" type="checkbox" id="option_{{a.optionId}}" name="associatedFeature" value="{{a.name}}">
-									<label for="option_{{a.optionId}}" class="checkbox"></label>
+									<label for="option_{{a.optionId}}" class="checkbox"><div class="check-select"></div></label>
 									<label for="option_{{a.optionId}}" class="options-label">{{a.name}}</label>
 								</div>
 								<div class="example-box-element margin-bottom-small">
@@ -129,7 +129,7 @@
 
 				</div><!--END #wrapGradeOptions -->
 
-				<button id="submitGrade">Submit</button>
+				<button id="submitGrade" onclick="submitGrade()">Submit</button>
 			</div> <!-- END #wrapGrading -->
 
 			<!--<div id="toolbar">
