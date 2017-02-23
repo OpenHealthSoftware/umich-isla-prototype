@@ -3,6 +3,7 @@ import controllers
 import config
 import sys
 import os
+import api
 from PIL import Image
 
 STATIC_PATH = config.STATIC_PATH
@@ -17,6 +18,7 @@ app.register_blueprint(controllers.view)
 app.register_blueprint(controllers.uploads)
 app.register_blueprint(controllers.his)
 app.register_blueprint(controllers.account)
+app.register_blueprint(api.api)
 
 # Config
 app.config['UPLOAD_FOLDER_P'] = config.UPLOAD_FOLDER_P

@@ -80,7 +80,7 @@ CREATE TABLE optionExamples(
 	filename VARCHAR(54) NOT NULL,
 	format CHAR(3) NOT NULL,
 
-	PRIMARY KEY(optionId),
+	PRIMARY KEY(optionExId),
 	FOREIGN KEY(type) REFERENCES optionType(name)
 );
 

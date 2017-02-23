@@ -1034,7 +1034,9 @@ var currentExampleId;
 function toggleExample(el,name)
 {
 	el = $(el);
-
+	if (el.hasClass('selectedAssociatedFeature') === true)
+		resetExampleButtons();
+	
 	// if not showing
 	var associatedFeaturesDom = $('.asscFeatureEl');
 	if (associatedFeaturesDom.is(':visible') === false)
@@ -1051,10 +1053,17 @@ function toggleExample(el,name)
 	else
 	{
 		associatedFeaturesDom.hide();
-		el.siblings('.asscFeatureEl2').css({'opacity': 0});		
-		el.removeClass('selectedAssociatedFeature');	
-		el.children('p').html('?');			
+		resetExampleButtons();		
 	}
+}
+function resetExampleButtons()
+{
+	$('.selectExampleBtn').each(function()
+	{
+			$(this).siblings('.asscFeatureEl2').css({'opacity': 0});
+			$(this).removeClass('selectedAssociatedFeature');	
+			$(this).children('p').html('?');	
+	});
 }
 
 // libraryExamplesUsed = 
@@ -1064,17 +1073,22 @@ function toggleExample(el,name)
 
 // 	]
 // }
+var currentExampleImgIdx = 0;
+var exampleImgs = [];
 function api_getExample(name, successCallback)
 {
 	$.ajax({
-			url: '/api/v1/library/example/' + name,
+			url: '/api/v1/library/example/' + encodeURI(name),
 			type: 'POST',
+			dataType: 'json',
 			success:  function(resp)
 			{
+				console.log(resp);
 				var name = resp["name"];
-				$('#associatedFeaturePreview').attr('src', resp['imgSrc']);
+				$('#associatedFeaturePreview').attr('src', resp['imgSrcs'][0]);
 				$('#asscFtName').html(name);
 				$('#asscFtDesc').html(resp['desc']);
+
 
 				// start recording time looking at new example
 				// var startTime = new Date();
@@ -1086,7 +1100,9 @@ function api_getExample(name, successCallback)
 				// libraryExamplesUsed[currentExampleName].
 
 				// update current values
-				currentExampleId = resp['optionExId'];
+				//currentExampleId = resp['optionExId'];
+				exampleImgs = resp['imgSrcs'];
+				currentExampleImgIdx = 0;
 				currentExampleName = name;
 				
 				successCallback();
@@ -1098,8 +1114,6 @@ function api_getExample(name, successCallback)
 // gets the next or previous example in the library
 function getExample(direction)
 {
-	if (direction == -1)
-	{
-
-	}
+	currentExampleImgIdx = (currentExampleImgIdx + direction) % exampleImgs.length;
+	$('#associatedFeaturePreview').attr('src', exampleImgs[currentExampleImgIdx]);
 }

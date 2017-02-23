@@ -28,6 +28,7 @@ STATIC_PATH = 'static'
 F_UPLOAD_FOLDER_P = STATIC_PATH + '/images/uploads/'
 F_UPLOAD_FOLDER_NORM = STATIC_PATH +'/images/normals/'
 F_THUMBNAIL_PATH = STATIC_PATH + '/images/thumbnails/'
+LIBRARY_PATH = STATIC_PATH + '/images/library/'
 UPLOAD_FOLDER_P = 'images/uploads/' # from static
 UPLOAD_FOLDER_NORM = 'images/normals/' # from static
 THUMBNAIL_PATH = 'images/thumbnails/' # from static

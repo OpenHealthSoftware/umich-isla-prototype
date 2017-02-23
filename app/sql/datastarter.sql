@@ -38,17 +38,32 @@ INSERT INTO "grades" VALUES(7,'2017-01-09_timburton_c23b63023c6af2ede13646890c34
 
 
 INSERT INTO "optionType" (name, description) VALUES
-('Capillary loss', ''),
-('Capillary dilatation', ''),
-('IRMA', ''),
-('Narrowing/pruning', ''),
-('Arteriolar staining', ''),
-('Arteriolar contour', ''),
-('Leakage', ''),
-('New vessel', ''),
-('Artifact', ''),
-('Not sure', '');
+('Capillary loss', 'asdf asdf asd wefwef adsfasdf wef'),
+('Capillary dilatation', 'asdfaosdfp wef-wo9fw masvier 0as9rfj2k  pasdon0r ad0v jrkfpa'),
+('IRMA', 'asdfaosdfp wef-wo9fw masvier 0as9rfj2k  pasdon0r ad0v jrkfpa'),
+('Narrowing/pruning', 'asdfaosdfp wef-wo9fw masvier 0as9rfj2k  pasdon0r ad0v jrkfpa'),
+('Arteriolar staining', 'asdfaosdfp wef-wo9fw masvier 0as9rfj2k  pasdon0r ad0v jrkfpa'),
+('Arteriolar contour', 'asdfaosdfp wef-wo9fw masvier 0as9rfj2k  pasdon0r ad0v jrkfpa'),
+('Leakage', 'asdfaosdfp wef-wo9fw masvier 0as9rfj2k  pasdon0r ad0v jrkfpa'),
+('New vessel', 'asdfaosdfp wef-wo9fw masvier 0as9rfj2k  pasdon0r ad0v jrkfpa'),
+('Artifact', 'asdfaosdfp wef-wo9fw masvier 0as9rfj2k  pasdon0r ad0v jrkfpa'),
+('Not sure', 'asdfaosdfp wef-wo9fw masvier 0as9rfj2k  pasdon0r ad0v jrkfpa');
 
+INSERT INTO "optionExamples" (type, filename, format) VALUES
+('Capillary loss', 'ex1', 'png'),
+('Capillary loss', 'ex2', 'png'),
+('Capillary loss', 'ex3', 'png'),
+('Capillary loss', 'ex4', 'png'),
+('Capillary dilatation', 'ex5', 'png'),
+('IRMA', 'ex6', 'png'),
+('IRMA', 'ex7', 'png'),
+('Narrowing/pruning', 'ex8', 'png'),
+('Arteriolar staining', 'ex9', 'png'),
+('Arteriolar contour', 'ex10', 'png'),
+('Leakage', 'ex11', 'png'),
+('New vessel', 'ex12', 'png'),
+('Artifact', 'ex13', 'png'),
+('Not sure', 'ex14', 'png');
 
 
 
