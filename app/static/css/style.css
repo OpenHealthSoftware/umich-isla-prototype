@@ -96,6 +96,7 @@ html, body, #fullwrap
 	display:none;
 	top: 0;
 	left: 0;
+	opacity: .5;
 }
 
 .imgLabel

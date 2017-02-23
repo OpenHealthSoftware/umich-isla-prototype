@@ -23,7 +23,7 @@ def albumGet(name):
 			"desc" : info['description'],
 			"imgSrcs": imgs
 		}
-		print "\n\n\n", response, "\n\n"
+
 		return jsonify(response)
 		# TODO: don't prepend file path, save data
 		

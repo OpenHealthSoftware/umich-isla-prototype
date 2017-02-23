@@ -24,8 +24,8 @@ var mainCanv = document.getElementById('mainFA_canvas');
 var normCanv = document.getElementById('norm_canvas');
 var currentCell = 0;
 var previousCell = 0;
-var GRID_ROWS = 16;
-var GRID_COLS = 15;
+var GRID_ROWS = 19;
+var GRID_COLS = 35;
 
 // COLORS
 
@@ -326,7 +326,7 @@ function submitGrade()
 	resetInput(recordedInput);
 	
 	// Save grades to server
-	//gradeExporter('autosave');
+	gradeExporter('autosave');
 	console.log(data);
 	if (numCellsGraded == numCells)
 	{

@@ -97,7 +97,7 @@ def insertGradeToDB(gradeFile, userId, imgId, cellsG, finished, session):
 
 
 def deleteEntry(table, primaryKey, primaryVal):
-	cursor.execute("DELETE FROM " + table + " WHERE " + primaryKey + "=" + primaryVal);
+	cursor.execute("DELETE FROM " + table + " WHERE " + primaryKey + "='" + primaryVal+"'")
 	conn.commit()
 
 
