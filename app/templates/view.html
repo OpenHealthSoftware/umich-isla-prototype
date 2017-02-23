@@ -99,16 +99,7 @@
 						</form>
 						<div id="asscFtNameExampleInfo" class="asscFeatureEl">
 							<h1 id="asscFtName"></h1>
-							<p id="asscFtDesc">asdfasd
-								asdfasdasd
-								asdfasdsd
-
-								asdfasdasf
-								asdfasd
-								asdfasd
-								more tasdyasdhnapsdoubasdpuabsd8uas huasd 89asdh 8dsa7h awe78d wed a7sdhas8d we87dw 8w7ed 
-								
-							</p>
+							<p id="asscFtDesc"></p>
 						</div>
 					</div>
 
@@ -123,9 +114,9 @@
 								</div>
 								<div class="example-box-element margin-bottom-small">
 									<div class="wrapExampleSelection">
-										<svg class="asscFeatureEl" fill="#C0C0C0" height="35" viewBox="0 0 24 24" width="35s"><path d="M15.41 7.41L14 6l-6 6 6 6 1.41-1.41L10.83 12z"/></svg>
-										<div class="selectExampleBtn"></div>
-										<svg class="asscFeatureEl" fill="#C0C0C0" height="35" viewBox="0 0 24 24" width="35"><path d="M10 6L8.59 7.41 13.17 12l-4.58 4.59L10 18l6-6z"/></svg>	
+										<svg class="asscFeatureEl2" onlick="getExample(-1)"fill="#C0C0C0" height="35" viewBox="0 0 24 24" width="35"><path d="M15.41 7.41L14 6l-6 6 6 6 1.41-1.41L10.83 12z"/></svg>
+										<div class="selectExampleBtn" onclick="toggleExample(this, '{{a.name}}')"><p>?</p></div>
+										<svg class="asscFeatureEl2" onclick="getExample(1)" fill="#C0C0C0" height="35" viewBox="0 0 24 24" width="35"><path d="M10 6L8.59 7.41 13.17 12l-4.58 4.59L10 18l6-6z"/></svg>	
 									</div>			
 								</div>
 								{% endfor %}
@@ -141,55 +132,11 @@
 				<button id="submitGrade">Submit</button>
 			</div> <!-- END #wrapGrading -->
 
-			<div id="gradeView">
-				<div id="cells" class="">
-
-					<div class="cellRow" id="gradeButtons"> <!-- Grading buttons -->
-						<div class="cellContainer">
-							
-							
-						</div>
-				
-						<div id="gradingButtons" class="cellContainer">
-							<div id="autoSaveNotif" class=""></div>
-							<button id="nextNormalBtn" class="normal-shade-1" onclick="cycleNormal(1)">Cycle Normal</button>
-						</div>
-					</div>
-
-					<div class="cellRow">
-						<div class="cellContainer">
-							<p class="cellLabel">Selected Cell</p>
-						</div>
-					</div>
-
-					<div class="cellRow"><!-- Selected cells -->
-						
-
-						<div id="normalCell" class="cellContainer">			
-							<canvas id="normalCellViewCanvas" class="cellCanvas" width="0" height="0"></canvas>
-						</div>
-					</div><!-- END .cellRow -->
-
-					<div class="cellRow"> <!-- Flipped/mirrored cells -->
-						<div class="cellContainer" style="width: auto">
-							<canvas id="mainCellFlippedCanvas" class="cellCanvas" width="0" height="0"></canvas>						
-						</div>
-						<div class="cellContainer">
-							<canvas id="normalCellFlippedCanvas" class="cellCanvas" width="0" height="0"></canvas>
-						</div>
-					</div> <!-- END .cellRow -->					
-				</div> <!-- END #cells -->
-
-				
-				
-				<div style="clear:both;"></div>
-				
-				
-				
-				
-			</div> <!-- END #gradeView -->
-
-			
+			<!--<div id="toolbar">
+				<div class="toolbarEl">
+					<img src="/static/images/ic_grid_on.svg"/>
+				</div>
+			</div>-->
 			
 		</div><!-- END #rightScreen -->
 

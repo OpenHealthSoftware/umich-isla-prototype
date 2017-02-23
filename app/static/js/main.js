@@ -975,3 +975,62 @@ function loadGrades()
 	}
 	$('#form-popup').hide();
 }
+
+
+
+
+//$('.selectExampleBtn').click(function(){toggleExample($(this))});
+var currentExampleName;
+function toggleExample(el,name)
+{
+	el = $(el);
+	console.log(el, name);
+	currentExampleName = name;
+
+	// if not showing
+	var associatedFeaturesDom = $('.asscFeatureEl');
+	if (associatedFeaturesDom.is(':visible') === false)
+	{
+		// ajax request to get info
+		api_getExample(currentExampleName, function(){
+			// show related elements after ajax is success
+			associatedFeaturesDom.show();
+			el.siblings('.asscFeatureEl2').css({'opacity': 1});
+			el.addClass('selectedAssociatedFeature');
+			el.children('p').html('X');
+		});
+	}
+	else
+	{
+		associatedFeaturesDom.hide();
+		el.siblings('.asscFeatureEl2').css({'opacity': 0});		
+		el.removeClass('selectedAssociatedFeature');	
+		el.children('p').html('?');			
+	}
+}
+
+function api_getExample(name, successCallback)
+{
+	$.ajax({
+			url: '/api/v1/library/example/' + name,
+			type: 'POST',
+			success:  function(resp)
+			{
+				$('#associatedFeaturePreview').attr('src', resp['imgSrc']);
+				$('#asscFtName').html(resp['name']);
+				$('#asscFtDesc').html(resp['desc']);
+
+				successCallback();
+			},
+			error: function(err){console.log("Fetch example error", err)},
+		});
+}
+
+// gets the next or previous example in the library
+function getExample(direction)
+{
+	if (direction == -1)
+	{
+
+	}
+}
