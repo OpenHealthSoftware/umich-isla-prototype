@@ -179,8 +179,13 @@ function isCellValid(cellId)
 // })
 
 
-$('.options-label, .checkbox').mouseup(function(){
+$('.options-label').mouseup(function(){
+	$(this).toggleClass('button-selected');
 	$(this).parent().find('.check-select').toggleClass('checkbox-selected');
+});
+$('.checkbox').mouseup(function(){
+	$(this).siblings('.options-label').toggleClass('button-selected');
+	$(this).parent().find('.check-select').toggleClass('checkbox-selected');	
 });
 $('#gradeForm .button').mouseup(function(){
 

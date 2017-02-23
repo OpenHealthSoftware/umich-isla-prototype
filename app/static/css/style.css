@@ -8,6 +8,8 @@
 	--menu-height: 30px;
 	--button-height: 42px;
 	--slim-el-height: 35px;
+	--dark-button: #1c1c1c;
+	--dark-button-selected: #464646;
 }
 .patient-shade-1{ background-color: var(--patient-shade-1); }
 .patient-shade-2{ background-color: var(--patient-shade-2); }
@@ -21,6 +23,7 @@ html, body, #fullwrap
 	width: 100%;
 	height: 100%;
 	background-color: #343434;
+	font: 13.33px Arial;
 }
 
 .lock
@@ -252,7 +255,7 @@ html, body, #fullwrap
 
 input[type=button], input[type=submit], input[type=reset], button, .button
 {
-    background-color: #4CAF50;
+    background-color: var(--dark-button);
     width: calc(100% - 4px);
     border: none;
     color: white;
@@ -260,7 +263,13 @@ input[type=button], input[type=submit], input[type=reset], button, .button
     text-decoration: none;
     margin: 4px 2px;
     cursor: pointer;
+	outline: none;
+	
 	transition: .3s;
+}
+input[type=button]:active, input[type=submit]:active, input[type=reset]:active, button:active
+{
+	background-color: var(--dark-button-selected);
 }
 /* To match non-button elements*/
 .button 
@@ -272,7 +281,7 @@ input[type=button], input[type=submit], input[type=reset], button, .button
 }
 .button-selected
 {
-	background-color: red !important;
+	background-color: var(--dark-button-selected) !important;
 }
 
 .btn-large
@@ -330,6 +339,7 @@ input[type=button]:hover, input[type=submit]:hover, input[type=reset]:hover, but
 #wrapContrastControl p{
 	margin: 0;
 	/*font-size: 13.3px;*/
+	padding: 5px;
 }
 #contrastSlider
 {
@@ -439,10 +449,11 @@ input[type=button]:hover, input[type=submit]:hover, input[type=reset]:hover, but
 }
 
 .half-width{ width: 50%; }
-.third-width{ width: 33.33%; }
+.third-width{ width: 33%; }
 
 .margin-top-small {margin-top: 15px;}
 .margin-bottom-small {margin-bottom: 15px;}
+.btn-seperator-right { border-right: 1px solid #464646; }
 
 .cellControlModule{
 	width: 100%;
@@ -452,7 +463,8 @@ input[type=button]:hover, input[type=submit]:hover, input[type=reset]:hover, but
 	float: left;
 }
 .maintain-ratio {
-  width: 50%; /* width of element inside .ratio */
+  width: calc(50% - 15px); /* width of element inside .ratio */
+  margin: 7.5px;
   display: inline-block;
   position: relative;
 }
@@ -481,21 +493,21 @@ input[type=button]:hover, input[type=submit]:hover, input[type=reset]:hover, but
 #contrastSliderLabel{
 	width: 100%;
 	margin-bottom: 10px;
-	background-color: blue;
+	background-color: #808080;
 }
 #wrapContrastSlider
 {
 	width: 100%;
 	height: var(--slim-el-height);
-	background-color: blue;
+	background-color: #808080;
 }
 
 #wrapCellStats{
 	position: absolute;
 	width: 100%;
-	top: 135px;
+	top: 145px;
 	bottom: 0;
-	background-color: blue;
+	background-color: #808080;
 }
 
 
@@ -522,6 +534,7 @@ input[type=button]:hover, input[type=submit]:hover, input[type=reset]:hover, but
 { 
 	height: calc(100% - var(--button-height) - 15px);
 	overflow: auto;
+	color: #fff;
 	/* TODO: bottom of scroll bar gets hidden */
 }
 #wrapAssociatedOptions { height: 100%; }
@@ -549,7 +562,7 @@ input[type=button]:hover, input[type=submit]:hover, input[type=reset]:hover, but
 	left: calc(10px + var(--button-height));
 	padding-left: 10px;
 	display: inline-block;
-	background-color:grey;
+	background-color:var(--dark-button);
 	line-height: calc(var(--button-height) - 13.33px / 2); /* TODO: fix hacky*/
 	cursor: pointer;
 }
@@ -560,7 +573,7 @@ input[type=button]:hover, input[type=submit]:hover, input[type=reset]:hover, but
 	height: var(--slim-el-height);
 	left: 15px;
 	float: left;
-	background-color: white;
+	background-color: var(--dark-button-selected);
 }
 .wrapExampleSelection
 {
