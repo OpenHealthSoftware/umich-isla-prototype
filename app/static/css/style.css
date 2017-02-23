@@ -504,12 +504,14 @@ input[type=button]:hover, input[type=submit]:hover, input[type=reset]:hover, but
 
 #wrapCellStats{
 	position: absolute;
-	width: 100%;
+	width: calc(100% - 20px);
 	top: 145px;
 	bottom: 0;
+	padding: 10px;
 	background-color: #808080;
 }
-
+#cellNumberP,#gradeData { margin-top: 0;}
+#gradeStatus { margin-bottom: .5em; }
 
 
 /* ### Grading section */

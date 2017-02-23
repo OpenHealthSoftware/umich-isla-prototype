@@ -254,6 +254,15 @@ function resetInputGUI()
 	$('.checkbox-selected, .button-selected').removeClass('checkbox-selected button-selected');
 }
 
+function getSubmissionInput()
+{
+	// collect input
+	var recordedInput = []
+	$('.submit-input-container input').each(function(){ //TODO: cache
+		recordedInput.push($(this));
+	}); 
+	return recordedInput;
+}
 
 function submitGrade()
 {
@@ -264,10 +273,7 @@ function submitGrade()
 		return;
 
 	// collect input
-	var recordedInput = []
-	$('.submit-input-container input').each(function(){ //TODO: cache
-		recordedInput.push($(this));
-	}); 
+	var recordedInput = getSubmissionInput();
 	var inputValues = [];
 
 	// check if input is optional or not, and get values
@@ -278,6 +284,7 @@ function submitGrade()
 		if (el.hasClass('optional-input') === false && isInputFilled(el) === false)
 		{
 			console.log("Required input not filled in");
+			$('#notif').html("Required input not selected!");
 			return {"error": "req input not filled in"};
 		}
 		
@@ -375,7 +382,7 @@ function gradeExporter(caller)
 				var numCellsMessage = ' cells are graded.';
 				if (numCellsGraded <= 1)
 					numCellsMessage = ' cell is graded.';
-				$('#autoSaveNotif').html('Autosaved ' + time + '. ' + numCellsGraded + numCellsMessage);
+				$('#notif').html('Autosaved ' + time + '. ' + numCellsGraded + numCellsMessage);
 				GRADE_ID = resp['gradeId'];
 			},
 			error: function(err){console.log("Autosave error", err)},
@@ -462,7 +469,38 @@ function highlightUngradedCells()
 }
 
 
+function updateCellStats(cellId)
+{
+	var gradeStatus = "Ungraded:";
+	var gradeValStr = "";
 
+	$('#cellNumber').html(cellId + " / " + numCells);
+
+	if (cellId in exportData && exportData[cellId].gradedValues)
+	{
+		gradeStatus = "Graded:";
+
+		var grades = exportData[cellId].gradedValues;
+		gradeValStr = grades.join(', ');
+	
+		for (var i = 0; i < grades.length; i++)
+		{
+			$('input').each(function(){
+				if ($(this).val() === grades[i])
+				{
+					var label = $('label[for="' + $(this).attr('id') + '"]');
+					label.first().trigger('mouseup');
+					$(this).prop('checked', true);
+				}
+			});
+		}
+	}
+	else
+		resetInput(getSubmissionInput());
+
+	$('#gradeStatus').html(gradeStatus);
+	$('#gradeData').html(gradeValStr);
+}
 
 function nextCell(itr)
 {
@@ -471,7 +509,7 @@ function nextCell(itr)
 	if (isCellValid(currentCell + itr))
 		currentCell += itr;
 	else currentCell = 1;
-	console.log(currentCell, itr);
+	//updateCellStats();
 	drawCellManager(currentCell);
 }
 
@@ -597,12 +635,13 @@ function drawCellManager(cellId)
 	if (isCellValid(cellId) == false)
 		return;
 
-	// load previous grade if any
-	if (exportData[cellId])
-		$(':radio[value=' + exportData[cellId].perfusion + ']')[0].checked = true;
-	else //unselect radio buttons
-		$('input[name=grade]').each(function(){	$(this)[0].checked = false; });
-
+	// // load previous grade if any
+	// if (exportData[cellId])
+	// 	$(':radio[value=' + exportData[cellId].perfusion + ']')[0].checked = true;
+	// else //unselect radio buttons
+	// 	$('input[name=grade]').each(function(){	$(this)[0].checked = false; });
+	//TODO: reorganize so this goes in a better place
+	updateCellStats(cellId);
 
 	// Clear trace canvases
 	$('.traceCanvas').each(function(){
