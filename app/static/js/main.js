@@ -1078,7 +1078,7 @@ var exampleImgs = [];
 function api_getExample(name, successCallback)
 {
 	$.ajax({
-			url: '/api/v1/library/example/' + encodeURI(name),
+			url: '/api/v1/library/example/' + encodeURIComponent(name),
 			type: 'POST',
 			dataType: 'json',
 			success:  function(resp)
@@ -1086,8 +1086,8 @@ function api_getExample(name, successCallback)
 				console.log(resp);
 				var name = resp["name"];
 				$('#associatedFeaturePreview').attr('src', resp['imgSrcs'][0]);
-				$('#asscFtName').html(name);
-				$('#asscFtDesc').html(resp['desc']);
+				//$('#asscFtName').html(name);
+				$('#asscFtDesc').html(name + ': ' + resp['desc']);
 
 
 				// start recording time looking at new example
