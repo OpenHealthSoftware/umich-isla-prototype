@@ -480,6 +480,25 @@ input[type=button]:hover, input[type=submit]:hover, input[type=reset]:hover, but
 	width: 100%;
 	max-height: 300px;
 }
+.cellBlockBorder
+{
+	position: absolute;
+	background-color: green;
+}
+#mainCellBottomBorder
+{
+	width: calc(100% + 7.5px);
+	height: 7px;
+	bottom: -7px;
+	left: -7.5px;
+}
+#mainCellRightBorder
+{
+	width: 7px;
+	height: calc(100% + 7.5px);
+	top: -7.5px;
+	right: 0;
+}
 
 .button-row-el
 {
@@ -619,16 +638,22 @@ input[type=button]:hover, input[type=submit]:hover, input[type=reset]:hover, but
 	width: 100%;
 	height: 100%;
 }
-#associatedFeaturePreview { width: 100%; height: 100%;}
+#associatedFeaturePreview
+{ 
+	width: 100%; 
+	height: 100%;
+	box-shadow: 0px 0px 7px 2px #6bb8de;
+}
 #asscFtNameExampleInfo
 {
 	position: absolute;	
 	width: 100%;
 	height: 32px;
 	padding-top: 10px;
-	background-color:#e4e4e4;
+	background-color:#495d73;
 	transition: .3s;
 	z-index:2;
+	color: white;
 }
 #asscFtNameExampleInfo h2 {
 	margin: 10px;
@@ -641,7 +666,7 @@ input[type=button]:hover, input[type=submit]:hover, input[type=reset]:hover, but
 	white-space: nowrap;
 	padding-left: 10px;
 }
-#asscFtNameExampleInfo:hover
+masscFtNameExampleInfo:hover
 {
 	height: auto;
 	min-height: 32px;
@@ -652,7 +677,8 @@ input[type=button]:hover, input[type=submit]:hover, input[type=reset]:hover, but
 }
 .selectedAssociatedFeature
 {
-	background-color: #1c1c1c !important;
+	background-color: #6b95e4 !important;
+	box-shadow: 0px 0px 5px 0px #6b95e4;
 }
 
 

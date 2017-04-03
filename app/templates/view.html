@@ -55,12 +55,15 @@
 		{% endif %}
 		<div id="rightScreen" class="split split-horizontal {{lock}}" >
 			<div id="wrapGrading">
+				
 				<div id="wrapCellControl" class="margin-bottom-small">
 					
 					<div class="maintain-ratio">
 						<div id="cellPreview" class="cellControlModule">
 							<canvas id="cellViewCanvas" class="cellCanvas" width="0" height="0"></canvas>
 						</div>
+						<div id="mainCellBottomBorder" class="cellBlockBorder"></div>
+						<div id="mainCellRightBorder" class="cellBlockBorder"></div>
 					</div><!--
 					--><div class="maintain-ratio">
 						<div id="cellTools" class="cellControlModule">
@@ -209,6 +212,16 @@
 
 $('document').ready()
 {
+	var fixGutter = function(){
+		// make gutter flush with main cell blocking borders
+		var h = $('.maintain-ratio').height();
+		var marg = parseFloat($('.maintain-ratio').css('margin'));
+		var offset = Math.ceil(h + marg);
+		$('#wrapMainScreen .gutter.gutter-horizontal').css({
+			height: 'calc(100% - ' + offset + 'px)',
+			marginTop: offset
+		});
+	};
 	var gutterSize = 7;
 
 	var leftRightScreenSplit = Split(['#leftScreen', '#rightScreen'], { 
@@ -218,9 +231,10 @@ $('document').ready()
 			remap();
 			if (hasCellBeenDrawn == true)
 				drawCellManager(currentCell);
-		} 
+		},
+		onDrag: function(){	fixGutter(); }
 	});
-
+	fixGutter();
 	remap();
 }
 </script>
