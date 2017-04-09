@@ -87,8 +87,11 @@ html, body, #fullwrap
 
 #mainNormal
 {
-	position: relative;
+	position: absolute;
+	top: 0;
+	display: none;
 }
+
 
 #gridCanvas { pointer-events: none;}
 
@@ -220,7 +223,7 @@ html, body, #fullwrap
 	filter: contrast(100%);
 }
 /*#cellViewCanvas{ border:5px solid var(--patient-shade-1); }*/
-#normalCellViewCanvas { border: 5px solid var(--normal-shade-1); }
+/*#normalCellViewCanvas { border: 5px solid var(--normal-shade-1); }*/
 #mainCellFlippedCanvas { border: 5px dashed var(--patient-shade-2); }
 #normalCellFlippedCanvas { border: 5px dashed var(--normal-shade-2); }
 
@@ -449,8 +452,10 @@ input[type=button]:hover, input[type=submit]:hover, input[type=reset]:hover, but
 	z-index: 6;
 }
 
+.full-width{ width: 100%; }
 .half-width{ width: 50%; }
 .third-width{ width: 33%; }
+.half-height{ height: 50%; }
 
 .margin-top-small {margin-top: 15px;}
 .margin-bottom-small {margin-bottom: 15px;}
@@ -463,13 +468,26 @@ input[type=button]:hover, input[type=submit]:hover, input[type=reset]:hover, but
 	max-height: 300px;
 	float: left;
 }
-.maintain-ratio {
-  width: calc(50% - 15px); /* width of element inside .ratio */
+#wrapCellTools
+{
+	position: relative;
+	width: 38%;
+	min-width: 185px;
+	height: 300px;
+	display: inline-block;
+}
+
+.maintain-ratio, .maintain-ratio-full {
+  width: calc(61% - 15px); /* width of element inside .ratio */
+  max-width: 300px;
   margin: 7.5px;
   display: inline-block;
   position: relative;
 }
-.maintain-ratio:after {
+.maintain-ratio-full {
+  width: calc(100% - 15px);
+}
+.maintain-ratio:after, .maintain-ratio-full:after {
   padding-top: 100%;  /* 1:1 ratio */
   display: block;
   content: '';
@@ -538,9 +556,21 @@ input[type=button]:hover, input[type=submit]:hover, input[type=reset]:hover, but
 #wrapGrading 
 {
 	height: 100%;
-	width: 100%; 
+	width: 60%;
+	min-width: 485px; 
 	max-width: 600px;
+	float: left;
 }
+#wrapComparisons
+{
+	width: 40%;
+	height: 100%;
+	max-width: 300px;
+	float: left;
+	margin-left: 10px;
+	background-color: blue;
+}
+
 #wrapGradeOptions
 {
 	height: calc(100% - 376px);
@@ -571,7 +601,7 @@ input[type=button]:hover, input[type=submit]:hover, input[type=reset]:hover, but
 {
 	position: relative;
 	height: var(--slim-el-height);
-	width: 70%;
+	width: 100%;
 	float: left;
 	/*background-color: blue;*/
 }
@@ -607,12 +637,11 @@ input[type=button]:hover, input[type=submit]:hover, input[type=reset]:hover, but
 .wrapExampleSelection svg { float: left; width: 34px; cursor: pointer;}
 .selectExampleBtn
 {
-	position: relative;
+	position: absolute;
 	width: 25px;
 	height: 25px;
-	/*left: calc(50% - 12.5px);*/
 	top: calc( (var(--slim-el-height) - 25px) / 2);
-	float: left;
+	right: 5px;
 	background-color: grey;
 	cursor: pointer;
 }
@@ -628,6 +657,11 @@ input[type=button]:hover, input[type=submit]:hover, input[type=reset]:hover, but
 
 #wrapGradeSubmit { width: 100%; }
 
+
+#wrapAssociatedFeatureExamples
+{
+	position: relative;	
+}
 
 /* ### examples library */
 .asscFeatureEl {display: none;}

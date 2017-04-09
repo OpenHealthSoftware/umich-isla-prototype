@@ -43,8 +43,9 @@
 				</div>
 				<div id="mainNormal">
 					<img id="normalImg" class="pic" src="">
-					<img id="normalGrid" class="pic overlay grid" src="" >
-					<canvas id="norm_canvas" class="traceCanvas" width="0" height="0"></canvas>					
+					<!--<img id="normalGrid" class="pic overlay grid" src="" >-->
+					<canvas id="norm_canvas" class="traceCanvas" width="0" height="0"></canvas>
+					<h2 style="position:absolute;color:white;">Normal Image</h2>										
 				</div>
 				{% endif %}
 			</div>
@@ -65,7 +66,7 @@
 						<div id="mainCellBottomBorder" class="cellBlockBorder"></div>
 						<div id="mainCellRightBorder" class="cellBlockBorder"></div>
 					</div><!--
-					--><div class="maintain-ratio">
+					--><div id="wrapCellTools">
 						<div id="cellTools" class="cellControlModule">
 							<div id="cellNavigator" class="margin-bottom-small">
 								<button id="prevCell" class="half-width button-row-el btn-seperator-right" onclick="nextCell(-1)">Prev Cell</button>						
@@ -86,9 +87,6 @@
 								<p id="notif"></p>
 							</div>
 						</div><!-- END #cellTools -->
-						<div id="associatedFeatureExample" class="cellControlModule asscFeatureEl">
-							<img id="associatedFeaturePreview" src=""/>
-						</div> <!-- END #associatedFeatureExample -->
 					</div>
 
 				</div><!-- END #wrapCellControl -->
@@ -103,9 +101,6 @@
 							<label for="gradeHypPerf" class="button button-row-el third-width btn-seperator-right">Hypoperfused</label>
 							<label for="gradeNonPerf" class="button button-row-el third-width">Non-Perfused</label>
 						</form>
-						<div id="asscFtNameExampleInfo" class="asscFeatureEl">
-							<p id="asscFtDesc"></p>
-						</div>
 					</div>
 
 					<div id="secondaryGrades">
@@ -116,13 +111,7 @@
 									<input class="optional-input" type="checkbox" id="option_{{a.optionId}}" name="associatedFeature" value="{{a.name}}">
 									<label for="option_{{a.optionId}}" class="checkbox"><div class="check-select"></div></label>
 									<label for="option_{{a.optionId}}" class="options-label">{{a.name}}</label>
-								</div>
-								<div class="example-box-element margin-bottom-small">
-									<div class="wrapExampleSelection">
-										<svg class="asscFeatureEl2" onclick="getExample(-1)" fill="#C0C0C0" height="35" viewBox="0 0 24 24" width="35"><path d="M15.41 7.41L14 6l-6 6 6 6 1.41-1.41L10.83 12z"/></svg>
-										<div class="selectExampleBtn" onclick="toggleExample(this, '{{a.name}}')"><p>?</p></div>
-										<svg class="asscFeatureEl2" onclick="getExample(1)" fill="#C0C0C0" height="35" viewBox="0 0 24 24" width="35"><path d="M10 6L8.59 7.41 13.17 12l-4.58 4.59L10 18l6-6z"/></svg>	
-									</div>			
+									<div class="selectExampleBtn" onclick="toggleExample(this, '{{a.name}}')"><p>?</p></div>
 								</div>
 								{% endfor %}
 							</div>
@@ -137,11 +126,28 @@
 				<button id="submitGrade" onclick="submitGrade()">Submit</button>
 			</div> <!-- END #wrapGrading -->
 
-			<!--<div id="toolbar">
-				<div class="toolbarEl">
-					<img src="/static/images/ic_grid_on.svg"/>
+			<div id="wrapComparisons">
+				<div id="wrapNormalComparisons" class="half-height">
+					<div class="maintain-ratio-full">
+						<div id="normalCell" class="cellControlModule">			
+								<canvas id="normalCellViewCanvas" class="cellCanvas" width="0" height="0"></canvas>
+						</div>
+					</div>
+					<h2>Normal/Control Cell</h2>
 				</div>
-			</div>-->
+
+				<div id="wrapAssociatedFeatureExamples" class="half-height">
+					<div class="maintain-ratio-full">
+						<div id="associatedFeatureExample" class="cellControlModule asscFeatureEl">
+							<img id="associatedFeaturePreview" src=""/>
+						</div> <!-- END #associatedFeatureExample -->
+					</div>
+					<div id="asscFtNameExampleInfo" class="asscFeatureEl">
+						<p id="asscFtDesc"></p>
+					</div>
+				</div>
+			</div> <!-- END #wrapComparsions -->
+			<button id="showNormalBtn">Show normal</button>
 			
 		</div><!-- END #rightScreen -->
 
@@ -187,6 +193,12 @@
 		<area id="cell_{{loop.index}}" shape="poly" coords="{{i}}" >
 	{% endfor %}
 	</map>
+
+	{% for i in controls %}
+		<div id="control{{loop.index}}" class="controlPrevItem" onclick="normalSelect(this.id)" style="display:none">
+			<img src="{{i}}">
+		</div>
+	{% endfor %}
 
 	<script>
 		var xOffsetPercent = {{xOffset}}, yOffsetPercent = {{yOffset}};

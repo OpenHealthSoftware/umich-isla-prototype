@@ -513,6 +513,14 @@ function nextCell(itr)
 	drawCellManager(currentCell);
 }
 
+// show normal image only while button is held down
+$('#showNormalBtn').mousedown(function(){
+	$('#mainNormal').show();
+});
+$('#showNormalBtn').mouseup(function(){
+	$('#mainNormal').hide();
+});
+
 var selectedNormId = '';
 // Effects: Selects a normal image to be used for grading comparison
 function normalSelect(id)
@@ -533,7 +541,7 @@ function normalSelect(id)
 				xNormOffsetPercent = response['x'];
 				yNormOffsetPercent = response['y'];
 				SCALE_GRID_RATIO_NORMAL = response['scaleRatio']
-				$('#normalGrid').show();
+				//$('#normalGrid').show();
 				remapNormal();
 
 				// Styling
@@ -654,8 +662,8 @@ function drawCellManager(cellId)
 
 	var patientCanvas = document.getElementById('cellViewCanvas');
 	// var patientFlippedCanvas = document.getElementById('mainCellFlippedCanvas');
-	// var normalCanvas = document.getElementById('normalCellViewCanvas');
-	// var normalFlippedCanvas = document.getElementById('normalCellFlippedCanvas');
+	var normalCanvas = document.getElementById('normalCellViewCanvas');
+	//var normalFlippedCanvas = document.getElementById('normalCellFlippedCanvas');
 
 
 	// convert cellId to row col 
@@ -672,10 +680,15 @@ function drawCellManager(cellId)
 
 	// coords
 	var mainCoords = parseHTMLAreaCoords('cell_' + cellId);
-	var mainCoordsFlipped = parseHTMLAreaCoords('cell_' + mirrorCell);
+	//var mainCoordsFlipped = parseHTMLAreaCoords('cell_' + mirrorCell);
 	var n = [], nF = [];	
 
 	drawCell(cellId, patientCanvas, mainId, mainCoords, "patient");
+	if (selectedNormId != '')
+	{
+		for (var i in normCoords[cellId-1]) n.push(normCoords[cellId-1][i]); // Since slice seems to cause bugs
+		drawCell(cellId, normalCanvas, normId, n, "normal");
+	}
 
 	// Highlighting
 	highlightCell(mainCoords, mainCanv, mainImg.width(), mainImg.height(), PATIENT_SHADE_1);
