@@ -89,7 +89,8 @@ html, body, #fullwrap
 {
 	position: absolute;
 	top: 0;
-	display: none;
+	opacity: 0;
+	pointer-events: none;
 }
 
 

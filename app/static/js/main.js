@@ -515,10 +515,10 @@ function nextCell(itr)
 
 // show normal image only while button is held down
 $('#showNormalBtn').mousedown(function(){
-	$('#mainNormal').show();
+	$('#mainNormal').css('opacity', '1');
 });
 $('#showNormalBtn').mouseup(function(){
-	$('#mainNormal').hide();
+	$('#mainNormal').css('opacity', '0');
 });
 
 var selectedNormId = '';
