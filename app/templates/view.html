@@ -45,7 +45,7 @@
 					<img id="normalImg" class="pic" src="">
 					<!--<img id="normalGrid" class="pic overlay grid" src="" >-->
 					<canvas id="norm_canvas" class="traceCanvas" width="0" height="0"></canvas>
-					<h2 style="position:absolute;color:white;">Normal Image</h2>										
+					<h2 style="position:absolute;color:white;top:10px;">Normal Image</h2>										
 				</div>
 				{% endif %}
 			</div>
@@ -107,7 +107,7 @@
 						<div id="wrapAssociatedOptions" class="secondClassOptions">
 							<div id="associatedFeatures" class="submit-input-container">
 								{% for a in associatedFeatures %}
-								<div class="option-box-element margin-bottom-small">
+								<div class="option-box-element">
 									<input class="optional-input" type="checkbox" id="option_{{a.optionId}}" name="associatedFeature" value="{{a.name}}">
 									<label for="option_{{a.optionId}}" class="checkbox"><div class="check-select"></div></label>
 									<label for="option_{{a.optionId}}" class="options-label">{{a.name}}</label>

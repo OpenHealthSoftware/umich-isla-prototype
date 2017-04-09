@@ -440,7 +440,7 @@ input[type=button]:hover, input[type=submit]:hover, input[type=reset]:hover, but
 	top: 3px;
 	left: 3px;
 	content: '';
-	background-color: var(--background-shade);
+	background-color: var(--dark-button);
 }
 .checkbox-selected
 {
@@ -603,7 +603,8 @@ input[type=button]:hover, input[type=submit]:hover, input[type=reset]:hover, but
 	height: var(--slim-el-height);
 	width: 100%;
 	float: left;
-	/*background-color: blue;*/
+	border-bottom: 3px solid #131313;
+	background-color:var(--dark-button);
 }
 .option-box-element:last-child, .example-box-element:last-child{margin-bottom:0;}
 .options-label
@@ -614,7 +615,6 @@ input[type=button]:hover, input[type=submit]:hover, input[type=reset]:hover, but
 	left: calc(10px + var(--button-height));
 	padding-left: 10px;
 	display: inline-block;
-	background-color:var(--dark-button);
 	line-height: calc(var(--button-height) - 13.33px / 2); /* TODO: fix hacky*/
 	cursor: pointer;
 }
