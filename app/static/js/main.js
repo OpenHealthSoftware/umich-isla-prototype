@@ -26,7 +26,7 @@ var currentCell = 0;
 var previousCell = 0;
 var GRID_ROWS = 19;
 var GRID_COLS = 35;
-var selectedNormId = '';
+var selectedNormId = 'null';
 
 
 // COLORS
@@ -69,7 +69,7 @@ $('document').ready()
 	});
 
 	// load normal image
-	cycleNormal(1);
+	getNormal(1);
 
 	// keyboard shortcutes
 	$(window).keydown(keydownRouter);
@@ -317,7 +317,7 @@ function submitGrade()
 
 	var normalSrc = normImg.attr('src');
 	var normalId = normalSrc.split('/').pop();
-	if (selectedNormId == '')
+	if (selectedNormId === 'null')
 		normalId = "Null";
 	var contrast = $('#contrastSlider').slider("value");
 
@@ -538,44 +538,7 @@ $('#showNormalBtn').mouseup(function(){
 	$('#mainNormal').css('opacity', '0');
 });
 
-// Effects: Selects a normal image to be used for grading comparison
-function normalSelect(id)
-{
-	var norm = $("#"+id + ' img').first();
-	var normFullView = normImg;
-	normFullView.attr('src', norm.attr('src'));
-	var imgId = normFullView.attr('src').split('/').pop();
-	imgId = imgId.split('.')[0];
 
-	// AJAX call to get xyOffset for grid
-	$.ajax({
-			url: '/normalData',
-			data: { 'picName' : imgId},
-			type: 'POST',
-			success: function(response) {
-				$('#normalGrid').attr('src', response['gridSrc']);
-				xNormOffsetPercent = response['x'];
-				yNormOffsetPercent = response['y'];
-				SCALE_GRID_RATIO_NORMAL = response['scaleRatio']
-				//$('#normalGrid').show();
-				remapNormal();
-
-				// Styling
-				if (selectedNormId != '')
-					$('#' + selectedNormId).removeClass("selected");
-				$('#' + id).addClass("selected");
-				selectedNormId = id;
-
-				if (currentCell != 0)
-					drawCellManager(currentCell);
-			},
-			error: function(error) {
-				console.log(error);
-			}
-		});
-}
-
-var xNormOffsetPercent = 0, yNormOffsetPercent = 0;
 var normCoords = [];
 
 var quickView = true;
@@ -700,7 +663,7 @@ function drawCellManager(cellId)
 	var n = [], nF = [];	
 
 	drawCell(cellId, patientCanvas, mainId, mainCoords, "patient");
-	if (selectedNormId != '')
+	if (selectedNormId !== 'null')
 	{
 		for (var i in normCoords[cellId-1]) n.push(normCoords[cellId-1][i]); // Since slice seems to cause bugs
 		drawCell(cellId, normalCanvas, normId, n, "normal");
@@ -856,7 +819,7 @@ function toggleGrids()
 // Effects: selects / shows the next or previous normal
 function cycleNormal(step)
 {
-	if (selectedNormId == '')
+	if (selectedNormId === 'null')
 	{
 		normalSelect('control1');
 		return;
@@ -879,7 +842,7 @@ function switchToGradeView()
 	if (isGradeView == false)
 	{
 		// Make sure to have a normal selected
-		if (selectedNormId == '')
+		if (selectedNormId === 'null')
 			cycleNormal(1);
 		// Make sure a cell is selected
 		if (currentCell == 0)
@@ -1140,9 +1103,65 @@ function api_getExample(name, successCallback)
 		});
 }
 
+// Fix for JS not doing mod properly on negatives
+Number.prototype.mod = function(n) {
+	return ((this%n)+n)%n;
+}
+
 // gets the next or previous example in the library
 function getExample(direction)
 {
-	currentExampleImgIdx = (currentExampleImgIdx + direction) % exampleImgs.length;
+	currentExampleImgIdx = (currentExampleImgIdx + direction).mod(exampleImgs.length);
 	$('#associatedFeaturePreview').attr('src', exampleImgs[currentExampleImgIdx]);
 }
+
+// Effects: Selects a normal image to be used for grading comparison
+function getNormal(direction)
+{
+	$.ajax({
+			url: '/api/v1/normal?id=' + selectedNormId + '&dir=' + String(direction),
+			type: 'GET',
+			dataType: 'json',
+			success:  function(resp)
+			{
+				console.log(resp);
+				selectedNormId = resp['id'];
+				normImg.attr('src', resp['src']);
+				
+				//
+				xNormOffsetPercent = resp['x'];
+				yNormOffsetPercent = resp['y'];
+				SCALE_GRID_RATIO_NORMAL = resp['scaleRatio']
+				remapNormal();
+
+				if (currentCell !== 0)
+					drawCellManager(currentCell);
+			},
+			error: function(e){console.log(e);}
+	});
+}
+var xNormOffsetPercent = 0, yNormOffsetPercent = 0;
+
+// // Effects: Selects a normal image to be used for grading comparison
+// function normalSelect(id)
+// {
+// 	var norm = $("#"+id + ' img').first();
+// 	var normFullView = normImg;
+// 	normFullView.attr('src', norm.attr('src'));
+// 	var imgId = normFullView.attr('src').split('/').pop();
+// 	imgId = imgId.split('.')[0];
+
+// 	// AJAX call to get xyOffset for grid
+// 	$.ajax({
+// 			url: '/normalData',
+// 			data: { 'picName' : imgId},
+// 			type: 'POST',
+// 			success: function(response) {
+				
+// 			},
+// 			error: function(error) {
+// 				console.log(error);
+// 			}
+// 		});
+// }
+

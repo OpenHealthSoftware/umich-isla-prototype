@@ -39,7 +39,6 @@ def getPageData(imgId):
 	print C_GRID_PATH
 	coords = processImageGrid(C_GRID_PATH)
 	image = getImageData(imgId)
-	controls = getControls(image['side'])
 	gridData = getGridData(imgId)
 	gradeSession = getGradesFromUser(user, imgId)
 	associatedFeatures = getOptions()
@@ -48,7 +47,6 @@ def getPageData(imgId):
 		"coords" : coords,
 		"img" : image,
 		"grid" : GRID_PATH,
-		"controls" : controls,
 		"numPrev" : NUM_NORM_PREV, #number of control images to show at once
 		"xOffset" : gridData['xOffsetPerc'],
 		"yOffset" : gridData['yOffsetPerc'],
@@ -79,7 +77,6 @@ def main_route():
 			"coords" : [],
 			"img" : {'imgId' : '', 'format' : ''},
 			"grid" : '',
-			"controls" : getControls('left') + getControls('right'),
 			"numPrev" : NUM_NORM_PREV, #number of control images to show at once
 			"xOffset" : 0,
 			"yOffset" : 0,
@@ -129,14 +126,7 @@ def positionGrid_route():
 	return jsonify(**data)
 
 
-@view.route('/normalData', methods=['GET', 'POST'])
-def normal_data_route():
-	rForm = request.form
-	imgName = rForm['picName']
-	qr = getGridData(imgName)
-	gridSrc = url_for('static', filename='images/normals/' + qr['gridId']) #gridID has file format
-	data = {'gridSrc' : gridSrc, 'x' : qr['xOffsetPerc'], 'y' : qr['yOffsetPerc'], 'scaleRatio': qr['scaleRatio']}
-	return jsonify(**data)
+
 
 
 @view.route('/getUser', methods=['GET', 'POST'])

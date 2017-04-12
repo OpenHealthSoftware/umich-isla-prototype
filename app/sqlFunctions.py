@@ -23,14 +23,14 @@ def getOptionExamples(optionType):
 
 # Effects: Runs a MySQL query that returns all images in the database
 def getImages(type):
-	cursor.execute("SELECT * FROM images WHERE type=\'" + type + "\' ORDER BY imgId DESC")
+	cursor.execute("SELECT * FROM images WHERE type=? ORDER BY imgId DESC", (type,))
 	results = cursor.fetchall()
 	return results
 
 
 # Effects: Runs a MySQL query that returns a specific image in the database
 def getImageData(imgId):
-	cursor.execute("SELECT * FROM images WHERE imgId=\'" + imgId + "\' LIMIT 1")
+	cursor.execute("SELECT * FROM images WHERE imgId=? LIMIT 1", (imgId,))
 	results = cursor.fetchone()
 	return results
 

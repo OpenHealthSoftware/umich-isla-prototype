@@ -28,8 +28,11 @@
 			<div class="toolbarEl btn-seperator-right">
 				<button id="showNormalBtn" class="toolbarEl">Show normal</button>
 				<span class="tooltip">Hold down to show the normal/control image</span>
+			</div><!--
+			--><div class="toolbarEl btn-seperator-right">
+				<button id="toggleGridsBtn" class="toolbarEl" onclick="toggleGrids()">Hide grid</button>
+				<span class="tooltip">Click to hide or show the grid</span>
 			</div>
-			
 		</div><!-- END #toolbar -->
 
 	</div><!-- END #wrapMenuBar -->
@@ -140,6 +143,8 @@
 						<div id="normalCell" class="cellControlModule">			
 								<canvas id="normalCellViewCanvas" class="cellCanvas" width="0" height="0"></canvas>
 						</div>
+						<div onclick="getNormal(-1)" class="select-image select-image-prev"></div>												
+						<div onclick="getNormal(1)" class="select-image select-image-next"></div>												
 					</div>
 					<h2>Normal/Control Cell</h2>
 				</div>
@@ -148,6 +153,8 @@
 					<div class="maintain-ratio-full">
 						<div id="associatedFeatureExample" class="cellControlModule asscFeatureEl">
 							<img id="associatedFeaturePreview" src=""/>
+							<div onclick="getExample(-1)" class="select-image select-image-prev"></div>							
+							<div onclick="getExample(1)" class="select-image select-image-next"></div>							
 						</div> <!-- END #associatedFeatureExample -->
 					</div>
 					<div id="asscFtNameExampleInfo" class="asscFeatureEl">
@@ -201,11 +208,6 @@
 	{% endfor %}
 	</map>
 
-	{% for i in controls %}
-		<div id="control{{loop.index}}" class="controlPrevItem" onclick="normalSelect(this.id)" style="display:none">
-			<img src="{{i}}">
-		</div>
-	{% endfor %}
 
 	<script>
 		var xOffsetPercent = {{xOffset}}, yOffsetPercent = {{yOffset}};

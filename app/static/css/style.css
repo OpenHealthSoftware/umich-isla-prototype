@@ -729,35 +729,13 @@ asscFtNameExampleInfo:hover
 
 
 /* ### Toolbar */
-/*#toolbar
-{
-	position: absolute;
-	width: 100px;
-	height: 100%;
-	right: 0;
-	top: 0;
-	background-color: rgba(255,0,0,.5);
-}
 .toolbarEl
 {
-	width: 60px;
-	height: 60px;
-	padding: 20px;
-	transition: .3s;
-}
-.toolbarEl:hover{
-	background-color: rgba(255,255,255,.5);
-}
-.toolbarEl img
-{ 
-	width: 100%;
-	height: 100%;
-}*/
-.toolbarEl
-{
+	position: relative;
 	width: 140px;
 	height: var(--slim-el-height);
 	margin: 0;
+	display: inline-block;
 }
 .tooltip
 {
@@ -774,3 +752,24 @@ asscFtNameExampleInfo:hover
     z-index: 1;
 }
 .toolbarEl:hover .tooltip { visibility: visible; }
+
+
+
+
+
+.select-image
+{
+	position: absolute;
+	width: 50px;
+	height: 100%;
+	top: 0;
+	background-color: #fff;
+	cursor: pointer;
+	
+	opacity: 0;
+	transition: .2s;
+}
+.select-image:hover{ opacity: .4; }
+
+.select-image-prev { left: 0;}
+.select-image-next { right: 0;}
