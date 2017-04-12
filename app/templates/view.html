@@ -12,7 +12,7 @@
 	
 	
 	<div id="wrapMenuBar">
-		<div id="dropMenu1" class="wrap-menu">
+		<div id="dropMenu1" class="wrap-menu  btn-seperator-right">
 			<button id="menuBtn" class="menu-btn">Menu</button>
 			<div id="menuDropdownCont" class="wrap-drop-down">
 				<div id="menuDropdown" class="drop-down">
@@ -23,6 +23,14 @@
 				</div>
 			</div>
 		</div> <!-- END #menuBar -->
+
+		<div id="toolbar" class="wrap-menu">
+			<div class="toolbarEl btn-seperator-right">
+				<button id="showNormalBtn" class="toolbarEl">Show normal</button>
+				<span class="tooltip">Hold down to show the normal/control image</span>
+			</div>
+			
+		</div><!-- END #toolbar -->
 
 	</div><!-- END #wrapMenuBar -->
 
@@ -63,8 +71,6 @@
 						<div id="cellPreview" class="cellControlModule">
 							<canvas id="cellViewCanvas" class="cellCanvas" width="0" height="0"></canvas>
 						</div>
-						<div id="mainCellBottomBorder" class="cellBlockBorder"></div>
-						<div id="mainCellRightBorder" class="cellBlockBorder"></div>
 					</div><!--
 					--><div id="wrapCellTools">
 						<div id="cellTools" class="cellControlModule">
@@ -95,10 +101,10 @@
 					<div id="primaryGrade" class="firstClassOptions margin-bottom-small">
 						<form id="gradeForm" class="submit-input-container">
 							<input type="radio" name="grade" value="perfused" id="gradePerf">
+							<input type="radio" name="grade" value="hypo-perfused" id="gradeHypoPerf">
 							<input type="radio" name="grade" value="non-perfused" id="gradeNonPerf">
-							<input type="radio" name="grade" value="blockage" id="gradeBlock">
 							<label for="gradePerf" class="button button-row-el third-width btn-seperator-right">Perfused</label>
-							<label for="gradeHypPerf" class="button button-row-el third-width btn-seperator-right">Hypoperfused</label>
+							<label for="gradeHypoPerf" class="button button-row-el third-width btn-seperator-right">Hypoperfused</label>
 							<label for="gradeNonPerf" class="button button-row-el third-width">Non-Perfused</label>
 						</form>
 					</div>
@@ -126,6 +132,8 @@
 				<button id="submitGrade" onclick="submitGrade()">Submit</button>
 			</div> <!-- END #wrapGrading -->
 
+			<div class="seperator-vertical"></div>
+
 			<div id="wrapComparisons">
 				<div id="wrapNormalComparisons" class="half-height">
 					<div class="maintain-ratio-full">
@@ -147,7 +155,6 @@
 					</div>
 				</div>
 			</div> <!-- END #wrapComparsions -->
-			<button id="showNormalBtn">Show normal</button>
 			
 		</div><!-- END #rightScreen -->
 
@@ -224,16 +231,7 @@
 
 $('document').ready()
 {
-	var fixGutter = function(){
-		// make gutter flush with main cell blocking borders
-		var h = $('.maintain-ratio').height();
-		var marg = parseFloat($('.maintain-ratio').css('margin'));
-		var offset = Math.ceil(h + marg);
-		$('#wrapMainScreen .gutter.gutter-horizontal').css({
-			height: 'calc(100% - ' + offset + 'px)',
-			marginTop: offset
-		});
-	};
+	
 	var gutterSize = 7;
 
 	var leftRightScreenSplit = Split(['#leftScreen', '#rightScreen'], { 
@@ -244,9 +242,9 @@ $('document').ready()
 			if (hasCellBeenDrawn == true)
 				drawCellManager(currentCell);
 		},
-		onDrag: function(){	fixGutter(); }
+		
 	});
-	fixGutter();
+
 	remap();
 }
 </script>

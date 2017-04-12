@@ -26,6 +26,8 @@ var currentCell = 0;
 var previousCell = 0;
 var GRID_ROWS = 19;
 var GRID_COLS = 35;
+var selectedNormId = '';
+
 
 // COLORS
 
@@ -42,7 +44,8 @@ var KEYS = {
 	left: 37,
 	right: 39,
 	shift: 16,
-	spacebar: 32
+	spacebar: 32,
+	enter: 13
 }
 
 $('document').ready()
@@ -59,14 +62,17 @@ $('document').ready()
 	});
 	
 
-		$('area').each(function(){
-				var id = parseInt($(this).attr('id').split('_')[1]);
-				$(this).mouseover(function(){drawCellManager(id)});
-				$(this).click(function(){toggleQuickView();});
-		});
+	$('area').each(function(){
+			var id = parseInt($(this).attr('id').split('_')[1]);
+			$(this).mouseover(function(){drawCellManager(id)});
+			$(this).click(function(){toggleQuickView();});
+	});
 
-		// keyboard shortcutes
-		$(window).keydown(keydownRouter);
+	// load normal image
+	cycleNormal(1);
+
+	// keyboard shortcutes
+	$(window).keydown(keydownRouter);
 }
 
 // Effects: selects the radio button at index optionIndex and submits that as the grade
@@ -76,7 +82,8 @@ function enterGrade(optionIndex)
 	if (optionIndex < 0 || optionIndex >= radioForm.length)
 		return;
 	radioForm[optionIndex].checked = true;
-	submitGrade();
+	selectPrimaryGradeOption($(radioForm[optionIndex]));
+	//submitGrade();
 }
 
 function keydownRouter(e)
@@ -93,10 +100,15 @@ function keydownRouter(e)
 			enterGrade(2);
 			break;
 		case KEYS.left:
-			cycleNormal(-1);
+			//cycleNormal(-1);
+			nextCell(-1);
 			break;
 		case KEYS.right:
-			cycleNormal(1);		
+			//cycleNormal(1);
+			nextCell(1);	
+			break;
+		case KEYS.enter:
+			submitGrade();
 			break;
 		case KEYS.shift:
 			break;
@@ -468,6 +480,13 @@ function highlightUngradedCells()
 	areUngradedCellsHighlighted = true;
 }
 
+// requires jquery object for element to be selected
+function selectPrimaryGradeOption(el)
+{
+	var label = $('label[for="' + el.attr('id') + '"]');
+	label.first().trigger('mouseup');
+	el.prop('checked', true);
+}
 
 function updateCellStats(cellId)
 {
@@ -488,9 +507,7 @@ function updateCellStats(cellId)
 			$('input').each(function(){
 				if ($(this).val() === grades[i])
 				{
-					var label = $('label[for="' + $(this).attr('id') + '"]');
-					label.first().trigger('mouseup');
-					$(this).prop('checked', true);
+					selectPrimaryGradeOption($(this));
 				}
 			});
 		}
@@ -521,7 +538,6 @@ $('#showNormalBtn').mouseup(function(){
 	$('#mainNormal').css('opacity', '0');
 });
 
-var selectedNormId = '';
 // Effects: Selects a normal image to be used for grading comparison
 function normalSelect(id)
 {

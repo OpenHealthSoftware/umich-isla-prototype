@@ -12,3 +12,7 @@ app/database.db
 *.lock
 app/version.txt
 temp/*
+
+
+### editor ###
+.vscode/*

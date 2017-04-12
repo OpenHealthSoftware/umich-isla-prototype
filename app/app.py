@@ -45,6 +45,6 @@ if __name__ == '__main__':
 	# listen on external IPs
 	if len(sys.argv) > 1: # only arguments will be pased to development
 		app.run(host=config.env['host'], port=config.env['port'], debug=True)
-	else: 
+	else:
 		app.run()
 
