@@ -134,7 +134,6 @@ def upload_route():
 	imgFilename = ''
 	form = ''
 	
-
 	if request.method == 'GET':
 		if request.args:
 			type = request.args['type']
