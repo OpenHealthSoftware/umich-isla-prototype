@@ -61,11 +61,19 @@ def getGradeFilesFromImgId(imgId):
 	results = cursor.fetchall()
 	return results
 
-def isImageGraded(imgId):
+def getFinishedGrades(imgId):
 	cursor.execute("SELECT * FROM grades where imgId=? AND finishedGrading='true'", (imgId,))
 	#cursor.execute("SELECT * FROM grades where imgId=? GROUP BY userId", (imgId,))
 	results = cursor.fetchall()
 	return results
+
+
+# returns the unique graders who have started grading an image, but have not finished
+def getCurrentGraders(imgId):
+	cursor.execute("SELECT userId FROM grades where imgId=? and finishedGrading='false' GROUP BY userId", (imgId,))
+	results = cursor.fetchall()
+	userList = [i[0] for i in results]
+	return userList
 
 # Effects: Runs a MySQL query that inserts a photo into the photo table
 # returns true if successful

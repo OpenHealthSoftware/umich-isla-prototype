@@ -28,14 +28,25 @@ def main_route():
 		images = getImages('patient')
 
 	imageGrades = {}
+	currentImageGrades = {}
+	isImageGraded = {}
 	for i in images:
-		results = isImageGraded(i['imgId'])
-		imageGrades[i['imgId']] = results
+		imgId = i['imgId']
+		finishedGrades = getFinishedGrades(imgId)
+		finishedGrades = [x['userId'] + ' - finished ' + x['timestamp'] for x in finishedGrades]
+		currentGraders = getCurrentGraders(imgId)
+
+		currentImageGrades[imgId] = currentGraders
+		imageGrades[imgId] = finishedGrades
+		if currentGraders or finishedGrades:
+			isImageGraded[imgId] = True
 	
 	print "\n\n\n\n", imageGrades, "\n\n\n"
 	data = {
 		"images" : images,
-		"imageGrades": imageGrades,
+		"isImageGraded": isImageGraded,
+		"finishedGraders": imageGrades,
+		"currentGraders": currentImageGrades,
 		"type" : type
 	}
 

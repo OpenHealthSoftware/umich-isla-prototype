@@ -8,6 +8,7 @@ from os.path import isfile, join
 from PIL import Image
 import config
 import math
+import uuid
 
 uploads = Blueprint('uploads', __name__)
 
@@ -33,9 +34,9 @@ def getExtension(filename):
 
 
 # Effects: returns filename in the format [username]_[albumname]_[md5(prevString)]
+#TODO: doesnt do effects above?
 def generateFilename(filename):
-	f = hashlib.md5(filename).hexdigest()
-	return f
+	return str(uuid.uuid4())
 
 # TODO: move more appropriate
 # Effects: returns the related file paths for a given image id
@@ -105,6 +106,7 @@ def deleteImg(imgId):
 
 	paths = getFilePathsForImage(imgId)
 	deleteEntry('grids', 'imgId', imgId) #TODO: cascade doesnt seem to be working properly
+	deleteEntry('grades', 'imgId', imgId)
 	deleteEntry('images', 'imgId', imgId)
 
 	for pathType in paths:
@@ -132,15 +134,16 @@ def upload_route():
 	imgFilename = ''
 	form = ''
 	
+
 	if request.method == 'GET':
 		if request.args:
 			type = request.args['type']
 	# Add or delete album
 	if request.method == 'POST':
 		form = request.form
-		operation = form['op']
+		
 		if request.files:
-			
+			operation = form['op']
 			type = form['type']
 			if operation == 'add':
 				imgFilename = uploadImg(request, type)
@@ -149,7 +152,7 @@ def upload_route():
 					folderPath = UPLOAD_FOLDER_P
 				elif type == 'normal':
 					folderPath = UPLOAD_FOLDER_NORM
-		elif operation == 'delete':
+		elif 'op' in form and form['op'] == 'delete':
 			deleteImg(form['imgId'])
 			return redirect(url_for('view.main_route'))
 			
@@ -229,7 +232,7 @@ def createGriddedImage(originCoords, foveaCoords, imgName, iFormat, xPerc, yPerc
 	# currently arbitrary, but works relative to all uploads
 	foveaToDisk = 4.0 #mm
 	eyeWidth = 24.0 #mm, typical eye diameter
-	percentDist = (foveaToDisk / eyeWidth) * .65
+	percentDist = (foveaToDisk / eyeWidth) * .7
 	# distance = fov - disk = 16% of grid
 	distance = abs(originCoords[0] - foveaCoords[0])
 	gridWidth = distance / percentDist
