@@ -56,6 +56,10 @@ def getGradesFromId(gradeId):
 	results = cursor.fetchone()
 	return results
 
+def getGradeFilesFromImgId(imgId):
+	cursor.execute("SELECT gradeFile FROM grades where imgId=?", (imgId,))
+	results = cursor.fetchall()
+	return results
 
 def isImageGraded(imgId):
 	cursor.execute("SELECT * FROM grades where imgId=? AND finishedGrading='true'", (imgId,))

@@ -68,7 +68,7 @@ CREATE TABLE grades(
 	finishedGrading BOOLEAN NOT NULL,
 	sessionId INT NOT NULL,
 	PRIMARY KEY(gradeId),
-	FOREIGN KEY(imgId) REFERENCES images(imgId)
+	FOREIGN KEY(imgId) REFERENCES images(imgId) ON DELETE CASCADE
 );
 
 

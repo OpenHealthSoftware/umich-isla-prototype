@@ -39,6 +39,8 @@ def getPageData(imgId):
 	print C_GRID_PATH
 	coords = processImageGrid(C_GRID_PATH)
 	image = getImageData(imgId)
+	if image is None:
+		return False
 	gridData = getGridData(imgId)
 	gradeSession = getGradesFromUser(user, imgId)
 	associatedFeatures = getOptions()
@@ -72,7 +74,7 @@ def main_route():
 		data = getPageData(imgId)
 
 
-	if not request.args:
+	if not request.args or data == False: #data == false means no imgid found in db
 		data = {
 			"coords" : [],
 			"img" : {'imgId' : '', 'format' : ''},

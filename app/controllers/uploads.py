@@ -7,6 +7,7 @@ from os import listdir
 from os.path import isfile, join
 from PIL import Image
 import config
+import math
 
 uploads = Blueprint('uploads', __name__)
 
@@ -18,6 +19,7 @@ THUMBNAIL_PATH = config.F_THUMBNAIL_PATH
 GRID_PATH = config.GRID_PATH
 C_GRID_PATH = config.C_GRID_PATH
 GRID_PREFIX = config.GRID_PREFIX
+GRADES_PATH = config.GRADES_PATH
 
 
 # Effects: returns a extension name if it is valid
@@ -35,8 +37,23 @@ def generateFilename(filename):
 	f = hashlib.md5(filename).hexdigest()
 	return f
 
-
-
+# TODO: move more appropriate
+# Effects: returns the related file paths for a given image id
+def getFilePathsForImage(imgId):
+	paths = {}
+	imgData = getImageData(imgId)
+	baseImgFilename = imgId + '.' + imgData['format']
+	if imgData['type'] == 'normal':
+		paths['img'] = os.path.join(F_UPLOAD_FOLDER_NORM, baseImgFilename)
+	elif imgData['type'] == 'patient':
+		paths['img'] = os.path.join(F_UPLOAD_FOLDER_P, baseImgFilename)
+		paths['grid'] = os.path.join(F_UPLOAD_FOLDER_P, GRID_PREFIX + baseImgFilename)
+		gradeFiles = getGradeFilesFromImgId(imgId) #sql returns list of tuples
+		grades = [os.path.join(GRADES_PATH, i[0]) for i in gradeFiles]
+		paths['grades'] = grades
+	paths['thumbnail'] = os.path.join(THUMBNAIL_PATH, baseImgFilename)
+	return paths
+	
 # Requires: request object, type of img upload (patient or normal)
 # Effects: Uploads valid file to server and updates database
 def uploadImg(request, type):
@@ -84,6 +101,27 @@ def uploadImg(request, type):
 	return filename + '.' + fileExt
 
 
+def deleteImg(imgId):
+
+	paths = getFilePathsForImage(imgId)
+	deleteEntry('grids', 'imgId', imgId) #TODO: cascade doesnt seem to be working properly
+	deleteEntry('images', 'imgId', imgId)
+
+	for pathType in paths:
+		entry = paths[pathType]
+		if isinstance(entry, list):
+			for i in entry:
+				try:
+					os.remove(i)
+				except:
+					print "Couldn't delete file", i
+		else:
+			try:
+				os.remove(entry)
+			except:
+				print "Couldn't delete file", entry
+	return 0
+
 
 
 @uploads.route('/uploads', methods=['GET', 'POST'])
@@ -93,16 +131,16 @@ def upload_route():
 	folderPath = ''
 	imgFilename = ''
 	form = ''
-
+	
 	if request.method == 'GET':
 		if request.args:
 			type = request.args['type']
 	# Add or delete album
 	if request.method == 'POST':
 		form = request.form
-
+		operation = form['op']
 		if request.files:
-			operation = form['op']
+			
 			type = form['type']
 			if operation == 'add':
 				imgFilename = uploadImg(request, type)
@@ -111,8 +149,10 @@ def upload_route():
 					folderPath = UPLOAD_FOLDER_P
 				elif type == 'normal':
 					folderPath = UPLOAD_FOLDER_NORM
-			elif operation == 'delete':
-				deleteImg()
+		elif operation == 'delete':
+			deleteImg(form['imgId'])
+			return redirect(url_for('view.main_route'))
+			
 
 
 	data = {
@@ -128,6 +168,45 @@ def upload_route():
 	return jsonify(html=html)
 
 
+# Requires: PIL image, two coordinates
+# Effects: calculates angle between vectors, rotates image around orginCoords
+# returns rotated image
+# fovea coords should be close to center (optos images are centered on fovea)
+def rotateImage(img, orginCoords, foveaCoors):
+	# get angle between vectors
+	# rotate image -angle
+	angle = math.atan2(orginCoords[1] - foveaCoors[1], orginCoords[0] - foveaCoors[0])
+	degr = math.degrees(angle)
+	print degr
+	if orginCoords[0] < foveaCoors[0]:
+		degr += 180
+	# since PIL.Image.rotate will rotate around center of image,
+	# we need to put our rotation origin point at the center of the image,
+	# rotate, then crop the image back to normal size
+
+	imgW, imgH = img.size
+	pixFromCenterX = orginCoords[0] - (imgW / 2)
+	pixFromCenterY = orginCoords[1] - (imgH / 2)
+	paddedImgWidth = abs(pixFromCenterX) + imgW
+	paddedImgHeight = abs(pixFromCenterY) + imgH
+
+	pasteX = 0
+	pasteY = 0
+	if pixFromCenterX < 0:
+		pasteX += abs(pixFromCenterX)
+	if pixFromCenterY < 0:
+		pasteY += abs(pixFromCenterY)
+
+	rgba = img.split()
+	padImg = Image.new('RGB', (paddedImgWidth, paddedImgHeight))
+	padImg.paste(img, (pasteX, pasteY))
+
+	padImg = padImg.rotate(degr)
+
+	finalImg = padImg.crop((pasteX, pasteY, imgW+pasteX, imgH+pasteY))
+	return finalImg
+
+
 # Requires: FA image and grid images are their proper sizes, name of picture in database,
 # img file format, and the percentage offsets created by the user positioning data
 # Effects: puts the center of the grid on the specified location of the FA image, and scales grid
@@ -141,14 +220,16 @@ def createGriddedImage(originCoords, foveaCoords, imgName, iFormat, xPerc, yPerc
 		uploadPath = F_UPLOAD_FOLDER_P
 
 	grid = Image.open(GRID_PATH, 'r')
-	faImg = Image.open(uploadPath + imgName + iFormat, 'r')
+	faImg = Image.open(uploadPath + imgName + iFormat)
+	faImg = rotateImage(faImg, originCoords, foveaCoords)
+	faImg.save(uploadPath + imgName + iFormat)
 	fa_w, fa_h = faImg.size
 
 	# Scale grid
 	# currently arbitrary, but works relative to all uploads
 	foveaToDisk = 4.0 #mm
 	eyeWidth = 24.0 #mm, typical eye diameter
-	percentDist = (foveaToDisk / eyeWidth) * .35
+	percentDist = (foveaToDisk / eyeWidth) * .65
 	# distance = fov - disk = 16% of grid
 	distance = abs(originCoords[0] - foveaCoords[0])
 	gridWidth = distance / percentDist
