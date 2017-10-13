@@ -9,7 +9,6 @@ import os
 # Effects: finds contours of an image using OpenCV, returns list of coordinates
 def processImageGrid(imgRelPath):
 	imgPath = imgRelPath #os.path.dirname(os.path.abspath(__file__)) + '/' + imgRelPath
-	print "\n\n", imgPath, "\n\n"
 	im = cv2.imread(imgPath)
 	imgray = cv2.cvtColor(im,cv2.COLOR_BGR2GRAY)
 	ret,thresh = cv2.threshold(imgray,127,255,0)

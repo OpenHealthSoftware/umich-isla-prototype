@@ -57,13 +57,13 @@ def getFilePathsForImage(imgId):
 	
 # Requires: request object, type of img upload (patient or normal)
 # Effects: Uploads valid file to server and updates database
-def uploadImg(request, type):
+def uploadImg(request, uType):
 	form = request.form
 	upFolder = ''
 	# type
-	if type == "normal":
+	if uType == "normal":
 		upFolder = F_UPLOAD_FOLDER_NORM
-	elif type == 'patient':
+	elif uType == 'patient':
 		 upFolder = F_UPLOAD_FOLDER_P
 
 	# check if the post request has the file part
@@ -90,7 +90,7 @@ def uploadImg(request, type):
 
 
 		# save to database
-		insertImageToDB(fileExt, filename, refName, side, comments, type)
+		insertImageToDB(fileExt, filename, refName, side, comments, uType)
 		# save to server
 		fileObj.save(os.path.join(upFolder, filename + '.' + fileExt))
 		
@@ -98,7 +98,7 @@ def uploadImg(request, type):
 		thumb = Image.open(os.path.join(upFolder, filename + '.' + fileExt))
 		thumb.thumbnail((500,500), Image.ANTIALIAS)
 		thumb.save(os.path.join(THUMBNAIL_PATH, filename + '.' + fileExt))
-		
+		print "Successful image upload:", filename, uType 
 	return filename + '.' + fileExt
 
 
@@ -129,27 +129,33 @@ def deleteImg(imgId):
 @uploads.route('/uploads', methods=['GET', 'POST'])
 def upload_route():
 	isUploaded = False
-	type = ''
+	uploadType = ''
 	folderPath = ''
 	imgFilename = ''
 	form = ''
 	
 	if request.method == 'GET':
 		if request.args:
-			type = request.args['type']
+			uploadType = request.args['type']
 	# Add or delete album
 	if request.method == 'POST':
 		form = request.form
 		
 		if request.files:
 			operation = form['op']
-			type = form['type']
+			uploadType = form['type']
 			if operation == 'add':
-				imgFilename = uploadImg(request, type)
 				isUploaded = True
-				if type == 'patient':
+				try:
+					imgFilename = uploadImg(request, uploadType)
+				except IOError as e:
+					isUploaded = False
+					print e
+					print "Error uploading file of type", uploadType
+
+				if uploadType == 'patient':
 					folderPath = UPLOAD_FOLDER_P
-				elif type == 'normal':
+				elif uploadType == 'normal':
 					folderPath = UPLOAD_FOLDER_NORM
 		elif 'op' in form and form['op'] == 'delete':
 			deleteImg(form['imgId'])
@@ -158,7 +164,7 @@ def upload_route():
 
 
 	data = {
-		"type" : type,
+		"type" : uploadType,
 		"uploaded" : isUploaded,
 		"typePath" : folderPath,
 		"imgSrc" : folderPath + imgFilename,
@@ -179,7 +185,6 @@ def rotateImage(img, orginCoords, foveaCoors):
 	# rotate image -angle
 	angle = math.atan2(orginCoords[1] - foveaCoors[1], orginCoords[0] - foveaCoors[0])
 	degr = math.degrees(angle)
-	print degr
 	if orginCoords[0] < foveaCoors[0]:
 		degr += 180
 	# since PIL.Image.rotate will rotate around center of image,
@@ -206,24 +211,24 @@ def rotateImage(img, orginCoords, foveaCoors):
 	padImg = padImg.rotate(degr)
 
 	finalImg = padImg.crop((pasteX, pasteY, imgW+pasteX, imgH+pasteY))
-	return finalImg
+	return finalImg, degr
 
 
 # Requires: FA image and grid images are their proper sizes, name of picture in database,
 # img file format, and the percentage offsets created by the user positioning data
 # Effects: puts the center of the grid on the specified location of the FA image, and scales grid
 # according to opticDisk <--> fovea position
-def createGriddedImage(originCoords, foveaCoords, imgName, iFormat, xPerc, yPerc, type):
+def createGriddedImage(originCoords, foveaCoords, imgName, iFormat, xPerc, yPerc, uType):
 
 	# Load images
-	if type == "normal":
+	if uType == "normal":
 		uploadPath = F_UPLOAD_FOLDER_NORM
 	else:
 		uploadPath = F_UPLOAD_FOLDER_P
 
 	grid = Image.open(GRID_PATH, 'r')
 	faImg = Image.open(uploadPath + imgName + iFormat)
-	faImg = rotateImage(faImg, originCoords, foveaCoords)
+	faImg, degrees = rotateImage(faImg, originCoords, foveaCoords)
 	faImg.save(uploadPath + imgName + iFormat)
 	fa_w, fa_h = faImg.size
 
@@ -260,6 +265,7 @@ def createGriddedImage(originCoords, foveaCoords, imgName, iFormat, xPerc, yPerc
 	png_info = grid.info
 	croppedGrid.save(uploadPath + gridId, **png_info)
 
+	print "Success processing image and grid:", gridId, "degrees=", degrees, "scaleRatio=", scaleRatio 
 
 	# save version of grid for OpenCV contours
 	#contourGrid = Image.new('RGB', faImg.size, (255,255,255))

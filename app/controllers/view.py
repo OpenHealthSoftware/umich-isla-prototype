@@ -36,7 +36,6 @@ def getControls(side):
 def getPageData(imgId):
 
 	user = util.get_current_user()
-	print C_GRID_PATH
 	coords = processImageGrid(C_GRID_PATH)
 	image = getImageData(imgId)
 	if image is None:
@@ -71,6 +70,7 @@ def main_route():
 	if request.method == "GET" and request.args:
 		args = request.args
 		imgId = args['p']
+		print "\nLoading view for", imgId, "\n"
 		data = getPageData(imgId)
 
 
@@ -87,45 +87,6 @@ def main_route():
 		return render_template("view.html", **data)
 
 	return render_template("view.html", **data)
-
-
-
-# Requires: FA image and grid images are their proper sizes, name of picture in database,
-# img file format, and the percentage offsets created by the user positioning data
-# Effects: puts the center of the grid on the specified location of the FA image
-def createGriddedImage(originCoords, imgName, iFormat, xPerc, yPerc):
-	# Load images
-	grid = Image.open(GRID_PATH, 'r')
-	faImg = Image.open(UPLOAD_PATH + imgName + iFormat, 'r')
-	fa_w, fa_h = faImg.size
-
-	# Calculate where grid goes and paste
-	grid_w, grid_h = grid.size
-	offset = (originCoords[0] - (grid_w  / 2) , originCoords[1] - (grid_h  / 2))
-	rgba = grid.split()
-	alpha = rgba[len(rgba)-1]
-
-	croppedGrid = Image.new('RGBA', (fa_w, fa_h))
-	croppedGrid.paste(grid, offset, mask=alpha)
-
-	gridId = GRID_PREFIX + imgName + iFormat
-	insertGridToDB(gridId, xPerc, yPerc, imgName)
-	png_info = grid.info
-	croppedGrid.save(UPLOAD_PATH + gridId, **png_info)
-	return UPLOAD_PATH + gridId
-
-
-
-@view.route('/viewPositioned', methods=['GET', 'POST'])
-def positionGrid_route():
-	rForm = request.form
-	imgName = rForm['picName']
-	image = getImageData(imgName)
-	originCoords = [rForm['x'], rForm['y']]
-	originCoords = map(int, originCoords)
-	newImgPath = createGriddedImage(originCoords, imgName, '.' + image['format'], rForm['xPerc'], rForm['yPerc'])
-	data = {'newImgPath' : newImgPath}
-	return jsonify(**data)
 
 
 
@@ -146,10 +107,10 @@ def save_grade_route():
 	imgId = request.form['imgId']
 	gradeData = request.form['gradeData']
 	gradeId = request.form['gradeId']
-	print "\n\n\n\n", gradeId, "\n\n\n"
 	finished = request.form['finished']
 	cellsGraded = request.form['cellsGraded']
 	date = datetime.datetime.today().strftime('%Y-%m-%d')
+	print "\nGradeId:", gradeId, user, finished, date
 
 	inDatabase = getGradesFromId(gradeId)
 	session = ''
@@ -173,3 +134,52 @@ def load_grade_route():
 	gradeRow = getGradesFromId(request.form['gradeId'])
 	gradeJSON = open(GRADES_PATH + gradeRow['gradeFile'], 'r').read()
 	return gradeJSON
+
+
+
+
+
+
+
+
+
+
+
+
+# # Requires: FA image and grid images are their proper sizes, name of picture in database,
+# # img file format, and the percentage offsets created by the user positioning data
+# # Effects: puts the center of the grid on the specified location of the FA image
+# def createGriddedImage(originCoords, imgName, iFormat, xPerc, yPerc):
+# 	# Load images
+# 	grid = Image.open(GRID_PATH, 'r')
+# 	faImg = Image.open(UPLOAD_PATH + imgName + iFormat, 'r')
+# 	fa_w, fa_h = faImg.size
+
+# 	# Calculate where grid goes and paste
+# 	grid_w, grid_h = grid.size
+# 	offset = (originCoords[0] - (grid_w  / 2) , originCoords[1] - (grid_h  / 2))
+# 	rgba = grid.split()
+# 	alpha = rgba[len(rgba)-1]
+
+# 	croppedGrid = Image.new('RGBA', (fa_w, fa_h))
+# 	croppedGrid.paste(grid, offset, mask=alpha)
+
+# 	gridId = GRID_PREFIX + imgName + iFormat
+# 	insertGridToDB(gridId, xPerc, yPerc, imgName)
+# 	png_info = grid.info
+# 	croppedGrid.save(UPLOAD_PATH + gridId, **png_info)
+# 	return UPLOAD_PATH + gridId
+
+
+
+# @view.route('/viewPositioned', methods=['GET', 'POST'])
+# def positionGrid_route():
+# 	rForm = request.form
+# 	imgName = rForm['picName']
+# 	image = getImageData(imgName)
+# 	originCoords = [rForm['x'], rForm['y']]
+# 	originCoords = map(int, originCoords)
+# 	newImgPath = createGriddedImage(originCoords, imgName, '.' + image['format'], rForm['xPerc'], rForm['yPerc'])
+# 	data = {'newImgPath' : newImgPath}
+# 	return jsonify(**data)
+

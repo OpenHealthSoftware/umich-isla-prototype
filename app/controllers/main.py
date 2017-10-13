@@ -11,7 +11,7 @@ main = Blueprint('main', __name__)
 
 @main.route('/', methods=['GET', 'POST'])
 def main_route():
-	type = ''
+	uploadType = ''
 	form = ''
 
 	if not request.form and not request.args:
@@ -19,11 +19,11 @@ def main_route():
 
 	if request.method == 'POST' and request.form:
 		form = request.form
-		type = form['getContent']
+		uploadType = form['getContent']
 
 	images = []
-	if type:
-		images = getImages(type)
+	if uploadType:
+		images = getImages(uploadType)
 	else:
 		images = getImages('patient')
 
@@ -41,13 +41,13 @@ def main_route():
 		if currentGraders or finishedGrades:
 			isImageGraded[imgId] = True
 	
-	print "\n\n\n\n", imageGrades, "\n\n\n"
+	#print "\n\n\n\n", imageGrades, "\n\n\n"
 	data = {
 		"images" : images,
 		"isImageGraded": isImageGraded,
 		"finishedGraders": imageGrades,
 		"currentGraders": currentImageGrades,
-		"type" : type
+		"type" : uploadType
 	}
 
 	if form and form['getContent']:
