@@ -26,7 +26,7 @@ GRADES_PATH = config.GRADES_PATH
 # Effects: returns a extension name if it is valid
 def getExtension(filename):
 	ext = filename.rsplit('.', 1)[1]
-	if ext in config.ALLOWED_EXTENSIONS:
+	if ext.lower() in config.ALLOWED_EXTENSIONS:
 		return ext
 	else:
 		return ''
@@ -71,12 +71,12 @@ def uploadImg(request, type):
 		flash('No file part')
 		print "failed: ", request.files
 		return redirect(request.url)
-	file = request.files['img']
+	fileObj = request.files['img']
 	
-	fileExt = getExtension(file.filename)
+	fileExt = getExtension(fileObj.filename)
 
-	if file and fileExt: # If file and extension aren't null
-		filename = generateFilename(file.filename)
+	if fileObj and fileExt: # If file and extension aren't null
+		filename = generateFilename(fileObj.filename)
 
 		side = form['side']
 		refName = ''
@@ -92,9 +92,9 @@ def uploadImg(request, type):
 		# save to database
 		insertImageToDB(fileExt, filename, refName, side, comments, type)
 		# save to server
-		file.save(os.path.join(upFolder, filename + '.' + fileExt))
+		fileObj.save(os.path.join(upFolder, filename + '.' + fileExt))
 		
-		#
+		# make thumbnail
 		thumb = Image.open(os.path.join(upFolder, filename + '.' + fileExt))
 		thumb.thumbnail((500,500), Image.ANTIALIAS)
 		thumb.save(os.path.join(THUMBNAIL_PATH, filename + '.' + fileExt))

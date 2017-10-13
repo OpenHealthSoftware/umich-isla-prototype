@@ -18,7 +18,7 @@ if args.development and args.u:
 
 env = dict(
 	host = '0.0.0.0',
-	port = 3000
+	port = 5000
 )
 
 VERSION_FILE = './version.txt'
@@ -32,7 +32,7 @@ LIBRARY_PATH = STATIC_PATH + '/images/library/'
 UPLOAD_FOLDER_P = 'images/uploads/' # from static
 UPLOAD_FOLDER_NORM = 'images/normals/' # from static
 THUMBNAIL_PATH = 'images/thumbnails/' # from static
-ALLOWED_EXTENSIONS = set(['png', 'PNG', 'jpg', 'bmp', 'gif'])
+ALLOWED_EXTENSIONS = set(['png', 'jpg', 'jpeg', 'bmp', 'gif'])
 GRID_PATH = STATIC_PATH + '/images/grid.png'
 C_GRID_PATH = STATIC_PATH + '/images/grid.jpg' #for contout need nonalpha
 GRID_PREFIX = "grid_" # prefix that grid images will begin with

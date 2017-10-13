@@ -456,11 +456,12 @@ input[type=button]:hover, input[type=submit]:hover, input[type=reset]:hover, but
 .full-width{ width: 100%; }
 .half-width{ width: 50%; }
 .third-width{ width: 33%; }
+.fourth-width{ width: 25%; }
 .half-height{ height: 50%; }
 
 .margin-top-small {margin-top: 15px;}
 .margin-bottom-small {margin-bottom: 15px;}
-.btn-seperator-right { border-right: 1px solid #464646; }
+.btn-seperator-right { border-right: 1px solid #464646; margin-right: -1px !important;}
 
 .seperator-vertical
 {

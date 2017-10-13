@@ -3,4 +3,4 @@ Pip:
 	Flask
 	numpy
 	opencv-python (3.1)
-	pillow
+	Pillow==4.3.0

@@ -19,6 +19,7 @@ function handleUploadSubmit()
 	$('form#uploadForm').submit(function(e){
 		var formData = new FormData($(this)[0]);
 
+
 		$.ajax({
 			url: "uploads",
 			data: formData,
@@ -26,6 +27,7 @@ function handleUploadSubmit()
 			type: 'POST',
 			async: false,
 			success: function(response) {
+				$('#closeBtn').prop('disabled', true);
 				constructView(response, 'uploadSubmit');
 			},
 			error: function(error) {
@@ -153,6 +155,7 @@ function submitPositionClick()
 						},
 				type: 'POST',
 				success: function(response) {
+					$('#closeBtn').prop('disabled', false);
 					$('#loading').hide();
 					$('#continueOptions').show();
 					//reset booleans incase user goes to upload more

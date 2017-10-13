@@ -9,6 +9,7 @@ exportData[0] = {
 	gradeTime: "Grade Time (s)",
 	normalImgCompared: "Normal Image used in comparsion",
 	contrastVal : "Contrast percentage used",
+	secondaryFeatures: "Secondary features"
 };
 libraryExamplesUsed = {};
 startTime = 0;
@@ -41,6 +42,7 @@ var KEYS = {
 	one: 49,
 	two: 50,
 	three: 51,
+	four: 52,
 	left: 37,
 	right: 39,
 	shift: 16,
@@ -64,7 +66,7 @@ $('document').ready()
 
 	$('area').each(function(){
 			var id = parseInt($(this).attr('id').split('_')[1]);
-			$(this).mouseover(function(){drawCellManager(id)});
+			$(this).mouseover(function(){drawCellManager(id); updateCellStats(id);});
 			$(this).click(function(){toggleQuickView();});
 	});
 
@@ -98,6 +100,9 @@ function keydownRouter(e)
 			break;
 		case KEYS.three:
 			enterGrade(2);
+			break;
+		case KEYS.four:
+			enterGrade(3);
 			break;
 		case KEYS.left:
 			//cycleNormal(-1);
@@ -263,6 +268,7 @@ function resetInput(els)
 }
 function resetInputGUI()
 {
+
 	$('.checkbox-selected, .button-selected').removeClass('checkbox-selected button-selected');
 }
 
@@ -284,6 +290,11 @@ function submitGrade()
 	if (!isCellValid(currentCell))
 		return;
 
+	var t = new Date();
+	endTime = t.getTime();
+	var gradingTime = (endTime - startTime) / 1000;
+
+	
 	// collect input
 	var recordedInput = getSubmissionInput();
 	var inputValues = [];
@@ -310,10 +321,8 @@ function submitGrade()
 	}
 
 	
-	var t = new Date();
-	endTime = t.getTime();
+	
 	var cellId = currentCell;
-	var gradingTime = (endTime - startTime) / 1000;
 
 	var normalSrc = normImg.attr('src');
 	var normalId = normalSrc.split('/').pop();
@@ -323,12 +332,13 @@ function submitGrade()
 
 	// Create data object
 	var data = {
-		gradedValues : inputValues,
+		perfusion : inputValues[0],
 		cell : cellId,
 		gradeTime: gradingTime,
 		normalImgCompared: normalId,
-	//	optionsCompared: libraryExamplesUsed, TODO
+	//	optionsCompared: libraryExamplesUsed, TODO exampleImgs[currentExampleImgIdx]
 		contrastVal : contrast,
+		secondaryFeatures: inputValues.slice(1).join('|')
 	};
 
 	if (!exportData[cellId])
@@ -490,16 +500,19 @@ function selectPrimaryGradeOption(el)
 
 function updateCellStats(cellId)
 {
+	resetInputGUI();
+
 	var gradeStatus = "Ungraded:";
 	var gradeValStr = "";
 
 	$('#cellNumber').html(cellId + " / " + numCells);
 
-	if (cellId in exportData && exportData[cellId].gradedValues)
+	if (cellId in exportData && exportData[cellId].perfusion)
 	{
 		gradeStatus = "Graded:";
 
-		var grades = exportData[cellId].gradedValues;
+		var grades = exportData[cellId].secondaryFeatures.split('|');
+		grades.unshift(exportData[cellId].perfusion); // add main grade to front
 		gradeValStr = grades.join(', ');
 	
 		for (var i = 0; i < grades.length; i++)
@@ -553,8 +566,8 @@ function toggleQuickView()
 		$('area').each(function(){
 			var id = parseInt($(this).attr('id').split('_')[1]);
 			$(this).unbind('click');	
-			$(this).mouseover(function(){drawCellManager(id)});
-			$(this).click(function(){toggleQuickView();});
+			$(this).mouseover(function(){drawCellManager(id); updateCellStats(id)});
+			$(this).click(function(){toggleQuickView(); updateCellStats(id)});
 		});
 		// enable grid 
 		if (areGridsShowing == false) toggleGrids();
@@ -565,7 +578,8 @@ function toggleQuickView()
 			var id = parseInt($(this).attr('id').split('_')[1]);
 			$(this).unbind('mouseover');
 			$(this).click(function(){
-				drawCellManager(id); 
+				drawCellManager(id);
+				updateCellStats(id);
 				toggleQuickView(id);
 			});
 		});
@@ -622,13 +636,12 @@ function drawCellManager(cellId)
 	if (isCellValid(cellId) == false)
 		return;
 
+
 	// // load previous grade if any
 	// if (exportData[cellId])
 	// 	$(':radio[value=' + exportData[cellId].perfusion + ']')[0].checked = true;
 	// else //unselect radio buttons
 	// 	$('input[name=grade]').each(function(){	$(this)[0].checked = false; });
-	//TODO: reorganize so this goes in a better place
-	updateCellStats(cellId);
 
 	// Clear trace canvases
 	$('.traceCanvas').each(function(){

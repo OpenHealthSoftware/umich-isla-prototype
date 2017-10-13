@@ -32,6 +32,10 @@
 			--><div class="toolbarEl btn-seperator-right">
 				<button id="toggleGridsBtn" class="toolbarEl" onclick="toggleGrids()">Hide grid</button>
 				<span class="tooltip">Click to hide or show the grid</span>
+			</div><!--
+			--><div class="toolbarEl btn-seperator-right">
+				<button id="export" class="toolbarEl">Export grade</button>
+				<span class="tooltip">Save the grade data to your computer</span>
 			</div>
 		</div><!-- END #toolbar -->
 
@@ -106,9 +110,11 @@
 							<input type="radio" name="grade" value="perfused" id="gradePerf">
 							<input type="radio" name="grade" value="hypo-perfused" id="gradeHypoPerf">
 							<input type="radio" name="grade" value="non-perfused" id="gradeNonPerf">
-							<label for="gradePerf" class="button button-row-el third-width btn-seperator-right">Perfused</label>
-							<label for="gradeHypoPerf" class="button button-row-el third-width btn-seperator-right">Hypoperfused</label>
-							<label for="gradeNonPerf" class="button button-row-el third-width">Non-Perfused</label>
+							<input type="radio" name="grade" value="NA" id="gradeNA">
+							<label for="gradePerf" class="button button-row-el fourth-width btn-seperator-right">Perfused</label>
+							<label for="gradeHypoPerf" class="button button-row-el fourth-width btn-seperator-right">Hypoperfused</label>
+							<label for="gradeNonPerf" class="button button-row-el fourth-width btn-seperator-right">Non-Perfused</label>
+							<label for="gradeNA" class="button button-row-el fourth-width">NA / Ungradeable</label>
 						</form>
 					</div>
 
@@ -139,7 +145,7 @@
 
 			<div id="wrapComparisons">
 				<div id="wrapNormalComparisons" class="half-height">
-					<div class="maintain-ratio-full">
+					<div class="maintain-ratio-full" style="background-color:#1d1d1d">
 						<div id="normalCell" class="cellControlModule">			
 								<canvas id="normalCellViewCanvas" class="cellCanvas" width="0" height="0"></canvas>
 						</div>
@@ -171,7 +177,7 @@
 	<div id="wrapStatusBar"></div><!-- END #wrapStatusBar -->
 	
 	<div id="viewFrameCont" class="popup">
-		<div id="exitFrame" class="exitFrame"><button>Close</button></div>
+		<div id="exitFrame" class="exitFrame"><button id="closeBtn">Close</button></div>
 		<div id="viewFrame" class="viewFrame"></div>
 	</div>
 
