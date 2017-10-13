@@ -23,7 +23,7 @@ def getOptionExamples(optionType):
 
 # Effects: Runs a MySQL query that returns all images in the database
 def getImages(type):
-	cursor.execute("SELECT * FROM images WHERE type=? ORDER BY imgId DESC", (type,))
+	cursor.execute("SELECT * FROM images WHERE type=? ORDER BY uploadDate DESC", (type,))
 	results = cursor.fetchall()
 	return results
 

@@ -38,6 +38,7 @@ CREATE TABLE images(
 	side CHAR(5) NOT NULL,
 	comments TEXT,
 	type VARCHAR(7) NOT NULL,
+	uploadDate DATETIME DEFAULT CURRENT_TIMESTAMP,
 	--captureTime INTEGER, --num seconds after injection the picture was taken
 	PRIMARY KEY(imgId)
 );
