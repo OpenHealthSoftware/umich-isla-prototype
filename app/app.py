@@ -8,7 +8,7 @@ from PIL import Image
 
 STATIC_PATH = config.STATIC_PATH
 # Initialize Flask app
-#app = Flask(__name__, template_folder='templates', static_folder="static")
+#app = Flask(__name__, template_folder='templates', static_folder='static')
 app = Flask(__name__, template_folder='templates', static_folder=STATIC_PATH)
 
 

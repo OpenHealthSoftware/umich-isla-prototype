@@ -39,14 +39,14 @@ def main_route():
 		if currentGraders or finishedGrades:
 			isImageGraded[imgId] = True
 	
-	#print "\n\n\n\n", imageGrades, "\n\n\n"
+	#print '\n\n\n\n', imageGrades, '\n\n\n'
 	data = {
-		"images" : images,
-		"isImageGraded": isImageGraded,
-		"finishedGraders": imageGrades,
-		"currentGraders": currentImageGrades,
-		"type" : uploadType
+		'images' : images,
+		'isImageGraded': isImageGraded,
+		'finishedGraders': imageGrades,
+		'currentGraders': currentImageGrades,
+		'type' : uploadType
 	}
 
 
-	return render_template("index.html", **data)
+	return render_template('index.html', **data)

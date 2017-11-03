@@ -45,16 +45,16 @@ def getPageData(imgId):
 	associatedFeatures = getOptions()
 
 	data = {
-		"coords" : coords,
-		"img" : image,
-		"grid" : GRID_PATH,
-		"numPrev" : NUM_NORM_PREV, #number of control images to show at once
-		"xOffset" : gridData['xOffsetPerc'],
-		"yOffset" : gridData['yOffsetPerc'],
-		"gridScaleRatio": gridData['scaleRatio'], 
-		"gitVersion" :  open(VERSION_FILE, 'r').readline().replace('\n', ''),
-		"gradeSessions": gradeSession,
-		"associatedFeatures": associatedFeatures
+		'coords' : coords,
+		'img' : image,
+		'grid' : GRID_PATH,
+		'numPrev' : NUM_NORM_PREV, #number of control images to show at once
+		'xOffset' : gridData['xOffsetPerc'],
+		'yOffset' : gridData['yOffsetPerc'],
+		'gridScaleRatio': gridData['scaleRatio'], 
+		'gitVersion' :  open(VERSION_FILE, 'r').readline().replace('\n', ''),
+		'gradeSessions': gradeSession,
+		'associatedFeatures': associatedFeatures
 	}
 
 	return data
@@ -67,26 +67,26 @@ def main_route():
 	gradeView = True
 	data = {}
 
-	if request.method == "GET" and request.args:
+	if request.method == 'GET' and request.args:
 		args = request.args
 		imgId = args['p']
-		print("\nLoading view for", imgId, "\n")
+		print('\nLoading view for', imgId, '\n')
 		data = getPageData(imgId)
 
 
 	if not request.args or data == False: #data == false means no imgid found in db
 		data = {
-			"coords" : [],
-			"img" : {'imgId' : '', 'format' : ''},
-			"grid" : '',
-			"numPrev" : NUM_NORM_PREV, #number of control images to show at once
-			"xOffset" : 0,
-			"yOffset" : 0,
-			"gridScaleRatio" : 1,
+			'coords' : [],
+			'img' : {'imgId' : '', 'format' : ''},
+			'grid' : '',
+			'numPrev' : NUM_NORM_PREV, #number of control images to show at once
+			'xOffset' : 0,
+			'yOffset' : 0,
+			'gridScaleRatio' : 1,
 		}
-		return render_template("gradeView.html", **data)
+		return render_template('gradeView.html', **data)
 
-	return render_template("gradeView.html", **data)
+	return render_template('gradeView.html', **data)
 
 
 
@@ -97,8 +97,8 @@ def get_user_route():
 	rForm = request.form
 	if request.form['caller'] == 'exportGrade':
 		user = util.get_current_user()
-		return jsonify({"user": user})
-	else: return jsonify({"user":"error"})
+		return jsonify({'user': user})
+	else: return jsonify({'user':'error'})
 
 @gradeView.route('/saveGrading', methods=['GET', 'POST'])
 def save_grade_route():
@@ -110,7 +110,7 @@ def save_grade_route():
 	finished = request.form['finished']
 	cellsGraded = request.form['cellsGraded']
 	date = datetime.datetime.today().strftime('%Y-%m-%d')
-	print("\nGradeId:", gradeId, user, finished, date)
+	print('\nGradeId:', gradeId, user, finished, date)
 
 	inDatabase = getGradesFromId(gradeId)
 	session = ''

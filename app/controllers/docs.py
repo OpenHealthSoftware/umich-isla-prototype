@@ -3,7 +3,7 @@ from flask import *
 import json
 from config import VERSION_FILE
 
-docs = Blueprint('docs', __name__, template_folder='templates', static_folder="static")
+docs = Blueprint('docs', __name__, template_folder='templates', static_folder='static')
 
 @docs.route('/help', methods=['GET', 'POST'])
 def main_route():
@@ -12,7 +12,7 @@ def main_route():
 		gitTag = f.readline()
 
 	data = {
-		"version" : gitTag
+		'version' : gitTag
 	}
 
 	return render_template('docs.html', **data)

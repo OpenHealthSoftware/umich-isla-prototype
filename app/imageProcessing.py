@@ -32,7 +32,7 @@ def getCoordinateStrings(contours):
 		for coordArray in cell:
 			for coords in coordArray: # looks like [[x y]] ie coordArray[0] == [x y]
 				strList = map(str, coords)
-				cellCoordStr += ','.join(strList) + ","
+				cellCoordStr += ','.join(strList) + ','
 
 		cellCoordStr = cellCoordStr[:-1] #remove last comma
 		coordList.append(cellCoordStr)

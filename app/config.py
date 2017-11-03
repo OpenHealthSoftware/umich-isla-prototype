@@ -4,7 +4,7 @@ import argparse
 # Create and handle command line arguments
 parser = argparse.ArgumentParser(description='Kellogg Eye Web App')
 parser.add_argument('-d', '--development', 
-					action="store_true", # act like a flag
+					action='store_true', # act like a flag
                     help='a flag for indicating the app will run for local development')
 parser.add_argument('-u', default='devUser', type=str,
                     help='uniqname for the session (who you are signed in as)')
@@ -35,5 +35,5 @@ THUMBNAIL_PATH = 'images/thumbnails/' # from static
 ALLOWED_EXTENSIONS = set(['png', 'jpg', 'jpeg', 'bmp', 'gif'])
 GRID_PATH = STATIC_PATH + '/images/grid.png'
 C_GRID_PATH = STATIC_PATH + '/images/grid.jpg' #for contout need nonalpha
-GRID_PREFIX = "grid_" # prefix that grid images will begin with
+GRID_PREFIX = 'grid_' # prefix that grid images will begin with
 GRADES_PATH = STATIC_PATH + '/grades/'

@@ -61,7 +61,7 @@ def uploadImg(request, uType):
 	form = request.form
 	upFolder = ''
 	# type
-	if uType == "normal":
+	if uType == 'normal':
 		upFolder = F_UPLOAD_FOLDER_NORM
 	elif uType == 'patient':
 		 upFolder = F_UPLOAD_FOLDER_P
@@ -69,7 +69,7 @@ def uploadImg(request, uType):
 	# check if the post request has the file part
 	if 'img' not in request.files:
 		flash('No file part')
-		print("failed: ", request.files)
+		print('failed: ', request.files)
 		return redirect(request.url)
 	fileObj = request.files['img']
 	
@@ -98,7 +98,7 @@ def uploadImg(request, uType):
 		thumb = Image.open(os.path.join(upFolder, filename + '.' + fileExt))
 		thumb.thumbnail((500,500), Image.ANTIALIAS)
 		thumb.save(os.path.join(THUMBNAIL_PATH, filename + '.' + fileExt))
-		print("Successful image upload:", filename, uType)
+		print('Successful image upload:', filename, uType)
 	return filename + '.' + fileExt
 
 
@@ -116,12 +116,12 @@ def deleteImg(imgId):
 				try:
 					os.remove(i)
 				except:
-					print("Couldn't delete file", i)
+					print('Couldn\'t delete file', i)
 		else:
 			try:
 				os.remove(entry)
 			except:
-				print("Couldn't delete file", entry)
+				print('Couldn\'t delete file', entry)
 	return 0
 
 
@@ -151,7 +151,7 @@ def main_route():
 				except IOError as e:
 					isUploaded = False
 					print(e)
-					print("Error uploading file of type", uploadType)
+					print('Error uploading file of type', uploadType)
 
 				if uploadType == 'patient':
 					folderPath = UPLOAD_FOLDER_P
@@ -164,15 +164,15 @@ def main_route():
 
 
 	data = {
-		"type" : uploadType,
-		"uploaded" : isUploaded,
-		"typePath" : folderPath,
-		"imgSrc" : folderPath + imgFilename,
-		"imgId" : imgFilename.rsplit('.', 1)[0]
+		'type' : uploadType,
+		'uploaded' : isUploaded,
+		'typePath' : folderPath,
+		'imgSrc' : folderPath + imgFilename,
+		'imgId' : imgFilename.rsplit('.', 1)[0]
 	}
 
 
-	return render_template("uploads.html", **data)
+	return render_template('uploads.html', **data)
 
 
 # Requires: PIL image, two coordinates
@@ -220,7 +220,7 @@ def rotateImage(img, orginCoords, foveaCoors):
 def createGriddedImage(originCoords, foveaCoords, imgName, iFormat, xPerc, yPerc, uType):
 
 	# Load images
-	if uType == "normal":
+	if uType == 'normal':
 		uploadPath = F_UPLOAD_FOLDER_NORM
 	else:
 		uploadPath = F_UPLOAD_FOLDER_P
@@ -264,14 +264,14 @@ def createGriddedImage(originCoords, foveaCoords, imgName, iFormat, xPerc, yPerc
 	png_info = grid.info
 	croppedGrid.save(uploadPath + gridId, **png_info)
 
-	print("Success processing image and grid:", gridId, "degrees=", degrees, "scaleRatio=", scaleRatio)
+	print('Success processing image and grid:', gridId, 'degrees=', degrees, 'scaleRatio=', scaleRatio)
 
 	# save version of grid for OpenCV contours
 	#contourGrid = Image.new('RGB', faImg.size, (255,255,255))
 	#contourGrid.paste(grid, offset, grid)
 	#contourGrid = contourGrid.convert('L') # convert to grayscale
 	#contourGrid = contourGrid.point(lambda x: 0 if x<200 else 255, '1') #convert to black and white
-	#contourGrid.save(C_GRID_PATH, "JPEG")
+	#contourGrid.save(C_GRID_PATH, 'JPEG')
 	return uploadPath + gridId
 
 

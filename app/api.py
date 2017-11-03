@@ -21,9 +21,9 @@ def libraryExample(name):
 			imgs.append(path)
 
 		response = {
-			"name" : name,
-			"desc" : info['description'],
-			"imgSrcs": imgs
+			'name' : name,
+			'desc' : info['description'],
+			'imgSrcs': imgs
 		}
 
 		return jsonify(response)
@@ -42,7 +42,7 @@ def normal_route():
 
 		imgList = getImages('normal')
 		if not imgList:
-			return jsonify({"error": "no normal images"})
+			return jsonify({'error': 'no normal images'})
 		
 		# find where the normal is in the list
 		currentIndex = 0
@@ -53,7 +53,7 @@ def normal_route():
 
 		# now can figure out which is the next or previous
 		img = {}
-		if normId == "null":
+		if normId == 'null':
 			img = imgList[0]
 		else: # next or prev, direction == 1 or -1
 			img = imgList[(currentIndex + direction) % len(imgList)]
