@@ -15,7 +15,7 @@ account = Blueprint('account', __name__)
 def login_route():
 	
 	
-	print "\n\n\n\n", imageGrades, "\n\n\n"
+	print("\n\n\n\n", imageGrades, "\n\n\n")
 	data = {
 		"images" : images,
 		"imageGrades": imageGrades,

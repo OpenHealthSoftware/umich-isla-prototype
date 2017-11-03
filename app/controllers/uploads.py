@@ -69,7 +69,7 @@ def uploadImg(request, uType):
 	# check if the post request has the file part
 	if 'img' not in request.files:
 		flash('No file part')
-		print "failed: ", request.files
+		print("failed: ", request.files)
 		return redirect(request.url)
 	fileObj = request.files['img']
 	
@@ -98,7 +98,7 @@ def uploadImg(request, uType):
 		thumb = Image.open(os.path.join(upFolder, filename + '.' + fileExt))
 		thumb.thumbnail((500,500), Image.ANTIALIAS)
 		thumb.save(os.path.join(THUMBNAIL_PATH, filename + '.' + fileExt))
-		print "Successful image upload:", filename, uType 
+		print("Successful image upload:", filename, uType)
 	return filename + '.' + fileExt
 
 
@@ -116,18 +116,18 @@ def deleteImg(imgId):
 				try:
 					os.remove(i)
 				except:
-					print "Couldn't delete file", i
+					print("Couldn't delete file", i)
 		else:
 			try:
 				os.remove(entry)
 			except:
-				print "Couldn't delete file", entry
+				print("Couldn't delete file", entry)
 	return 0
 
 
 
 @uploads.route('/uploads', methods=['GET', 'POST'])
-def upload_route():
+def main_route():
 	isUploaded = False
 	uploadType = ''
 	folderPath = ''
@@ -150,8 +150,8 @@ def upload_route():
 					imgFilename = uploadImg(request, uploadType)
 				except IOError as e:
 					isUploaded = False
-					print e
-					print "Error uploading file of type", uploadType
+					print(e)
+					print("Error uploading file of type", uploadType)
 
 				if uploadType == 'patient':
 					folderPath = UPLOAD_FOLDER_P
@@ -172,8 +172,7 @@ def upload_route():
 	}
 
 
-	html = render_template("uploads.html", **data)
-	return jsonify(html=html)
+	return render_template("uploads.html", **data)
 
 
 # Requires: PIL image, two coordinates
@@ -265,7 +264,7 @@ def createGriddedImage(originCoords, foveaCoords, imgName, iFormat, xPerc, yPerc
 	png_info = grid.info
 	croppedGrid.save(uploadPath + gridId, **png_info)
 
-	print "Success processing image and grid:", gridId, "degrees=", degrees, "scaleRatio=", scaleRatio 
+	print("Success processing image and grid:", gridId, "degrees=", degrees, "scaleRatio=", scaleRatio)
 
 	# save version of grid for OpenCV contours
 	#contourGrid = Image.new('RGB', faImg.size, (255,255,255))

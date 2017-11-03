@@ -70,7 +70,7 @@ def main_route():
 	if request.method == "GET" and request.args:
 		args = request.args
 		imgId = args['p']
-		print "\nLoading view for", imgId, "\n"
+		print("\nLoading view for", imgId, "\n")
 		data = getPageData(imgId)
 
 
@@ -110,7 +110,7 @@ def save_grade_route():
 	finished = request.form['finished']
 	cellsGraded = request.form['cellsGraded']
 	date = datetime.datetime.today().strftime('%Y-%m-%d')
-	print "\nGradeId:", gradeId, user, finished, date
+	print("\nGradeId:", gradeId, user, finished, date)
 
 	inDatabase = getGradesFromId(gradeId)
 	session = ''

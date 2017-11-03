@@ -899,37 +899,6 @@ function switchToGradeView()
 	isGradeView = !isGradeView;
 }
 
-// Effects: displays an iframe with the target src
-function router(target)
-{
-	console.log(target);
-	var url = '';
-	var targetFunc;
-	var data;
-
-	$('#viewFrame').empty();	
-
-	if (target == 'normal' || target == 'patient')
-		url = url_view;
-	else if (target == 'upload' || target == 'uploadSubmit')
-		url = url_upload;
-	else if (target == 'his')
-		url = url_his;
-		
-	$.ajax({
-			url: url,
-			data: { 'getContent' : target,  uploadForm: data},
-			dataType: 'json',
-			type: 'POST',
-			success: function(response) {
-				console.log(response);
-				constructView(response, target);
-			},
-			error: function(error) {
-				console.log(error);
-			}
-		});
-}
 
 $('#exitFrame').click(function()
 {
@@ -942,41 +911,7 @@ $('#exitContinueFrame').click(function()
 	$('#continueFrameCont').hide();
 });
 
-// Effects: handles appending new html to the document
-function constructView(data, type)
-{
-	$('#continueFrameCont').hide();
-	$('#viewFrame').empty();
-	source = $(data['html']).find('#content').html();
-	var v = $('#viewFrame');
-	v.append(source);
-	$('#viewFrameCont').css({ top : '10%', left : '10%', width:'80%',height: '80%'});	
-	$("#viewFrameCont").show();
 
-	// add necessary stuff
-	if (type == 'upload')
-		uploadListeners();
-	else if (type == 'uploadSubmit')
-		gridPositionListeners();
-}
-
-// Effects: javascript needed once the upload view is created
-function uploadListeners()
-{
-	uploadFileLabeUpdater();
-	handleUploadSubmit();
-}
-
-
-function gridPositionListeners()
-{
-	// resize view window
-	$('#viewFrameCont').animate({ top : '2%', left : '2%', width:'96%',height: '96%'});
-	$('#focusRing').draggable();
-	updateFocusRing();
-	handleRingResize();
-	$('#submitPosition').click(function(){submitPositionClick();});
-}
 
 
 

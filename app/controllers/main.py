@@ -11,15 +11,13 @@ main = Blueprint('main', __name__)
 
 @main.route('/', methods=['GET', 'POST'])
 def main_route():
-	uploadType = ''
-	form = ''
+	uploadType = None
 
 	if not request.form and not request.args:
 		return redirect(url_for('view.main_route'))
 
-	if request.method == 'POST' and request.form:
-		form = request.form
-		uploadType = form['getContent']
+	if request.args and 'gallery' in request.args:
+		uploadType = request.args['gallery']
 
 	images = []
 	if uploadType:
@@ -50,8 +48,5 @@ def main_route():
 		"type" : uploadType
 	}
 
-	if form and form['getContent']:
-		html = render_template("index.html", **data)
-		return jsonify(html=html)
-	else:
-		return render_template("index.html", **data)
+
+	return render_template("index.html", **data)

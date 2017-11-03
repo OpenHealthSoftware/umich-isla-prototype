@@ -16,10 +16,10 @@
 			<button id="menuBtn" class="menu-btn">Menu</button>
 			<div id="menuDropdownCont" class="wrap-drop-down">
 				<div id="menuDropdown" class="drop-down">
-					<button onclick="router('patient')" class="patient-shade-1">Patients</button>
-					<button onclick="router('normal')" class="normal-shade-1">Normals</button>
-					<button onclick="router('upload')">Upload</button>
-					<button onclick="router('his')">Help / Info</button>
+					<a href="{{ url_for('main.main_route', gallery='patient') }}" class="patient-shade-1">Patients</a>
+					<a href="{{ url_for('main.main_route', gallery='normal') }}" class="normal-shade-1">Normals</a>
+					<a href="{{ url_for('uploads.main_route') }}">Upload</a>
+					<a href="{{ url_for('docs.main_route') }}">Help / Info</a>
 				</div>
 			</div>
 		</div> <!-- END #menuBar -->
@@ -45,8 +45,8 @@
 		<div id="leftScreen" class="split split-horizontal" >
 			<div id="fullView">
 				{% if not img['imgId'] %}
-						<button onclick="router('patient')" class="patient-shade-1 btn-large">Click to Grade an Existing Image</button>
-						<button onclick="router('upload')" class="btn-large">Click to Upload a New Control or Patient Image</button>
+						<a href="{{ url_for('main.main_route', gallery='patient') }}" class="patient-shade-1 btn-large">Click to Grade an Existing Image</a>
+						<a href="{{ url_for('uploads.main_route') }}" class="btn-large">Click to Upload a New Control or Patient Image</a>
 				{%  else %}
 
 				{% set faSrc = url_for('static', filename='images/uploads/' + img['imgId'] + '.' + img['format']) %}
@@ -217,12 +217,8 @@
 
 	<script>
 		var xOffsetPercent = {{xOffset}}, yOffsetPercent = {{yOffset}};
-		var url_view = "{{url_for('main.main_route')}}";
-		var url_upload = "{{url_for('uploads.upload_route')}}";
-		var url_his =  "{{url_for('his.his_route')}}";
 		SCALE_GRID_RATIO = {{gridScaleRatio}};
 		SCALE_GRID_RATIO_NORMAL = 1;
-		var VERSION = '{{gitVersion}}';
 		var GRADE_ID = -1;
 	</script>
 

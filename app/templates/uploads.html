@@ -28,7 +28,7 @@
 			<div id="loading">Processing...</div>
 
 			<div id="continueOptions">
-				<button onclick="router('upload')">Back to Uploading</button>
+				<a href={{ url_for('uploads.main_route') }}>Back to Uploading</button>
 				{% if type != 'normal' %}
 				<a href="{{url_for('view.main_route', p=imgId)}}"><button>Grade Uploaded Image</button></a>
 				{% endif %}
