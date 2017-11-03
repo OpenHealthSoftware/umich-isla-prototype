@@ -14,7 +14,7 @@ app = Flask(__name__, template_folder='templates', static_folder=STATIC_PATH)
 
 # Register the controllers
 app.register_blueprint(controllers.main)
-app.register_blueprint(controllers.view)
+app.register_blueprint(controllers.gradeView)
 app.register_blueprint(controllers.uploads)
 app.register_blueprint(controllers.docs)
 app.register_blueprint(controllers.account)

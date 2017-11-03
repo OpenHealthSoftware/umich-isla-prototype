@@ -9,7 +9,7 @@ import config
 import datetime
 import util
 
-view = Blueprint('view', __name__)
+gradeView = Blueprint('gradeView', __name__)
 UPLOAD_PATH = config.UPLOAD_FOLDER_P
 GRID_PREFIX = config.GRID_PREFIX
 GRID_PATH = config.GRID_PATH
@@ -61,7 +61,7 @@ def getPageData(imgId):
 
 
 
-@view.route('/view', methods=['GET', 'POST'])
+@gradeView.route('/grade', methods=['GET', 'POST'])
 def main_route():
 
 	gradeView = True
@@ -84,15 +84,15 @@ def main_route():
 			"yOffset" : 0,
 			"gridScaleRatio" : 1,
 		}
-		return render_template("view.html", **data)
+		return render_template("gradeView.html", **data)
 
-	return render_template("view.html", **data)
-
-
+	return render_template("gradeView.html", **data)
 
 
 
-@view.route('/getUser', methods=['GET', 'POST'])
+
+
+@gradeView.route('/getUser', methods=['GET', 'POST'])
 def get_user_route():
 	rForm = request.form
 	if request.form['caller'] == 'exportGrade':
@@ -100,7 +100,7 @@ def get_user_route():
 		return jsonify({"user": user})
 	else: return jsonify({"user":"error"})
 
-@view.route('/saveGrading', methods=['GET', 'POST'])
+@gradeView.route('/saveGrading', methods=['GET', 'POST'])
 def save_grade_route():
 	user = util.get_current_user()
 
@@ -129,7 +129,7 @@ def save_grade_route():
 	return jsonify({'gradeId': gradeId})
 
 
-@view.route('/loadGrade', methods=['GET', 'POST'])
+@gradeView.route('/loadGrade', methods=['GET', 'POST'])
 def load_grade_route():
 	gradeRow = getGradesFromId(request.form['gradeId'])
 	gradeJSON = open(GRADES_PATH + gradeRow['gradeFile'], 'r').read()

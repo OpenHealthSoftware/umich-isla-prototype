@@ -1,7 +1,7 @@
 
 // GLobals
 exportData = {};
-exportData['info'] = "Info: Grade information created from version " + VERSION;
+exportData['info'] = "Info: Grade information created from version " + 'temp';//TODO: api VERSION;
 // For exporting to csv, give the key names => column names
 exportData[0] = { 
 	perfusion : "Perfusion",

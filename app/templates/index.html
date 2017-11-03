@@ -23,7 +23,7 @@
 	{% for p in images %}
 	<div id="" class="imgCont">
 		{% if type == 'patient' %}
-		<a href="view?p={{p['imgId']}}" class="aPrev">
+		<a href="grade?p={{p['imgId']}}" class="aPrev">
 			<div id="imgPrev{{loop.index}}" class="imgPrev">
 				<img src="{{ url_for('static', filename='images/thumbnails/' + p['imgId'] + '.' + p['format']) }}">
 			</div>

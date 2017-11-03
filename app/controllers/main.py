@@ -14,7 +14,7 @@ def main_route():
 	uploadType = None
 
 	if not request.form and not request.args:
-		return redirect(url_for('view.main_route'))
+		return redirect(url_for('gradeView.main_route'))
 
 	if request.args and 'gallery' in request.args:
 		uploadType = request.args['gallery']

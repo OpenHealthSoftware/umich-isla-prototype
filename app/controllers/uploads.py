@@ -159,7 +159,7 @@ def main_route():
 					folderPath = UPLOAD_FOLDER_NORM
 		elif 'op' in form and form['op'] == 'delete':
 			deleteImg(form['imgId'])
-			return redirect(url_for('view.main_route'))
+			return redirect(url_for('gradeView.main_route'))
 			
 
 
