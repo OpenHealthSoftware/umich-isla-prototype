@@ -28,6 +28,8 @@ var previousCell = 0;
 var GRID_ROWS = 19;
 var GRID_COLS = 35;
 var selectedNormId = 'null';
+var xOffsetPercent, yOffsetPercent, SCALE_GRID_RATIO;
+var SCALE_GRID_RATIO_NORMAL = 1;
 
 
 // COLORS
@@ -49,6 +51,32 @@ var KEYS = {
 	spacebar: 32,
 	enter: 13
 }
+
+
+
+
+
+function initGridData(){
+	// get initial data about the grid, needed for making the html map work
+	$.ajax({
+		url: '/api/v1/image',
+		data: {
+			id: gup('p'),
+			selection: ['imgData', 'gridData']
+		},
+		type: 'GET',
+		success:  function(resp)
+		{
+			xOffsetPercent = resp['gridData']['xOffsetPerc'];
+			yOffsetPercent = resp['gridData']['yOffsetPerc'];
+			SCALE_GRID_RATIO = resp['gridData']['scaleRatio'];
+			var side = resp['imgData']['side'];
+			remap();
+		},
+		error: function(err){console.log("Error", err)},
+	});
+}
+initGridData();
 
 $('document').ready()
 {

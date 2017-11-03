@@ -1,5 +1,5 @@
 from flask import *
-from sqlFunctions import *
+import sqlFunctions as sql
 from config import LIBRARY_PATH, STATIC_PATH
 import os
 import urllib
@@ -11,8 +11,8 @@ api = Blueprint('api', __name__)
 def libraryExample(name):
 	name = urllib.unquote(name)
 	if request.method == 'POST':
-		examples = getOptionExamples(name)
-		info = getOption(name)
+		examples = sql.getOptionExamples(name)
+		info = sql.getOption(name)
 		
 		imgs = []
 		for i in examples:
@@ -40,7 +40,7 @@ def normal_route():
 		if direction != 1 or direction != -1:
 			direction = 1
 
-		imgList = getImages('normal')
+		imgList = sql.getImages('normal')
 		if not imgList:
 			return jsonify({'error': 'no normal images'})
 		
@@ -59,7 +59,7 @@ def normal_route():
 			img = imgList[(currentIndex + direction) % len(imgList)]
 
 		# get grid data
-		qr = getGridData(img['imgId'])
+		qr = sql.getGridData(img['imgId'])
 		
 		response = {
 			'src' : url_for('static', filename='images/normals/' + img['imgId'] + '.' + img['format']),
@@ -72,3 +72,36 @@ def normal_route():
 		return jsonify(response)
 
 		
+
+
+@api.route('/api/v1/image', methods = ['GET'])
+def imageInfo():
+	"""
+	If no selection array specified, get all data
+	Selection: imgData, gridData, gradeData
+	"""
+
+	if request.method != 'GET':
+		return jsonify({ 'error': 'invalid request type' })
+	elif 'id' not in request.args:
+		return jsonify({'error': 'id must be specified'})
+
+
+	response = {}
+	imgId = request.args['id']
+	
+	# TODO: this isn't correct for some reason
+	if not request.args.getlist('selection'):
+		selection = ['imgData', 'gridData', 'gradeData']
+	else: selection = request.args.getlist('selection')
+
+
+	if 'imgData' in selection:
+		response['imgData'] = sql.getImageData(imgId)
+	if 'gridData' in selection:
+		response['gridData'] = sql.getGridData(imgId)
+	if 'gradeData' in selection:
+		response['gradeData'] = sql.getGradesFromId(imgId)
+
+	return jsonify(response)
+	# TODO: don't prepend file path, save data

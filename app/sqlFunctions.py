@@ -1,9 +1,15 @@
 from flask import *
 import sqlite3
 #from extensions import db
+
+def dict_factory(cursor, row):
+	d = {}
+	for idx, col in enumerate(cursor.description):
+		d[col[0]] = row[idx]
+	return d
 	
 conn = sqlite3.connect('database.db', check_same_thread=False)
-conn.row_factory = sqlite3.Row
+conn.row_factory = dict_factory
 cursor = conn.cursor()
 conn.execute('PRAGMA foreign_keys = ON')
 #cursor = db.cursor()
@@ -72,7 +78,7 @@ def getFinishedGrades(imgId):
 def getCurrentGraders(imgId):
 	cursor.execute('SELECT userId FROM grades where imgId=? and finishedGrading="false" GROUP BY userId', (imgId,))
 	results = cursor.fetchall()
-	userList = [i[0] for i in results]
+	userList = [i['userId'] for i in results]
 	return userList
 
 # Effects: Runs a MySQL query that inserts a photo into the photo table
