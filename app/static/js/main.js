@@ -30,6 +30,7 @@ var GRID_COLS = 35;
 var selectedNormId = 'null';
 var xOffsetPercent, yOffsetPercent, SCALE_GRID_RATIO;
 var SCALE_GRID_RATIO_NORMAL = 1;
+var EYE_SIDE;
 
 
 // COLORS
@@ -70,7 +71,7 @@ function initGridData(){
 			xOffsetPercent = resp['gridData']['xOffsetPerc'];
 			yOffsetPercent = resp['gridData']['yOffsetPerc'];
 			SCALE_GRID_RATIO = resp['gridData']['scaleRatio'];
-			var side = resp['imgData']['side'];
+			EYE_SIDE = resp['imgData']['side'];
 			remap();
 		},
 		error: function(err){console.log("Error", err)},
@@ -98,7 +99,7 @@ $('document').ready()
 			$(this).click(function(){toggleQuickView();});
 	});
 
-	// load normal image
+	// load normal image TODO: only after EYE_SIDE is loaded
 	getNormal(1);
 
 	// keyboard shortcutes
@@ -1092,10 +1093,15 @@ function getExample(direction)
 }
 
 // Effects: Selects a normal image to be used for grading comparison
-function getNormal(direction)
+function getNormal(direction) //, side
 {
 	$.ajax({
-			url: '/api/v1/normal?id=' + selectedNormId + '&dir=' + String(direction),
+			url: '/api/v1/normal',
+			data: {
+				id: selectedNormId,
+				dir: direction,
+				side: EYE_SIDE
+			},
 			type: 'GET',
 			dataType: 'json',
 			success:  function(resp)

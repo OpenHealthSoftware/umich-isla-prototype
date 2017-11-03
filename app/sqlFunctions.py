@@ -28,8 +28,13 @@ def getOptionExamples(optionType):
 	return cursor.fetchall()
 
 # Effects: Runs a MySQL query that returns all images in the database
-def getImages(type):
-	cursor.execute('SELECT * FROM images WHERE type=? ORDER BY uploadDate DESC', (type,))
+def getImages(itype, side=None):
+	args = (itype,)
+	extra = ''
+	if side:
+		extra = ' AND side=? '
+		args = (*args, side)
+	cursor.execute('SELECT * FROM images WHERE type=?' + extra + 'ORDER BY uploadDate DESC', args)
 	results = cursor.fetchall()
 	return results
 

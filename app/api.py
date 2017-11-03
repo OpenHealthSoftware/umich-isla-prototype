@@ -40,7 +40,11 @@ def normal_route():
 		if direction != 1 or direction != -1:
 			direction = 1
 
-		imgList = sql.getImages('normal')
+		kwargs = {}
+		if 'side' in request.args:
+			kwargs = {'side': request.args['side']}
+
+		imgList = sql.getImages('normal', **kwargs)
 		if not imgList:
 			return jsonify({'error': 'no normal images'})
 		
