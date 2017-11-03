@@ -418,7 +418,7 @@ function gradeExporter(caller)
 		var imgId = gup('p');
 		finished = false;
 		$.ajax({
-			url: '/saveGrading',
+			url: '/api/v1/grading/save',
 			data: {
 				imgId: imgId, 
 				gradeData: JSON.stringify(exportData), 
@@ -967,9 +967,9 @@ function loadGrades()
 	if (GRADE_ID != -1) // load grade
 	{
 		$.ajax({
-			url: '/loadGrade',
+			url: '/api/v1/grading/load',
 			data: { gradeId : GRADE_ID },
-			type: 'POST',
+			type: 'GET',
 			dataType: 'JSON',
 			success:  function(resp)
 			{

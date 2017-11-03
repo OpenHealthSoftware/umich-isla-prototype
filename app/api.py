@@ -1,14 +1,17 @@
 from flask import *
 import sqlFunctions as sql
-from config import LIBRARY_PATH, STATIC_PATH
 import os
 import urllib
+import util
+import config as conf
+import datetime
 
 api = Blueprint('api', __name__)
 
+urlPrefix = '/api/v1/'
 
-@api.route('/api/v1/library/example/<name>', methods = ['POST'])
-def libraryExample(name):
+@api.route(urlPrefix + 'library/example/<name>', methods = ['POST'])
+def library_example(name):
 	name = urllib.unquote(name)
 	if request.method == 'POST':
 		examples = sql.getOptionExamples(name)
@@ -16,7 +19,7 @@ def libraryExample(name):
 		
 		imgs = []
 		for i in examples:
-			path = os.path.join(LIBRARY_PATH, i['filename'] + '.' + i['format'])
+			path = os.path.join(conf.LIBRARY_PATH, i['filename'] + '.' + i['format'])
 			# TODO: url_for
 			imgs.append(path)
 
@@ -30,7 +33,7 @@ def libraryExample(name):
 		# TODO: don't prepend file path, save data
 
 # normal?id=
-@api.route('/api/v1/normal', methods = ['GET'])
+@api.route(urlPrefix + 'normal', methods = ['GET'])
 def normal_route():
 
 	# grabs the next or prev normal image
@@ -78,8 +81,8 @@ def normal_route():
 		
 
 
-@api.route('/api/v1/image', methods = ['GET'])
-def imageInfo():
+@api.route(urlPrefix + 'image', methods = ['GET'])
+def image_info():
 	"""
 	If no selection array specified, get all data
 	Selection: imgData, gridData, gradeData
@@ -109,3 +112,46 @@ def imageInfo():
 
 	return jsonify(response)
 	# TODO: don't prepend file path, save data
+
+
+
+
+
+
+@api.route(urlPrefix + 'grading/save', methods=['POST'])
+def save_grade():
+	user = util.get_current_user()
+
+	imgId = request.form['imgId']
+	gradeData = request.form['gradeData']
+	gradeId = request.form['gradeId']
+	finished = request.form['finished']
+	cellsGraded = request.form['cellsGraded']
+	date = datetime.datetime.today().strftime('%Y-%m-%d')
+	print('\nGradeId:', gradeId, user, finished, date)
+
+	inDatabase = sql.getGradesFromId(gradeId)
+	session = ''
+	if not inDatabase:
+		session = len(sql.getGradesFromUser(user, imgId)) + 1
+		gradeFilename = date + '_' + user + '_' + imgId + '_' + str(session) + '.json'
+		gradeId = sql.insertGradeToDB(gradeFilename, user, imgId, cellsGraded, finished, session)
+	else: 
+		session = inDatabase['sessionId']
+		sql.updateGradeInDB(gradeId, cellsGraded, finished)
+
+	fnameTemp = '{}_{}_{}_{}.json'
+	gradeFilename = fnameTemp.format(date, user, imgId, session)
+	with open(conf.GRADES_PATH + gradeFilename, 'w') as f:
+		f.write(gradeData)
+	return jsonify({'gradeId': gradeId})
+
+
+@api.route(urlPrefix + 'grading/load', methods=['GET'])
+def load_grade_route():
+	if 'gradeId' not in request.args:
+		return jsonify({'error': 'grade id not given'})
+
+	gradeRow = sql.getGradesFromId(request.args['gradeId'])
+	gradeJSON = open(conf.GRADES_PATH + gradeRow['gradeFile'], 'r').read()
+	return gradeJSON

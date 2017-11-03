@@ -100,40 +100,6 @@ def get_user_route():
 		return jsonify({'user': user})
 	else: return jsonify({'user':'error'})
 
-@gradeView.route('/saveGrading', methods=['GET', 'POST'])
-def save_grade_route():
-	user = util.get_current_user()
-
-	imgId = request.form['imgId']
-	gradeData = request.form['gradeData']
-	gradeId = request.form['gradeId']
-	finished = request.form['finished']
-	cellsGraded = request.form['cellsGraded']
-	date = datetime.datetime.today().strftime('%Y-%m-%d')
-	print('\nGradeId:', gradeId, user, finished, date)
-
-	inDatabase = getGradesFromId(gradeId)
-	session = ''
-	if not inDatabase:
-		session = len(getGradesFromUser(user, imgId)) + 1
-		gradeFilename = date + '_' + user + '_' + imgId + '_' + str(session) + '.json'
-		gradeId = insertGradeToDB(gradeFilename, user, imgId, cellsGraded, finished, session)
-	else: 
-		session = inDatabase['sessionId']
-		updateGradeInDB(gradeId, cellsGraded, finished)
-
-	gradeFilename = date + '_' + user + '_' + imgId + '_' + str(session) + '.json'
-	gradeFile = open(GRADES_PATH + gradeFilename, 'w')
-	gradeFile.write(gradeData)
-	gradeFile.close()
-	return jsonify({'gradeId': gradeId})
-
-
-@gradeView.route('/loadGrade', methods=['GET', 'POST'])
-def load_grade_route():
-	gradeRow = getGradesFromId(request.form['gradeId'])
-	gradeJSON = open(GRADES_PATH + gradeRow['gradeFile'], 'r').read()
-	return gradeJSON
 
 
 
