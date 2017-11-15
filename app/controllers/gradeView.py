@@ -86,6 +86,8 @@ def main_route():
 		}
 		return render_template('gradeView.html', **data)
 
+	jsCoords = [ [int(i) for i in x.split(',')] for x in data['coords']]
+	print('\n\n\n', jsCoords, '\n\n\n')
 	return render_template('gradeView.html', **data)
 
 

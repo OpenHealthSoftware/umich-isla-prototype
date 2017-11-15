@@ -1146,4 +1146,3 @@ var xNormOffsetPercent = 0, yNormOffsetPercent = 0;
 // 			}
 // 		});
 // }
-

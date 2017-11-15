@@ -191,7 +191,7 @@
 		</div>
 	</div>
 
-	{% if gradeSessions %}
+	{% if gradeSessions and false %}
 	<div id="form-popup" class="popup">
 		<div id="wrap-form">
 		<h3>It looks like you have graded this image before. You can select from some of your saved data or start a new session.</h3>
@@ -209,9 +209,9 @@
 	{% endif %}
 
 	<map name="map" id="gridMap">
-	{% for i in coords %}
+	{# {% for i in coords %}
 		<area id="cell_{{loop.index}}" shape="poly" coords="{{i}}" >
-	{% endfor %}
+	{% endfor %} #}
 	</map>
 
 
@@ -226,8 +226,8 @@
 {% block js %}
 <script src="{{url_for('static', filename='js/carousel.js')}}"></script>
 <script src="{{url_for('static', filename='js/split.min.js')}}"></script>
-<script src="{{url_for('static', filename='js/main.js')}}"></script>
-<script src="{{url_for('static', filename='js/uploads.js')}}"></script>
+<script src="{{url_for('static', filename='js/test.js')}}"></script>
+<!-- <script src="{{url_for('static', filename='js/uploads.js')}}"></script> -->
 <script>
 
 $('document').ready()
