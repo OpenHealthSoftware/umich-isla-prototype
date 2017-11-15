@@ -236,7 +236,7 @@ def createGriddedImage(foveaCoords, discCoords, imgName, iFormat, xPerc, yPerc, 
 	# currently arbitrary, but works relative to all uploads
 	foveaToDisk = 4.0 #mm
 	eyeWidth = 24.0 #mm, typical eye diameter
-	percentDist = (foveaToDisk / eyeWidth) * .7
+	percentDist = (foveaToDisk / eyeWidth) * .57
 	# distance = fov - disk = 16% of grid
 	distance = abs(foveaCoords[0] - discCoords[0])
 	gridWidth = distance / percentDist
