@@ -72,6 +72,7 @@ $('document').ready()
 
 	// load normal image
 	getNormal(1);
+	
 
 	// keyboard shortcutes
 	$(window).keydown(keydownRouter);
@@ -1131,6 +1132,7 @@ function getExample(direction)
 // Effects: Selects a normal image to be used for grading comparison
 function getNormal(direction)
 {
+	$('#normalCellViewCanvas').css('opacity', 0);
 	$.ajax({
 			url: '/api/v1/normal?id=' + selectedNormId + '&dir=' + String(direction),
 			type: 'GET',
@@ -1145,10 +1147,18 @@ function getNormal(direction)
 				xNormOffsetPercent = resp['x'];
 				yNormOffsetPercent = resp['y'];
 				SCALE_GRID_RATIO_NORMAL = resp['scaleRatio']
-				remapNormal();
 
-				if (currentCell !== 0)
-					drawCellManager(currentCell);
+				normImg.on('load', function(){
+					$('#normalCellViewCanvas').css('opacity', 1);
+	
+					remapNormal();
+				
+					if (currentCell !== 0)
+						drawCellManager(currentCell);
+					else
+						drawCellManager(50);
+				});
+				
 			},
 			error: function(e){console.log(e);}
 	});
