@@ -124,8 +124,6 @@ function submitPositionClick()
 			// Find coordinates for top-left corner of grid
 			x = x - (gridW  / 2);
 			y = y - (gridH  / 2);
-			xOffsetPercent_up = x / uploadMainImg.width();
-			yOffsetPercent_up = y / uploadMainImg.height();
 			xGridOffset = ringPosX;
 			yGridOffset = ringPosY;
 
@@ -140,18 +138,20 @@ function submitPositionClick()
 		else if (foveaSubmit == false && opticDiskSubmit == true)
 		{
 			var fovX = ringPosX, fovY = ringPosY;
+			xOffsetPercent_up = fovX / uploadMainImg.width();
+			yOffsetPercent_up = fovY / uploadMainImg.height();
 			
 			$.ajax({
 				url: '/uploads/position',
 				data: { 
 							'picName' : uploadMainImg.attr('alt'), 
-							'x' : xGridOffset, 
-							'y' : yGridOffset, 
+							'foveaX' : fovX, 
+							'foveaY' : fovY, 
 							'xPerc' : xOffsetPercent_up, 
 							'yPerc': yOffsetPercent_up, 
 							'type': type, 
-							'foveaX' : fovX, 
-							'foveaY' : fovY
+							'discX' : xGridOffset, 
+							'discY' : yGridOffset
 						},
 				type: 'POST',
 				success: function(response) {

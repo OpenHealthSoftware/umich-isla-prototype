@@ -179,20 +179,20 @@ def main_route():
 # Effects: calculates angle between vectors, rotates image around orginCoords
 # returns rotated image
 # fovea coords should be close to center (optos images are centered on fovea)
-def rotateImage(img, orginCoords, foveaCoors):
+def rotateImage(img, foveaCoords, discCoords):
 	# get angle between vectors
 	# rotate image -angle
-	angle = math.atan2(orginCoords[1] - foveaCoors[1], orginCoords[0] - foveaCoors[0])
+	angle = math.atan2(discCoords[1] - foveaCoords[1], discCoords[0] - foveaCoords[0])
 	degr = math.degrees(angle)
-	if orginCoords[0] < foveaCoors[0]:
+	if discCoords[0] < foveaCoords[0]:
 		degr += 180
 	# since PIL.Image.rotate will rotate around center of image,
 	# we need to put our rotation origin point at the center of the image,
 	# rotate, then crop the image back to normal size
 
 	imgW, imgH = img.size
-	pixFromCenterX = orginCoords[0] - (imgW / 2)
-	pixFromCenterY = orginCoords[1] - (imgH / 2)
+	pixFromCenterX = foveaCoords[0] - (imgW / 2)
+	pixFromCenterY = foveaCoords[1] - (imgH / 2)
 	paddedImgWidth = abs(pixFromCenterX) + imgW
 	paddedImgHeight = abs(pixFromCenterY) + imgH
 
@@ -217,7 +217,7 @@ def rotateImage(img, orginCoords, foveaCoors):
 # img file format, and the percentage offsets created by the user positioning data
 # Effects: puts the center of the grid on the specified location of the FA image, and scales grid
 # according to opticDisk <--> fovea position
-def createGriddedImage(originCoords, foveaCoords, imgName, iFormat, xPerc, yPerc, uType):
+def createGriddedImage(foveaCoords, discCoords, imgName, iFormat, xPerc, yPerc, uType):
 
 	# Load images
 	if uType == 'normal':
@@ -227,7 +227,7 @@ def createGriddedImage(originCoords, foveaCoords, imgName, iFormat, xPerc, yPerc
 
 	grid = Image.open(GRID_PATH, 'r')
 	faImg = Image.open(uploadPath + imgName + iFormat)
-	faImg, degrees = rotateImage(faImg, originCoords, foveaCoords)
+	faImg, degrees = rotateImage(faImg, foveaCoords, discCoords)
 	faImg.save(uploadPath + imgName + iFormat)
 	fa_w, fa_h = faImg.size
 
@@ -235,9 +235,9 @@ def createGriddedImage(originCoords, foveaCoords, imgName, iFormat, xPerc, yPerc
 	# currently arbitrary, but works relative to all uploads
 	foveaToDisk = 4.0 #mm
 	eyeWidth = 24.0 #mm, typical eye diameter
-	percentDist = (foveaToDisk / eyeWidth) * .7
+	percentDist = (foveaToDisk / eyeWidth) * .57
 	# distance = fov - disk = 16% of grid
-	distance = abs(originCoords[0] - foveaCoords[0])
+	distance = abs(foveaCoords[0] - discCoords[0])
 	gridWidth = distance / percentDist
 	gridHeight = (gridWidth / grid.size[0]) * grid.size[1]
 	gridHeight = int(gridHeight)
@@ -249,7 +249,7 @@ def createGriddedImage(originCoords, foveaCoords, imgName, iFormat, xPerc, yPerc
 
 	# Calculate where grid goes and paste
 	grid_w, grid_h = grid.size
-	offset = (originCoords[0] - (grid_w  / 2), originCoords[1] - (grid_h  / 2))
+	offset = (foveaCoords[0] - (grid_w  / 2), foveaCoords[1] - (grid_h  / 2))
 	rgba = grid.split()
 	alpha = rgba[len(rgba)-1]
 
@@ -259,7 +259,7 @@ def createGriddedImage(originCoords, foveaCoords, imgName, iFormat, xPerc, yPerc
 	gridId = GRID_PREFIX + imgName + iFormat
 	xPerc = offset[0] / float(fa_w)
 	yPerc = offset[1] / float(fa_h)
-	insertGridToDB(gridId, xPerc, yPerc, imgName, scaleRatio, originCoords[0], originCoords[1], 
+	insertGridToDB(gridId, xPerc, yPerc, imgName, scaleRatio, discCoords[0], discCoords[1], 
 		foveaCoords[0], foveaCoords[1])
 	png_info = grid.info
 	croppedGrid.save(uploadPath + gridId, **png_info)
@@ -280,11 +280,11 @@ def upload_position_route():
 	rForm = request.form
 	imgName = rForm['picName']
 	image = getImageData(imgName)
-	originCoords = [rForm['x'], rForm['y']]
-	originCoords = map(int, originCoords)
-	foveaCoords = map(int, [rForm['foveaX'], rForm['foveaY']])
+	foveaCoords = [rForm['foveaX'], rForm['foveaY']]
+	foveaCoords = map(int, foveaCoords)
+	discCoords = map(int, [rForm['discX'], rForm['discY']])
 
-	newImgPath = createGriddedImage(originCoords, foveaCoords, imgName, '.' + image['format'], 
+	newImgPath = createGriddedImage(foveaCoords, discCoords, imgName, '.' + image['format'], 
 		rForm['xPerc'], rForm['yPerc'], rForm['type'])
 	url = url_for('uploads.upload_route')
 	data = {'goto' : url}
