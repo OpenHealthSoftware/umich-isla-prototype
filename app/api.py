@@ -5,6 +5,7 @@ import urllib
 import util
 import config as conf
 import datetime
+import imageProcessing
 
 api = Blueprint('api', __name__)
 
@@ -97,10 +98,11 @@ def image_info():
 	response = {}
 	imgId = request.args['id']
 	
+
 	# TODO: this isn't correct for some reason
-	if not request.args.getlist('selection'):
+	if not request.args.getlist('selection[]'):
 		selection = ['imgData', 'gridData', 'gradeData']
-	else: selection = request.args.getlist('selection')
+	else: selection = request.args.getlist('selection[]')
 
 
 	if 'imgData' in selection:
@@ -109,6 +111,8 @@ def image_info():
 		response['gridData'] = sql.getGridData(imgId)
 	if 'gradeData' in selection:
 		response['gradeData'] = sql.getGradesFromId(imgId)
+	if 'coordinates' in selection:
+		response['coordinates'] = calculateCoordinates(imgId)
 
 	return jsonify(response)
 	# TODO: don't prepend file path, save data
@@ -155,3 +159,31 @@ def load_grade_route():
 	gradeRow = sql.getGradesFromId(request.args['gradeId'])
 	gradeJSON = open(conf.GRADES_PATH + gradeRow['gradeFile'], 'r').read()
 	return gradeJSON
+
+
+import config
+C_GRID_PATH = config.C_GRID_PATH
+
+
+# calculates coordinates for the grid position on a given image
+def calculateCoordinates(imgId):
+
+	# TODO: cut out cells not on image
+
+	startCoords = imageProcessing.processImageGrid(C_GRID_PATH)
+	translated = []
+	gridData = sql.getGridData(imgId)
+	xOff = gridData['xOffset']
+	yOff = gridData['yOffset']
+	ratio = gridData['scaleRatio']
+
+	for cell in startCoords:
+		tc = []
+		for i in range(0, len(cell), 2):
+			x = cell[i] * ratio + xOff
+			y = cell[i+1] * ratio + yOff
+			tc.append(round(x, 3))
+			tc.append(round(y, 3))
+		translated.append(tc)
+
+	return translated

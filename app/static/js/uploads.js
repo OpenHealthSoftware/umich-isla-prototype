@@ -2,16 +2,15 @@ var uploadMainImg;
 // Changes the custom file upload label to display the file name
 function uploadFileLabeUpdater()
 {
-	$('document').ready()
+
+	var fileFieldLabelText = $('#fSpan').html();
+	$('#fileField').change(function()
 	{
-		var fileFieldLabelText = $('#fSpan').html();
-		$('#fileField').change(function()
-		{
-			if ( $(this).prop('files').length > 0)
-				$('#fSpan').html("File: " + $(this).prop('files')[0]['name']);
-			else $('#fSpan').html(fileFieldLabelText);
-		});
-	}
+		if ( $(this).prop('files').length > 0)
+			$('#fSpan').html("File: " + $(this).prop('files')[0]['name']);
+		else $('#fSpan').html(fileFieldLabelText);
+	});
+
 }
 
 function handleUploadSubmit()
@@ -28,7 +27,7 @@ function handleUploadSubmit()
 			async: false,
 			success: function(response) {
 				$('#closeBtn').prop('disabled', true);
-				constructView(response, 'uploadSubmit');
+
 			},
 			error: function(error) {
 				console.log(error);
@@ -42,13 +41,25 @@ function handleUploadSubmit()
 	});
 }
 	
-	
+$('document').ready(function(){
+
+	if ($('#focusRing').length !== 0){
+		$('#focusRing').draggable();
+		updateFocusRing();
+		handleRingResize();
+		$('#submitPosition').click(function(){submitPositionClick();});
+	}
+
+	uploadFileLabeUpdater();
+
+});
+
 var frX = 0, frY = 0;
 function updateFocusRing()
 {
 	var arr = [0, 0];
-	arr.push($('#normalPrev').width() - $('#focusRing').width());
-	arr.push($('#normalPrev').height() - $('#focusRing').height());
+	arr.push($('#nImg').width() - $('#focusRing').width());
+	arr.push($('#nImg').height() - $('#focusRing').height());
 	console.log(arr);
 	$('#focusRing').draggable({containment: arr,
 		cursor: 'move',

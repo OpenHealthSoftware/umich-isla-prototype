@@ -31,12 +31,15 @@ def getControls(side):
 
 
 
+	
+
+
 # Requires: the imgId in the database
 # Effects: forms list of data needs for a page
 def getPageData(imgId):
 
 	user = util.get_current_user()
-	coords = processImageGrid(C_GRID_PATH)
+	
 	image = getImageData(imgId)
 	if image is None:
 		return False
@@ -45,12 +48,11 @@ def getPageData(imgId):
 	associatedFeatures = getOptions()
 
 	data = {
-		'coords' : coords,
 		'img' : image,
 		'grid' : GRID_PATH,
 		'numPrev' : NUM_NORM_PREV, #number of control images to show at once
-		'xOffset' : gridData['xOffsetPerc'],
-		'yOffset' : gridData['yOffsetPerc'],
+		'xOffset' : gridData['xOffset'],
+		'yOffset' : gridData['yOffset'],
 		'gridScaleRatio': gridData['scaleRatio'], 
 		'gitVersion' :  open(VERSION_FILE, 'r').readline().replace('\n', ''),
 		'gradeSessions': gradeSession,
@@ -86,9 +88,10 @@ def main_route():
 		}
 		return render_template('gradeView.html', **data)
 
-	jsCoords = [ [int(i) for i in x.split(',')] for x in data['coords']]
-	print('\n\n\n', jsCoords, '\n\n\n')
+	#jsCoords = [ [int(i) for i in x.split(',')] for x in data['coords']]
+	#print('\n\n\n', jsCoords, '\n\n\n')
 	print(data['gridScaleRatio'])
+	print(data['xOffset'], data['yOffset'])
 	return render_template('gradeView.html', **data)
 
 

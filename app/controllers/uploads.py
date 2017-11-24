@@ -182,6 +182,7 @@ def main_route():
 def rotateImage(img, foveaCoords, discCoords):
 	# get angle between vectors
 	# rotate image -angle
+	print(foveaCoords, discCoords)
 	angle = math.atan2(discCoords[1] - foveaCoords[1], discCoords[0] - foveaCoords[0])
 	degr = math.degrees(angle)
 	if discCoords[0] < foveaCoords[0]:
@@ -191,8 +192,8 @@ def rotateImage(img, foveaCoords, discCoords):
 	# rotate, then crop the image back to normal size
 
 	imgW, imgH = img.size
-	pixFromCenterX = foveaCoords[0] - (imgW / 2)
-	pixFromCenterY = foveaCoords[1] - (imgH / 2)
+	pixFromCenterX = int(foveaCoords[0] - (imgW / 2))
+	pixFromCenterY = int(foveaCoords[1] - (imgH / 2))
 	paddedImgWidth = abs(pixFromCenterX) + imgW
 	paddedImgHeight = abs(pixFromCenterY) + imgH
 
@@ -249,7 +250,7 @@ def createGriddedImage(foveaCoords, discCoords, imgName, iFormat, xPerc, yPerc, 
 
 	# Calculate where grid goes and paste
 	grid_w, grid_h = grid.size
-	offset = (foveaCoords[0] - (grid_w  / 2), foveaCoords[1] - (grid_h  / 2))
+	offset = (int(foveaCoords[0] - (grid_w  / 2)), int(foveaCoords[1] - (grid_h  / 2)))
 	rgba = grid.split()
 	alpha = rgba[len(rgba)-1]
 
@@ -257,9 +258,7 @@ def createGriddedImage(foveaCoords, discCoords, imgName, iFormat, xPerc, yPerc, 
 	croppedGrid.paste(grid, offset, mask=alpha)
 
 	gridId = GRID_PREFIX + imgName + iFormat
-	xPerc = offset[0] / float(fa_w)
-	yPerc = offset[1] / float(fa_h)
-	insertGridToDB(gridId, xPerc, yPerc, imgName, scaleRatio, discCoords[0], discCoords[1], 
+	insertGridToDB(gridId, offset[0], offset[1], imgName, scaleRatio, discCoords[0], discCoords[1], 
 		foveaCoords[0], foveaCoords[1])
 	png_info = grid.info
 	croppedGrid.save(uploadPath + gridId, **png_info)
@@ -281,12 +280,11 @@ def upload_position_route():
 	imgName = rForm['picName']
 	image = getImageData(imgName)
 	foveaCoords = [rForm['foveaX'], rForm['foveaY']]
-	foveaCoords = map(int, foveaCoords)
-	discCoords = map(int, [rForm['discX'], rForm['discY']])
+	foveaCoords = list(map(int, foveaCoords))
+	discCoords = list(map(int, [rForm['discX'], rForm['discY']]))
 
 	newImgPath = createGriddedImage(foveaCoords, discCoords, imgName, '.' + image['format'], 
 		rForm['xPerc'], rForm['yPerc'], rForm['type'])
-	url = url_for('uploads.upload_route')
-	data = {'goto' : url}
-	return jsonify(**data)
+
+	return jsonify({'success': 'sucess'})
 

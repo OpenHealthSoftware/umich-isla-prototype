@@ -17,7 +17,7 @@ app.register_blueprint(controllers.main)
 app.register_blueprint(controllers.gradeView)
 app.register_blueprint(controllers.uploads)
 app.register_blueprint(controllers.docs)
-app.register_blueprint(controllers.account)
+#app.register_blueprint(controllers.account)
 app.register_blueprint(api.api)
 
 # Config

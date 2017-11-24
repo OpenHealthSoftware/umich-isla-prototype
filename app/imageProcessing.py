@@ -17,26 +17,23 @@ def processImageGrid(imgRelPath):
 	#cnt = contours[4]
 	im = cv2.drawContours(im, contours, -1, (0,255,0), 3)
 
-	coordList = getCoordinateStrings(contours)
-	return coordList
+	return getCoordinateList(contours)
 
 
 # Requires: OpenCV contour object
-# Effects: parses the contours object into an array of coordinate strings for each cell
-def getCoordinateStrings(contours):
-	coordList = list()
-	cellCoordStr = ''
-
+# Effects: parses the contours object into an 2d list of x,y coordinates
+# eg: [	cell1[x1,y1,x2,y2,...], cell2[], ]
+def getCoordinateList(contours):
+	coordList = []
+	print(len(contours))
 	# Loop through the nested arrays
-	for cell in contours:
-		for coordArray in cell:
-			for coords in coordArray: # looks like [[x y]] ie coordArray[0] == [x y]
-				strList = map(str, coords)
-				cellCoordStr += ','.join(strList) + ','
+	for npCell in contours:
+		cellCoords = []
+		for coord in npCell:
+			
+			cellCoords += coord[0].tolist()
 
-		cellCoordStr = cellCoordStr[:-1] #remove last comma
-		coordList.append(cellCoordStr)
-		cellCoordStr = ''
+		coordList.append(cellCoords)
 
 	coordList.reverse()
 	return coordList

@@ -46,8 +46,8 @@ CREATE TABLE images(
 -- each row contains information about a grid for one image
 CREATE TABLE grids(
 	gridId CHAR(37) NOT NULL,
-	xOffsetPerc DECIMAL(10,9) NOT NULL,
-	yOffsetPerc DECIMAL(10,9) NOT NULL,
+	xOffset DECIMAL(10,9) NOT NULL,
+	yOffset DECIMAL(10,9) NOT NULL,
 	imgId CHAR(32) NOT NULL,
 	scaleRatio DECIMAL(10,9) NOT NULL,
 	xDisc DECIMAL (10,9) NOT NULL,
