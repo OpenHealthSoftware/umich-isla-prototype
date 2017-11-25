@@ -1,3 +1,5 @@
+var print = console.log;
+
 // function for getting URL parameters
 function gup(name) {
 	name = name.replace(/[\[]/,"\\\[").replace(/[\]]/,"\\\]");
@@ -354,7 +356,7 @@ function init()
 
 	gridder.onDrawCell([CELL_CANVAS, MAIN_IMAGE], function(outCanvas, img, cellInstance){
 		var t = cellInstance;
-		console.log('Drawing cell:', t.id);		
+		print('Drawing cell:', t.id);		
 
 		var ctx = outCanvas.getContext('2d');
 
@@ -366,7 +368,7 @@ function init()
 
 		var coords = t.getOriginalCoords();
 
-		//console.log(img, coords[0], coords[1], cellWidth, cellHeight, 0,0, outCanvas.width, outCanvas.height);
+		//print(img, coords[0], coords[1], cellWidth, cellHeight, 0,0, outCanvas.width, outCanvas.height);
 
 		ctx.drawImage(img, coords[0], coords[1], cellWidth, cellHeight, 0,0, outCanvas.width, outCanvas.height);
 
@@ -405,7 +407,7 @@ function init()
 			gridder.unbindHandler('mouseover');
 
 		quickView = !quickView;
-		console.log('Quickview', quickView);
+		print('Quickview', quickView);
 		
 	});
 
@@ -432,7 +434,7 @@ $('document').ready(function(){
 			init();
 		},
 		error: function(error) {
-			console.log(error);
+			print(error);
 		}
 	});
 
@@ -455,3 +457,45 @@ function resize()
 
 	gridder.getActiveCell().draw();
 }
+
+
+
+
+
+// GRADING ############################################
+
+submitGradeBtn = $('#submitGrade')
+submitGradeBtn.click(function()
+{
+	// check for required inputs
+	var reqRadioSelector = 'input[class=input-required]:radio';
+	var reqCheckSelector = 'input[class=input-required]:checkbox';
+	// TODO: check other input types	
+	if ($(reqRadioSelector).length !== 0 && $(reqRadioSelector + ':checked').length === 0)
+	{
+		print('Required input not filled');
+		$('#notif').html("Required input not selected!");
+		return -1;
+	}
+	if ($(reqCheckSelector).length !== 0 && $(reqCheckSelector + ':checked').length === 0)
+	{
+		print('Required input not filled');
+		$('#notif').html("Required input not selected!");
+		return -1;
+	}
+	// TODO: ^^^^ condense
+
+	var baseSelector = '.submit-input-container input[type=';
+	var radioIns = 'radio]:checked';
+	var chkIn = 'checkbox]:checked';
+	// TODO: other inputs
+	var recordedInputs = $(baseSelector + radioIns + ', ' + baseSelector + chkIn);
+	var inputVals = []
+
+	for (var i = 0; i < recordedInputs.length; i++)
+		inputVals.push(recordedInputs[i].value);
+
+	print(recordedInputs);		
+	print(inputVals);
+
+});
