@@ -332,6 +332,11 @@ class RegionDivider
 		}
 	}
 
+	unbindHandler(eventName)
+	{
+		for (var i in this.cells)
+			this.cells[i].jq.unbind(eventName);
+	}
 }
 
 // ########################################
@@ -374,9 +379,7 @@ function init()
 		window.dispatchEvent(gridClicked);
 	});
 
-	gridder.cellHandler('mouseover', function(e){
-		console.log('hovering', e.data.cellInstance.id);
-	})
+	
 
 	window.addEventListener('gridClicked', function(e){
 		gridder.activeCell = e.detail.id;
@@ -387,9 +390,28 @@ function init()
 	
 	window.onresize = function(){ gridder.resize(); };
 
+
+	
+	gridder.cellHandler('dblclick', function(e){
+
+		if (quickView === false)
+		{
+			gridder.cellHandler('mouseover', function(e){
+				gridder.highlightCell(e.data.cellInstance.id);
+				e.data.cellInstance.draw();
+			});
+		}
+		else
+			gridder.unbindHandler('mouseover');
+
+		quickView = !quickView;
+		console.log('Quickview', quickView);
+		
+	});
+
 }
 
-
+var quickView = false;
 var GRID_CELL_COORDS;
 var MAIN_IMAGE;
 var CELL_CANVAS;
