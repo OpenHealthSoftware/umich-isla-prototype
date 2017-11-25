@@ -10,26 +10,12 @@ function gup(name) {
 		return unescape(results[1]);
 }
 
+
 class Cell
 {
-	constructor(coordinates, id, htmlTemplate, classifiers)
+	constructor(coordinates, id, classifiers)
 	{
-		// htmlTemplate = { id: 'cell_?', shape: 'poly', coords: null}
-		// htmlTemplate = $('<area id="cell_{{loop.index}}" shape="poly" coords="{{i}}" )
-        // classifiers = ['name/id', 'name2', ...]
-
-		var elType = htmlTemplate.elType;
-		delete htmlTemplate.elType;
-
-		for (var x in htmlTemplate)
-		{
-			if (htmlTemplate[x] === null)
-				htmlTemplate[x] = coordinates.join(',');
-			htmlTemplate[x] = htmlTemplate[x].replace('?', id);
-		}
-		
 		this.id = id;
-		this.html = $(elType, htmlTemplate);
 
 		this.classifiers = classifiers;
 		this.activeClassifiers = {};
@@ -40,15 +26,17 @@ class Cell
 	}
 	
 	
-
 	onDraw(params, fn)
 	{
 		// fn is required to have 'cellInstance' as its last parameter
 
-		params.push(this);
+		params = params.concat([this]);
 		this._drawFn = fn;
 		this._drawFnArgs = params;
+
+		// TODO: if onDraw never specified, use default draw function
 	}
+
 
 	onClick(params, fn)
 	{
@@ -57,30 +45,31 @@ class Cell
 		// function fn(event) { event.data.hello; }
 		// this cell instance will be added to params
 		this.html.unbind('click');
-
-		params['cellInstance'] = this;
-		this.html.click(params, fn);
+		var newparams = JSON.parse(JSON.stringify(params));
+		// TODO: ^^ not comprehensive. doesn't work with unserializable stuff
+		newparams['cellInstance'] = this;
+		this.html.click(newparams, fn);
 	}
 
-	triggerClick()
-	{
-		this.html.trigger('click');
-	}
 
-	draw()
-	{
-		this._drawFn(...this._drawFnArgs);
-	}
+	triggerClick(){ this.html.trigger('click'); }
+
+
+	draw(){ this._drawFn(...this._drawFnArgs); }
+
 
 	getClassifiers(){
 		// classifiers are the set of possible classifiers
 		return this.classifiers;
 	}
 
-	getActiveClassifiers(){
+
+	getActiveClassifiers()
+	{
 		// activate classifiers are elements of the set classifiers, that have been defined
 		return this.activeClassifiers;
 	}
+
 
 	setActiveClassifiers(input)
 	{
@@ -92,6 +81,7 @@ class Cell
 				this.activeClassifiers[i] = input[i];
 		}
 	}
+
 	
 	calculateCoordinates(coords, scaler, xOffset, yOffset, orderOfOp)
 	{
@@ -114,6 +104,7 @@ class Cell
 		return x;
 	}
 
+
 	setCoordinates(scaler, xOffset, yOffset, orderOfOp)
 	{
 		this.coords = this.calculateCoordinates(this.coords, scaler, xOffset, yOffset, orderOfOp);
@@ -125,12 +116,13 @@ class Cell
 	{
 		var c = [];
 
-		for (i in this._ORIG_COORDS)
+		for (var i in this._ORIG_COORDS)
 			c.push(this._ORIG_COORDS[i]);
 		this.coords = c;
 	}
 
 	
+	// TODO: remove code dupe
 	_getMaxMin(coords)
 	{
 		// Find greatest x and y for cell
@@ -151,7 +143,8 @@ class Cell
 				minY = coords[i+1];
 		}
 		return { min: {x: minX, y: minY}, max: {x: maxX, y: maxY}};
-    }
+	}
+	
     
     getMaxMin()
 	{
@@ -160,6 +153,8 @@ class Cell
 		this.maxmin = this._getMaxMin(this.coords);
 		return this.maxmin;
 	}
+
+
 	getOrigMaxMin()
 	{
 		if (this.origMaxMin)
@@ -168,10 +163,11 @@ class Cell
 		return this.origMaxMin;
 	}
 
-	getCoordinates()
-	{
-		return this.coords;
-	}
+
+	getCoordinates(){ return this.coords; }
+
+
+	getOriginalCoords(){ return this._ORIG_COORDS.slice(); }
 
 	
 	_getDimensions(maxmin)
@@ -184,19 +180,41 @@ class Cell
 		var cellHeight = (maxY > y) ? maxY - y : y - maxY;
 		var cellWidth = (maxX > x) ? maxX - x : x - maxX;
 		return {x: cellWidth, y: cellHeight};
-    }
+	}
+	
+
     getOrigDimensions()
 	{
 		return this._getDimensions(this.getOrigMaxMin());
 	}
+
+
 	getDimensions()
 	{
 		return this._getDimensions(this.getMaxMin());
 	}
 
-	makeHTML(containerDiv, order)
+
+	makeHTML(containerDiv, order, template)
 	{
+		// htmlTemplate = { id: 'cell_?', shape: 'poly', coords: null}
+		// htmlTemplate = $('<area id="cell_{{loop.index}}" shape="poly" coords="{{i}}" )
+        // classifiers = ['name/id', 'name2', ...]
+
+		var elType = template.elType;
+		delete template.elType;
+
+		for (var x in template)
+		{
+			if (template[x] === null)
+				template[x] = this.coords.join(',');
+			template[x] = template[x].replace('?', this.id);
+		}
+		this.html = $(elType, template);
+		
+
 		this.html.attr('coords', this.coords.join(','));
+
 		if (order === 'append')
 			containerDiv.append(this.html);
 		else if (order === 'prepend')
@@ -204,22 +222,163 @@ class Cell
 
 	}
 
-	getOriginalCoords()
+
+	updateHTML()
 	{
-		return this._ORIG_COORDS.slice();
+		this.html.attr('coords', this.coords.join(','));	
 	}
 }
 
 
 
-// cell.draw() setup cell, have region divider duplicate
-// divider = new RegionDivider(coords, new Cell())
+class RegionDivider
+{
+	constructor(img, coords, canvas)
+	{
 
-var htmlTemplate = { elType: '<area>', id: 'cell_?', shape: 'poly', coords: null};
-var grid = [];
+		this.img = img;
+		// coords is a 2d vector
+		// [ cell0coords[x1,y10,x10,y10, x10, y1], cell1coords[] ]
+		this.cells = [];
+		for(var c in coords)
+			this.cells.push(new Cell(coords[c], c, false))
+
+		this.canvas = canvas;
+
+		this.activeCell = parseInt(this.cells.length / 2);
+	}
+
+
+	// adds the grid/cell html to the page
+	makeHTML(containerDiv, order, template)
+	{
+		for (var c in this.cells)
+			this.cells[c].makeHTML(containerDiv, order, JSON.parse(JSON.stringify(template)));
+
+
+		this.html = containerDiv;
+		// TODO: make canvases
+	}
+
+
+	updateHTML()
+	{
+		for (var i in this.cells)
+		{
+			var cell = this.cells[i];
+			var scaleRatio = this.img.width / this.img.naturalWidth;
+			cell.resetCoordinates();
+			cell.setCoordinates(scaleRatio, 0, 0, 'multiply');
+			cell.updateHTML();
+		}
+	}
+
+
+	getCell(cellIdOrCoord){ return this.cells[id]; }
+
+
+	getCells(){return 0;}
+
+
+	onDrawCell(params, fn)
+	{
+		for (var i in this.cells)
+			this.cells[i].onDraw(params, fn);
+	}
+
+
+	onClickCell(params, fn)
+	{
+		for (var i in this.cells)
+			this.cells[i].onClick(params, fn)
+	}
+
+
+	activeCell()
+	{
+		return this.cell[this.activeCell];
+		// TODO: option for ref or val
+	}
+
+
+	highlightCell()
+	{
+		var cellId;
+		if (arguments.length === 1)
+			cellId = arguments[0];
+		else
+			cellId = this.activeCell;
+
+		// TODO: 
+	}
+}
+
+// ########################################
+
+
+
+
+
+function init()
+{
+	gridder = new RegionDivider(MAIN_IMAGE, GRID_CELL_COORDS, false);
+	var htmlTemplate = { elType: '<area>', id: 'cell_?', shape: 'poly', coords: null};
+
+	gridder.makeHTML($('#gridMap'), 'append', htmlTemplate);
+
+	gridder.onDrawCell([CELL_CANVAS, MAIN_IMAGE], function(outCanvas, img, cellInstance){
+		var t = cellInstance;
+		console.log('Drawing cell:', t.id);		
+
+		var ctx = outCanvas.getContext('2d');
+
+		var minX = t.getOrigMaxMin().min.x;
+		var minY = t.getOrigMaxMin().min.y;
+		var cellWidth = t.getOrigDimensions().x;
+		var cellHeight = t.getOrigDimensions().y;	
+		var coordsToCanvasRatio = ctx.canvas.width / cellWidth;
+
+		var coords = t.getOriginalCoords();
+
+		//console.log(img, coords[0], coords[1], cellWidth, cellHeight, 0,0, outCanvas.width, outCanvas.height);
+
+		ctx.drawImage(img, coords[0], coords[1], cellWidth, cellHeight, 0,0, outCanvas.width, outCanvas.height);
+
+	});
+
+	gridder.onClickCell({}, function(e){
+		var t = e.data.cellInstance;
+		t.draw();
+		var gridClicked = new CustomEvent('gridClicked', {detail: {id: t.id}});
+		window.dispatchEvent(gridClicked);	
+	});
+
+
+
+	window.addEventListener('gridClicked', function(e){
+		console.log('Grid acks ', e.detail.id)
+		gridder.activeCell = e.detail.id;
+		gridder.highlightCell(e.detail.id);
+		
+	});
+
+	gridder.updateHTML();
+	
+}
+
+
+window.onresize = function()
+{
+	gridder.updateHTML();
+	gridder.highlightCell();
+	// update current traced cell on grid
+};
+
+
 var GRID_CELL_COORDS;
 var MAIN_IMAGE;
 var CELL_CANVAS;
+var gridder;
 
 $('document').ready(function(){
 
@@ -246,60 +405,3 @@ $('document').ready(function(){
 	ctx.canvas.height = 200;
 	ctx.canvas.width = 200;
 });
-
-
-
-
-function init()
-{
-	
-	for (var c in GRID_CELL_COORDS)
-	{
-		var cell = new Cell(GRID_CELL_COORDS[c], c, JSON.parse(JSON.stringify(htmlTemplate)), false);
-   
-		var scaleRatio = MAIN_IMAGE.width / MAIN_IMAGE.naturalWidth;
-		cell.setCoordinates(scaleRatio, 0, 0, 'multiply');
-
-
-		cell.makeHTML($('#gridMap'), 'append');
-		
-
-		cell.onDraw([CELL_CANVAS, MAIN_IMAGE], function(outCanvas, img, cellInstance){
-			var t = cellInstance;
-
-			var ctx = outCanvas.getContext('2d');
-		
-			var minX = t.getOrigMaxMin().min.x;
-			var minY = t.getOrigMaxMin().min.y;
-			var cellWidth = t.getOrigDimensions().x;
-			var cellHeight = t.getOrigDimensions().y;	
-			var coordsToCanvasRatio = ctx.canvas.width / cellWidth;
-
-			var coords = t.getOriginalCoords();
-			console.log('Drawing cell:', t.id);
-	
-			// Clip canvas to to cell
-			// ctx.moveTo(coords[0], coords[1]);
-			// ctx.beginPath();
-			// for (var i = 0; i < coords.length; i += 2)
-			//     ctx.lineTo(coords[i], coords[i+1]);
-			// ctx.closePath();
-			//ctx.clip();
-		
-			console.log(img, coords[0], coords[1], cellWidth, cellHeight, 0,0, outCanvas.width, outCanvas.height);
-		
-			ctx.drawImage(img, coords[0], coords[1], cellWidth, cellHeight, 0,0, outCanvas.width, outCanvas.height);
-			
-		});
-
-
-		cell.onClick({testing: 952}, function(e){ 
-			console.log(e.data.cellInstance, e.data.testing);
-			var t = e.data.cellInstance;
-			t.draw();
-		});
-
-		grid.push(cell);
-	}
-	
-}
