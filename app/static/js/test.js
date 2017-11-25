@@ -289,14 +289,14 @@ class RegionDivider
 	}
 
 
-	activeCell()
+	getActiveCell()
 	{
-		return this.cell[this.activeCell];
+		return this.cells[this.activeCell];
 		// TODO: option for ref or val
 	}
 
 
-	highlightCell(cellId=this.activeCell, color='red', strokeWidth=3)
+	highlightCell(cellId=this.activeCell, color='#fff', strokeWidth=2)
 	{
 		var cell = this.cells[cellId];
 		var canv = this.canvas[0];
@@ -383,12 +383,12 @@ function init()
 
 	window.addEventListener('gridClicked', function(e){
 		gridder.activeCell = e.detail.id;
-		gridder.highlightCell(e.detail.id, '#F1C40F');
+		gridder.highlightCell(e.detail.id, '#F1C40F', 3);
 	});
 
 	gridder.updateHTML();
 	
-	window.onresize = function(){ gridder.resize(); };
+	window.onresize = function(){ resize(); };
 
 
 	
@@ -416,6 +416,7 @@ var GRID_CELL_COORDS;
 var MAIN_IMAGE;
 var CELL_CANVAS;
 var gridder;
+var WRAP_CELLCANVAS;
 
 $('document').ready(function(){
 
@@ -437,8 +438,20 @@ $('document').ready(function(){
 
 	CELL_CANVAS = document.getElementById('cellViewCanvas');
 	MAIN_IMAGE = document.getElementById('mainFA_image');
+	WRAP_CELLCANVAS = $('#wrap-cellCanvas');
 
 	var ctx = CELL_CANVAS.getContext('2d');
-	ctx.canvas.height = 200;
-	ctx.canvas.width = 200;
+	ctx.canvas.height = WRAP_CELLCANVAS.width();
+	ctx.canvas.width = WRAP_CELLCANVAS.height();
 });
+
+
+function resize()
+{
+	gridder.resize();
+	
+	CELL_CANVAS.width = WRAP_CELLCANVAS.width();
+	CELL_CANVAS.height = WRAP_CELLCANVAS.height();
+
+	gridder.getActiveCell().draw();
+}

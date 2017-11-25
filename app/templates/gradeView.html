@@ -74,7 +74,7 @@
 				
 				<div id="wrapCellControl" class="margin-bottom-small">
 					
-					<div class="maintain-ratio">
+					<div class="maintain-ratio" id="wrap-cellCanvas">
 						<div id="cellPreview" class="cellControlModule">
 							<canvas id="cellViewCanvas" class="cellCanvas" width="0" height="0"></canvas>
 						</div>
@@ -240,9 +240,9 @@ $('document').ready()
 		sizes : [45,55], 
 		gutterSize: gutterSize,
 		onDragEnd : function(){
-			remap();
-			if (hasCellBeenDrawn == true)
-				drawCellManager(currentCell);
+			resize();
+			// if (hasCellBeenDrawn == true)
+			// 	drawCellManager(currentCell);
 		},
 		
 	});
