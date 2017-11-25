@@ -233,7 +233,7 @@ class Cell
 
 class RegionDivider
 {
-	constructor(img, coords, canvas)
+	constructor(img, coords)
 	{
 
 		this.img = img;
@@ -242,8 +242,6 @@ class RegionDivider
 		this.cells = [];
 		for(var c in coords)
 			this.cells.push(new Cell(coords[c], c, false))
-
-		this.canvas = canvas;
 
 		this.activeCell = parseInt(this.cells.length / 2);
 	}
@@ -255,9 +253,23 @@ class RegionDivider
 		for (var c in this.cells)
 			this.cells[c].makeHTML(containerDiv, order, JSON.parse(JSON.stringify(template)));
 
-
 		this.html = containerDiv;
-		// TODO: make canvases
+
+		this.makeCanvas();
+	}
+
+
+	makeCanvas()
+	{
+		if (arguments.length !== 0)
+			return;
+			// TODO: support custom
+		
+		var canvas = $('<canvas/>', {class: 'traceCanvas', id: 'mainFA_canvas'});
+		canvas[0].width = this.img.width;
+		canvas[0].height = this.img.height;
+		this.canvas = canvas;
+		$('#wrap-mainImg').append(canvas);
 	}
 
 
@@ -301,16 +313,25 @@ class RegionDivider
 	}
 
 
-	highlightCell()
+	highlightCell(cellId=this.activeCell, color='red', strokeWidth=3)
 	{
-		var cellId;
-		if (arguments.length === 1)
-			cellId = arguments[0];
-		else
-			cellId = this.activeCell;
+		var cell = this.cells[cellId];
+		var canv = this.canvas[0];
+		var c = canv.getContext('2d');
+		c.clearRect(0,0, canv.width, canv.height);
 
-		// TODO: 
+		c.beginPath();
+		var coords = cell.getCoordinates();
+		for (var i = 0; i < coords.length; i += 2)
+			c.lineTo(coords[i], coords[i+1]);
+		c.closePath();
+		c.lineWidth = strokeWidth;
+		c.strokeStyle = color;
+		c.stroke();
 	}
+
+
+	resize(){}
 }
 
 // ########################################
@@ -321,7 +342,7 @@ class RegionDivider
 
 function init()
 {
-	gridder = new RegionDivider(MAIN_IMAGE, GRID_CELL_COORDS, false);
+	gridder = new RegionDivider(MAIN_IMAGE, GRID_CELL_COORDS);
 	var htmlTemplate = { elType: '<area>', id: 'cell_?', shape: 'poly', coords: null};
 
 	gridder.makeHTML($('#gridMap'), 'append', htmlTemplate);
@@ -354,12 +375,9 @@ function init()
 	});
 
 
-
 	window.addEventListener('gridClicked', function(e){
-		console.log('Grid acks ', e.detail.id)
 		gridder.activeCell = e.detail.id;
-		gridder.highlightCell(e.detail.id);
-		
+		gridder.highlightCell(e.detail.id, '#F1C40F');
 	});
 
 	gridder.updateHTML();
