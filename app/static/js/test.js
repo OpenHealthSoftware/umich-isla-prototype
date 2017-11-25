@@ -38,21 +38,7 @@ class Cell
 	}
 
 
-	onClick(params, fn)
-	{
-		// params = {hello:13, goodbye: {ob}, more: 'string'}
-		// fn must take in event
-		// function fn(event) { event.data.hello; }
-		// this cell instance will be added to params
-		this.html.unbind('click');
-		var newparams = JSON.parse(JSON.stringify(params));
-		// TODO: ^^ not comprehensive. doesn't work with unserializable stuff
-		newparams['cellInstance'] = this;
-		this.html.click(newparams, fn);
-	}
-
-
-	triggerClick(){ this.html.trigger('click'); }
+	triggerClick(){ this.jq.trigger('click'); }
 
 
 	draw(){ this._drawFn(...this._drawFnArgs); }
@@ -210,22 +196,19 @@ class Cell
 				template[x] = this.coords.join(',');
 			template[x] = template[x].replace('?', this.id);
 		}
-		this.html = $(elType, template);
-		
-
-		this.html.attr('coords', this.coords.join(','));
+		this.jq = $(elType, template);
+		this.jq.attr('coords', this.coords.join(','));
 
 		if (order === 'append')
-			containerDiv.append(this.html);
+			containerDiv.append(this.jq);
 		else if (order === 'prepend')
-			containerDiv.prepend(this.html);
+			containerDiv.prepend(this.jq);
 
 	}
 
-
 	updateHTML()
 	{
-		this.html.attr('coords', this.coords.join(','));	
+		this.jq.attr('coords', this.coords.join(','));	
 	}
 }
 
@@ -331,7 +314,24 @@ class RegionDivider
 	}
 
 
-	resize(){}
+	resize()
+	{
+		this.canvas[0].height = this.img.height;
+		this.canvas[0].width = this.img.width;
+		this.updateHTML();
+		this.highlightCell();
+	}
+
+
+	cellHandler(eventName, fn)
+	{
+		for (var i in this.cells)
+		{
+			var cell = this.cells[i];
+			cell.jq.on(eventName, {cellInstance: cell}, fn);
+		}
+	}
+
 }
 
 // ########################################
@@ -367,13 +367,16 @@ function init()
 
 	});
 
-	gridder.onClickCell({}, function(e){
+	gridder.cellHandler('click', function(e){
 		var t = e.data.cellInstance;
 		t.draw();
 		var gridClicked = new CustomEvent('gridClicked', {detail: {id: t.id}});
-		window.dispatchEvent(gridClicked);	
+		window.dispatchEvent(gridClicked);
 	});
 
+	gridder.cellHandler('mouseover', function(e){
+		console.log('hovering', e.data.cellInstance.id);
+	})
 
 	window.addEventListener('gridClicked', function(e){
 		gridder.activeCell = e.detail.id;
@@ -382,15 +385,9 @@ function init()
 
 	gridder.updateHTML();
 	
+	window.onresize = function(){ gridder.resize(); };
+
 }
-
-
-window.onresize = function()
-{
-	gridder.updateHTML();
-	gridder.highlightCell();
-	// update current traced cell on grid
-};
 
 
 var GRID_CELL_COORDS;
