@@ -529,11 +529,15 @@ input[type=button]:hover, input[type=submit]:hover, input[type=reset]:hover, but
 	right: 0;
 }
 
-.button-row-el
+.flex-radio-row
 {
-	/*display: inline-block;*/
-	float: left;
-	margin: 0;
+	display: flex;
+	margin-right: -1%;
+	margin-bottom: 5px;
+}
+.btn-row-el
+{
+	margin: 1% 1% 0 0;
 }
 #cellNavigator{
 	height: var(--button-height);
@@ -564,7 +568,7 @@ input[type=button]:hover, input[type=submit]:hover, input[type=reset]:hover, but
 
 
 /* ### Grading section */
-#wrapGrading 
+#wrap-cell-controlAndGrades 
 {
 	height: 100%;
 	width: 60%;
@@ -581,39 +585,28 @@ input[type=button]:hover, input[type=submit]:hover, input[type=reset]:hover, but
 	margin-left: 10px;
 }
 
-#wrapGradeOptions
+#wrap-grades
 {
 	height: calc(100% - 376px);
 	width: 100%;
-}
-#primaryGrade{
-	height: var(--button-height);
-	position: relative;
+	color: white;
 }
 
-.firstClassOptions input { display: none; }
-#secondaryGrades
-{ 
-	height: calc(100% - var(--button-height) - 15px);
-	overflow: auto;
-	color: #fff;
-	/* TODO: bottom of scroll bar gets hidden */
-}
-#wrapAssociatedOptions { height: 100%; }
-#associatedFeatures { width: 100%; }
-.secondClassOptions
+.wrap-grades-input
 {
 	padding: 10px;
+	height: 100%;
+	overflow: auto;
 }
-.secondClassOptions input { display: none; }
+.wrap-grades-input input { display: none; }
 
 .option-box-element
 {
 	position: relative;
 	height: var(--slim-el-height);
 	width: 100%;
+	margin-bottom: 5px;
 	float: left;
-	border-bottom: 3px solid #131313;
 	background-color:var(--dark-button);
 }
 .option-box-element:last-child, .example-box-element:last-child{margin-bottom:0;}

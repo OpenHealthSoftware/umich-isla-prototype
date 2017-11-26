@@ -390,7 +390,6 @@ function init()
 	});
 
 	
-
 	window.addEventListener('gridClicked', function(e){
 		gridder.activeCell = e.detail.id;
 		gridder.highlightCell(e.detail.id, '#F1C40F', 3);
@@ -399,8 +398,6 @@ function init()
 	gridder.updateHTML();
 	
 	window.onresize = function(){ resize(); };
-
-
 	
 	gridder.cellHandler('dblclick', function(e){
 
@@ -540,6 +537,7 @@ submitGradeBtn.click(function()
 		meta: metaData
 	};
 
+	//gridder.nextCell();
 });
 
 
