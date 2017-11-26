@@ -376,9 +376,10 @@ function init()
 
 	gridder.cellHandler('click', function(e){
 		var t = e.data.cellInstance;
-		t.draw();
+		focusCell(t);
 		var gridClicked = new CustomEvent('gridClicked', {detail: {id: t.id}});
 		window.dispatchEvent(gridClicked);
+		GRADE_CELL_TIMESTART = new Date().getTime();
 	});
 
 	
@@ -399,8 +400,8 @@ function init()
 		if (quickView === false)
 		{
 			gridder.cellHandler('mouseover', function(e){
+				focusCell(e.data.cellInstance);
 				gridder.highlightCell(e.data.cellInstance.id);
-				e.data.cellInstance.draw();
 			});
 		}
 		else
@@ -413,12 +414,28 @@ function init()
 
 }
 
+function focusCell(cell)
+{
+	cell.draw();
+	resetGrades()
+	updateGrades(cell.grades);
+}
+
 var quickView = false;
 var GRID_CELL_COORDS;
 var MAIN_IMAGE;
+var COMP_IMG;
 var CELL_CANVAS;
 var gridder;
 var WRAP_CELLCANVAS;
+var GRADE_DATA = {};
+var GRADE_CELL_TIMESTART;
+var GRADE_CELL_TIMEEND;
+
+// var GRADES = {
+// 	data:
+// 	time: {start:, end:}
+// }
 
 $('document').ready(function(){
 
@@ -445,6 +462,8 @@ $('document').ready(function(){
 	var ctx = CELL_CANVAS.getContext('2d');
 	ctx.canvas.height = WRAP_CELLCANVAS.width();
 	ctx.canvas.width = WRAP_CELLCANVAS.height();
+
+	COMP_IMG = $('#normalImg');
 });
 
 
@@ -467,6 +486,8 @@ function resize()
 submitGradeBtn = $('#submitGrade')
 submitGradeBtn.click(function()
 {
+	var metaData = getMetaData();
+	
 	// check for required inputs
 	var reqRadioSelector = 'input[class=input-required]:radio';
 	var reqCheckSelector = 'input[class=input-required]:checkbox';
@@ -490,12 +511,75 @@ submitGradeBtn.click(function()
 	var chkIn = 'checkbox]:checked';
 	// TODO: other inputs
 	var recordedInputs = $(baseSelector + radioIns + ', ' + baseSelector + chkIn);
-	var inputVals = []
+	var cellGrades = []
 
 	for (var i = 0; i < recordedInputs.length; i++)
-		inputVals.push(recordedInputs[i].value);
+	{
+		var input = recordedInputs[i];
+		var g = { 
+			inputId: input.id, 
+			value: input.value
+		};
+		cellGrades.push(g);
+	}
 
-	print(recordedInputs);		
-	print(inputVals);
+	var activeCell = gridder.getActiveCell();
+	activeCell.grades = cellGrades;
 
+	GRADE_DATA[activeCell.id] = {
+		grades: cellGrades,
+		meta: metaData
+	};
+
+	print(recordedInputs);
+	print(cellGrades);
 });
+
+
+function getMetaData()
+{
+	GRADE_CELL_TIMEEND = new Date().getTime();
+	var gradingTime = (GRADE_CELL_TIMEEND - GRADE_CELL_TIMESTART) / 1000; // unit=seconds
+
+	var d = {
+		comparisonImg: COMP_IMG.attr('src'),
+		brightness:  100,//$('#brightness-slider').slider('value'),
+		time: gradingTime
+	}
+	return d;
+}
+
+
+function updateGrades(gradeData)
+{
+	// updates the grading gui
+
+	if (!gradeData)
+		return;
+
+	for (var i in gradeData)
+	{
+		var g = gradeData[i];
+		var jqObj = $('#' + g.inputId);
+		// TODO: handle any unhandled input types
+		if (jqObj[0].type === 'radio' || jqObj[0].type === 'checkbox')
+			jqObj.prop('checked', true);
+		else
+			jqObj.attr('value', g.value);
+	}
+}
+
+
+function resetGrades()
+{
+	var inputs = $('.submit-input-container input');
+	// TODO: duplicated code
+
+	inputs.each(function()
+	{
+		if ($(this)[0].type === 'radio' || $(this)[0].type === 'checkbox')
+			$(this).prop('checked', false);
+		else
+			$(this).val('');
+	});
+}
