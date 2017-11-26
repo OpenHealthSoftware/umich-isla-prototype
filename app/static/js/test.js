@@ -339,6 +339,13 @@ class RegionDivider
 		for (var i in this.cells)
 			this.cells[i].jq.unbind(eventName);
 	}
+
+	loadGrades(gradeData)
+	{
+		// loads grades from GRADE_DATA into respective cells
+		for (var i in gradeData)
+			this.cells[i].grades = gradeData[i].grades;
+	}
 }
 
 // ########################################
@@ -414,12 +421,6 @@ function init()
 
 }
 
-function focusCell(cell)
-{
-	cell.draw();
-	resetGrades()
-	updateGrades(cell.grades);
-}
 
 var quickView = false;
 var GRID_CELL_COORDS;
@@ -431,6 +432,8 @@ var WRAP_CELLCANVAS;
 var GRADE_DATA = {};
 var GRADE_CELL_TIMESTART;
 var GRADE_CELL_TIMEEND;
+var SELECTED_INPUT_CLASSES = 'checkbox-selected button-selected';
+
 
 // var GRADES = {
 // 	data:
@@ -478,6 +481,12 @@ function resize()
 }
 
 
+function focusCell(cell)
+{
+	cell.draw();
+	resetGrades();
+	updateGrades(cell.grades);
+}
 
 
 
@@ -531,8 +540,6 @@ submitGradeBtn.click(function()
 		meta: metaData
 	};
 
-	print(recordedInputs);
-	print(cellGrades);
 });
 
 
@@ -543,7 +550,7 @@ function getMetaData()
 
 	var d = {
 		comparisonImg: COMP_IMG.attr('src'),
-		brightness:  100,//$('#brightness-slider').slider('value'),
+		brightness:  100,// TODO: $('#brightness-slider').slider('value'),
 		time: gradingTime
 	}
 	return d;
@@ -566,7 +573,9 @@ function updateGrades(gradeData)
 			jqObj.prop('checked', true);
 		else
 			jqObj.attr('value', g.value);
-	}
+
+		updateGradesCSS(jqObj);
+	}	
 }
 
 
@@ -582,4 +591,51 @@ function resetGrades()
 		else
 			$(this).val('');
 	});
+	$('.checkbox-selected, .button-selected').removeClass(SELECTED_INPUT_CLASSES);		
+}
+
+
+$('.submit-input-container input').change(function()
+{
+	updateGradesCSS($(this));
+});
+
+
+function updateGradesCSS(inputEl)
+{
+	var elSelectors = inputEl.attr('data-tostyle');
+
+	// special case for radio groups, clear styling
+	if (inputEl[0].type === 'radio')
+	{
+		var name = inputEl[0].name;
+		var radioGroup = $('input[type=radio][name=' + name + ']');
+		radioGroup.each(function(){
+			var elSelectors = $(this).attr('data-tostyle');
+			$(elSelectors).removeClass(SELECTED_INPUT_CLASSES);
+		});
+	}
+
+	if (!elSelectors)
+		return;
+
+	elSelectors = elSelectors.split(',');
+	
+	for (i in elSelectors)
+	{
+		var s = elSelectors[i];
+		var el = $(s);
+		if (el)
+		{
+			// [class$=-selected]
+			var classy;
+			if (el.hasClass('selectable-checkbox'))
+				classy = 'checkbox-selected';
+			else if (el.hasClass('selectable-button'))
+				classy = 'button-selected';
+
+			if (classy) // how classy?
+				el.toggleClass(classy);
+		}
+	}
 }
