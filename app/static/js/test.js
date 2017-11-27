@@ -340,7 +340,7 @@ class RegionDivider
 			this.cells[i].jq.unbind(eventName);
 	}
 
-	loadGrades(gradeData)
+	loadCellGrades(gradeData)
 	{
 		// loads grades from GRADE_DATA into respective cells
 		for (var i in gradeData)
@@ -416,9 +416,18 @@ function init()
 		
 	});
 
+	// TODO: use promises instead cause this is hard to follow
+	$('#loadGradeBtn')[0].disabled = false;
+	$('#loadGradeBtn').click(function(){
+		loadPreviousGrades();
+	});
+
+	// TODO: select and grade multiple cells at once
 }
 
 
+
+var IMG_ID = gup('p');
 var quickView = false;
 var GRID_CELL_COORDS;
 var MAIN_IMAGE;
@@ -426,28 +435,34 @@ var COMP_IMG;
 var CELL_CANVAS;
 var gridder;
 var WRAP_CELLCANVAS;
-var GRADE_DATA = {};
+var GRADE_DATA = {
+	grades: {},
+	globals: {
+		grader: '',
+		sessionId: -1,
+		patientInfo: [],
+		imgId: IMG_ID,
+		totalCells: 0
+	}
+};
 var GRADE_CELL_TIMESTART;
 var GRADE_CELL_TIMEEND;
 var SELECTED_INPUT_CLASSES = 'checkbox-selected button-selected';
 
 
-// var GRADES = {
-// 	data:
-// 	time: {start:, end:}
-// }
 
 $('document').ready(function(){
 
 	$.ajax({
 		url: '/api/v1/image',
 		data: { 
-			id: gup('p'),
+			id: IMG_ID,
 			selection: ['coordinates']
 		},
 		type: 'GET',
 		success: function(response) {
 			GRID_CELL_COORDS = response.coordinates;
+			GRADE_DATA.globals.totalCells = GRID_CELL_COORDS.length;
 			init();
 		},
 		error: function(error) {
@@ -464,6 +479,7 @@ $('document').ready(function(){
 	ctx.canvas.width = WRAP_CELLCANVAS.height();
 
 	COMP_IMG = $('#normalImg');
+
 });
 
 
@@ -501,13 +517,13 @@ submitGradeBtn.click(function()
 	if ($(reqRadioSelector).length !== 0 && $(reqRadioSelector + ':checked').length === 0)
 	{
 		print('Required input not filled');
-		$('#notif').html("Required input not selected!");
+		$('#notif').html('Required input not selected!');
 		return -1;
 	}
 	if ($(reqCheckSelector).length !== 0 && $(reqCheckSelector + ':checked').length === 0)
 	{
 		print('Required input not filled');
-		$('#notif').html("Required input not selected!");
+		$('#notif').html('Required input not selected!');
 		return -1;
 	}
 	// TODO: ^^^^ condense
@@ -532,12 +548,14 @@ submitGradeBtn.click(function()
 	var activeCell = gridder.getActiveCell();
 	activeCell.grades = cellGrades;
 
-	GRADE_DATA[activeCell.id] = {
+	GRADE_DATA.grades[activeCell.id] = {
 		grades: cellGrades,
 		meta: metaData
 	};
 
-	//gridder.nextCell();
+	sendGradesToServer();
+
+	//TODO: gridder.nextCell();
 });
 
 
@@ -637,3 +655,82 @@ function updateGradesCSS(inputEl)
 		}
 	}
 }
+
+// load grades from server
+function loadPreviousGrades()
+{
+	var ses = $('#loadGradeForm input[name=gradeSession]:checked').val();
+	GRADE_DATA.globals.sessionId = ses;
+
+	if (ses != -1) // load grade
+	{
+		$.ajax({
+			url: '/api/v1/grading/load',
+			data: { sessionId : ses, imgId: IMG_ID },
+			type: 'GET',
+			dataType: 'JSON',
+			success:  function(resp)
+			{
+				print('LOAD GRADE RESP', resp);
+
+				//numCellsGraded = Object.keys(resp.grades).length;
+				GRADE_DATA.grades = resp.grades;
+				GRADE_DATA.globals.grader = resp.globals.grader;
+				gridder.loadCellGrades(GRADE_DATA.grades);
+			},
+			error: function(err){ print('Load grade error', err); },
+		});
+	}
+	$('#form-popup').hide();
+}
+
+// saves grades to server
+function sendGradesToServer()
+{
+	$.ajax({
+		url: '/api/v1/grading/save',
+		data: JSON.stringify(GRADE_DATA),
+		type: 'POST',
+		contentType: 'application/json',
+		dataType: 'JSON',
+		success: function(resp){
+
+			GRADE_DATA.globals.sessionId = resp.sessionId;
+			GRADE_DATA.globals.grader = resp.user;
+			var time = new Date(new Date().getTime()).toLocaleTimeString();
+			$('#notif').html('Autosaved ' + time + '.');			
+		},
+		error: function(err){
+			print('Server save error', err);
+		}
+	});
+}
+
+// export grades to csv
+function exportGrades()
+{
+	// imguuid, cellid, grade1, grade2,...graden, meta1, meta2,...metan
+	// option to remove grade_data.global values in export
+}
+// indicator that cell is graded
+
+
+
+// Cell Controller ########################################
+// brightness
+// cell info
+// invert
+//
+
+
+
+// Control comparison #####################################
+
+
+// Keyboard shortcuts #####################################
+
+
+// Menu tools #############################################
+// show/hide grid
+// show normal
+// toggle grade indicator

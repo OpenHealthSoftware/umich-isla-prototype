@@ -58,8 +58,8 @@ CREATE TABLE grids(
 );
 
 
--- each row contains information to about grading for one image
-CREATE TABLE grades(
+-- one row = link to a json file where actual grade data is stored
+CREATE TABLE gradeFiles(
 	gradeId INTEGER,
 	gradeFile CHAR(65) NOT NULL,
 	userId CHAR(12) NOT NULL,

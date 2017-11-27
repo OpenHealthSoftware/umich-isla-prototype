@@ -125,40 +125,58 @@ def image_info():
 @api.route(urlPrefix + 'grading/save', methods=['POST'])
 def save_grade():
 	user = util.get_current_user()
-
-	imgId = request.form['imgId']
-	gradeData = request.form['gradeData']
-	gradeId = request.form['gradeId']
-	finished = request.form['finished']
-	cellsGraded = request.form['cellsGraded']
 	date = datetime.datetime.today().strftime('%Y-%m-%d')
-	print('\nGradeId:', gradeId, user, finished, date)
 
-	inDatabase = sql.getGradesFromId(gradeId)
-	session = ''
-	if not inDatabase:
-		session = len(sql.getGradesFromUser(user, imgId)) + 1
-		gradeFilename = date + '_' + user + '_' + imgId + '_' + str(session) + '.json'
-		gradeId = sql.insertGradeToDB(gradeFilename, user, imgId, cellsGraded, finished, session)
-	else: 
-		session = inDatabase['sessionId']
-		sql.updateGradeInDB(gradeId, cellsGraded, finished)
+	data = request.get_json()
 
-	fnameTemp = '{}_{}_{}_{}.json'
-	gradeFilename = fnameTemp.format(date, user, imgId, session)
-	with open(conf.GRADES_PATH + gradeFilename, 'w') as f:
-		f.write(gradeData)
-	return jsonify({'gradeId': gradeId})
+	totalCells = data['globals']['totalCells']
+	sessionId = data['globals']['sessionId']
+	imgId = data['globals']['imgId']
+	gradeData = data['grades']
+	cellsGraded = len(gradeData)
+
+	finishedGrading = False
+	if cellsGraded == totalCells:
+		finishedGrading = True
+	
+	storedGrades = sql.getGradeInfo(imgId, user, sessionId)
+	filenameTemp = '{}_uuid-{}_user-{}_session-{}.json'
+
+	if not storedGrades: # sessionId inits to -1 for first request of new session
+		sessionId = len(sql.getGradesFromUser(user, imgId)) + 1
+		gradeFilename = filenameTemp.format(date, imgId, user, sessionId)		
+		gradeId = sql.insertGradeToDB(gradeFilename, user, imgId, cellsGraded, finishedGrading, sessionId)
+	else:
+		sessionId = storedGrades['sessionId']
+		sql.updateGradeInDB(storedGrades['gradeId'], cellsGraded, finishedGrading)
+
+	
+	gradeFilename = filenameTemp.format(date, imgId, user, sessionId)
+
+	with open(os.path.join(conf.GRADES_PATH, gradeFilename), 'w') as f:
+		f.write(json.dumps(data))
+	return jsonify({'sessionId': sessionId, 'user': user})
+	# TODO: ^^^ unneccesary response data after first request
 
 
 @api.route(urlPrefix + 'grading/load', methods=['GET'])
 def load_grade_route():
-	if 'gradeId' not in request.args:
-		return jsonify({'error': 'grade id not given'})
+	user = util.get_current_user()
+	rargs = request.args
+	if 'sessionId' not in rargs:
+		return jsonify({'error': 'session id not given'})
+	if 'imgId' not in rargs:
+		return jsonify({'error': 'image id not given'})
+		
 
-	gradeRow = sql.getGradesFromId(request.args['gradeId'])
-	gradeJSON = open(conf.GRADES_PATH + gradeRow['gradeFile'], 'r').read()
-	return gradeJSON
+	gradeRow = sql.getGradeInfo(rargs['imgId'], user, rargs['sessionId'])
+	filepath = os.path.join(conf.GRADES_PATH, gradeRow['gradeFile'])
+
+	if os.path.isfile(filepath) == False:
+		return jsonify({'error': 'Grade file not found - ' + filepath})
+
+	gradeJSON = json.load(open(filepath, 'r'))
+	return jsonify(gradeJSON)
 
 
 import config

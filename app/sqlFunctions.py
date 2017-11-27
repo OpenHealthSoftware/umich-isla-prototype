@@ -57,31 +57,36 @@ def getGridData(imgId):
 		return results
 
 def getGradesFromUser(userId, imgId):
-	cursor.execute('SELECT * FROM grades WHERE userId=? AND imgId=? AND finishedGrading="false" ORDER BY gradeId ASC', 
+	cursor.execute('SELECT * FROM gradeFiles WHERE userId=? AND imgId=? AND finishedGrading=0 ORDER BY gradeId ASC', 
 		(userId, imgId))
 	results = cursor.fetchall()
 	return results
 
 def getGradesFromId(gradeId):
-	cursor.execute('SELECT * FROM grades where gradeId=? LIMIT 1', (gradeId,))
+	cursor.execute('SELECT * FROM gradeFiles where gradeId=? LIMIT 1', (gradeId,))
+	results = cursor.fetchone()
+	return results
+
+def getGradeInfo(imgId, user, sid):
+	cursor.execute('SELECT * FROM gradeFiles where imgId=? AND userId=? AND sessionId=? LIMIT 1', (imgId, user, sid))
 	results = cursor.fetchone()
 	return results
 
 def getGradeFilesFromImgId(imgId):
-	cursor.execute('SELECT gradeFile FROM grades where imgId=?', (imgId,))
+	cursor.execute('SELECT gradeFile FROM gradeFiles where imgId=?', (imgId,))
 	results = cursor.fetchall()
 	return results
 
 def getFinishedGrades(imgId):
-	cursor.execute('SELECT * FROM grades where imgId=? AND finishedGrading="true"', (imgId,))
-	#cursor.execute('SELECT * FROM grades where imgId=? GROUP BY userId', (imgId,))
+	cursor.execute('SELECT * FROM gradeFiles where imgId=? AND finishedGrading="true"', (imgId,))
+	#cursor.execute('SELECT * FROM gradeFiles where imgId=? GROUP BY userId', (imgId,))
 	results = cursor.fetchall()
 	return results
 
 
 # returns the unique graders who have started grading an image, but have not finished
 def getCurrentGraders(imgId):
-	cursor.execute('SELECT userId FROM grades where imgId=? and finishedGrading="false" GROUP BY userId', (imgId,))
+	cursor.execute('SELECT userId FROM gradeFiles where imgId=? and finishedGrading="false" GROUP BY userId', (imgId,))
 	results = cursor.fetchall()
 	userList = [i['userId'] for i in results]
 	return userList
@@ -112,7 +117,7 @@ def insertGridToDB(gridId, xOffset, yOffset, imgId, scaleRatio, xDisc, yDisc, xF
 
 
 def insertGradeToDB(gradeFile, userId, imgId, cellsG, finished, session):
-	cursor.execute('INSERT OR REPLACE INTO grades (gradeFile, userId, imgId, cellsGraded, ' +
+	cursor.execute('INSERT OR REPLACE INTO gradeFiles (gradeFile, userId, imgId, cellsGraded, ' +
 			'finishedGrading, sessionId) VALUES (?,?,?,?,?,?)', (gradeFile, userId, imgId, cellsG, finished, session)
 	)
 	conn.commit()
@@ -125,7 +130,7 @@ def deleteEntry(table, primaryKey, primaryVal):
 
 
 def updateGradeInDB(gradeId, cellsGraded, finished):
-	cursor.execute('UPDATE grades SET cellsGraded=?, finishedGrading=? WHERE gradeId=?', 
+	cursor.execute('UPDATE gradeFiles SET cellsGraded=?, finishedGrading=? WHERE gradeId=?', 
 			(cellsGraded, finished, gradeId))
 	conn.commit()
 	
