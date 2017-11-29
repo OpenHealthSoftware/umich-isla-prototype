@@ -540,7 +540,8 @@ submitGradeBtn.click(function()
 		var input = recordedInputs[i];
 		var g = { 
 			inputId: input.id, 
-			value: input.value
+			value: input.value,
+			headerName: input.getAttribute('data-grade-header')
 		};
 		cellGrades.push(g);
 	}
@@ -706,12 +707,88 @@ function sendGradesToServer()
 	});
 }
 
-// export grades to csv
-function exportGrades()
+
+// Generates the csv string
+function generateCSV()
 {
 	// imguuid, cellid, grade1, grade2,...graden, meta1, meta2,...metan
 	// option to remove grade_data.global values in export
+	
+	// first get all the possible headers
+	var headers = {};
+	var exId = Object.keys(GRADE_DATA.grades)[0];
+	var cellEx = GRADE_DATA.grades[exId];
+	var allGrades = GRADE_DATA.grades;
+	for (var i in allGrades)
+	{
+		for (var j in allGrades[i].grades)
+			headers[allGrades[i].grades[j].headerName] = null;
+	}
+
+
+	var csvStr = '';
+	var allGrades = GRADE_DATA.grades;
+	for (var i in allGrades)
+	{
+		cellGrades = allGrades[i].grades;
+		cellMeta = allGrades[i].meta;
+
+		var row = [];
+
+		Object.keys(headers).sort().forEach(function(key, x){
+
+			var found = false;
+			for (var j in cellGrades)
+			{
+				if (key == cellGrades[j].headerName)
+				{
+					row.push(cellGrades[j].value.replace(',', ';'));
+					found = true;
+					break;
+				}
+			}
+			if (!found)
+				row.push('');
+			
+		});
+
+		// add meta
+		Object.keys(getMetaData()).sort().forEach(function(key, x){
+			row.push(cellMeta[key].toString().replace(',', ';'));		
+		});
+
+		var rowStr = row.join(',') + '\n';
+		csvStr += rowStr;
+	}
+	csvStr = Object.keys(headers).sort().join(',') + ',' + 
+		Object.keys(getMetaData()).sort().join(',') + '\n' + csvStr;
+
+	// TODO: GRADE_DATA.globals values
+	return csvStr;
 }
+
+
+$('#export').click(function(){
+	exportCSV();
+});
+
+
+function exportCSV()
+{
+	var csvStr = generateCSV();
+	var encodedURI = encodeURI(csvStr);
+	var date = new Date().toISOString(); // TODO: might need to get rid of : for windows
+	var link = document.createElement('a');
+	link.setAttribute('href', 'data:application/octet-stream,' + encodedURI);
+
+	var grader = GRADE_DATA.globals.grader;
+	var imgId = GRADE_DATA.globals.imgId;
+	link.setAttribute('download', date + '_' + grader + '_' + imgId + '.csv');
+	document.body.appendChild(link); // Required for FF
+
+	link.click(); // This will download the data file
+}
+
 // indicator that cell is graded
 
 
