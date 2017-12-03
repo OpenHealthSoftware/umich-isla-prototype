@@ -127,7 +127,7 @@ def image_info():
 
 		imgs = sql.getImages(**filters)
 		for i in imgs:
-			response.append(image_info_helper(i['id'], request))
+			response.append(image_info_helper(i['imgId'], request))
 	else:
 		response = image_info_helper(request.args['id'], request)
 

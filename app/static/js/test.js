@@ -326,6 +326,8 @@ class RegionDivider
 
 	resize()
 	{
+		if (!this.canvas)
+			return;
 		this.canvas[0].height = this.img.height;
 		this.canvas[0].width = this.img.width;
 		this.updateHTML();
@@ -358,7 +360,24 @@ class RegionDivider
 
 // ########################################
 
+// TODO: should this be a default draw function?
+function defaulDraw(outCanvas, img, cellInstance){
+	var t = cellInstance;
+	print('Drawing cell:', t.id);		
 
+	var ctx = outCanvas.getContext('2d');
+
+	var minX = t.getOrigMaxMin().min.x;
+	var minY = t.getOrigMaxMin().min.y;
+	var cellWidth = t.getOrigDimensions().x;
+	var cellHeight = t.getOrigDimensions().y;
+
+	var coords = t.getOriginalCoords();
+
+	//print(img, coords[0], coords[1], cellWidth, cellHeight, 0,0, outCanvas.width, outCanvas.height);
+
+	ctx.drawImage(img, coords[0], coords[1], cellWidth, cellHeight, 0,0, outCanvas.width, outCanvas.height);
+}
 
 
 
@@ -370,23 +389,7 @@ function init()
 	gridder.makeHTML($('#wrap-mainImg'), 'append', htmlTemplate);
 
 	gridder.onDrawCell([CELL_CANVAS, MAIN_IMAGE], function(outCanvas, img, cellInstance){
-		var t = cellInstance;
-		print('Drawing cell:', t.id);		
-
-		var ctx = outCanvas.getContext('2d');
-
-		var minX = t.getOrigMaxMin().min.x;
-		var minY = t.getOrigMaxMin().min.y;
-		var cellWidth = t.getOrigDimensions().x;
-		var cellHeight = t.getOrigDimensions().y;	
-		var coordsToCanvasRatio = ctx.canvas.width / cellWidth;
-
-		var coords = t.getOriginalCoords();
-
-		//print(img, coords[0], coords[1], cellWidth, cellHeight, 0,0, outCanvas.width, outCanvas.height);
-
-		ctx.drawImage(img, coords[0], coords[1], cellWidth, cellHeight, 0,0, outCanvas.width, outCanvas.height);
-
+		defaulDraw(outCanvas, img, cellInstance);
 	});
 
 	gridder.cellHandler('click', function(e){
@@ -401,6 +404,12 @@ function init()
 	window.addEventListener('gridClicked', function(e){
 		gridder.activeCell = e.detail.id;
 		gridder.highlightCell(e.detail.id, '#F1C40F', 3);
+		if (controlGridder && controlGridder.cells)
+		{
+			controlGridder.activeCell = e.detail.id;
+			controlGridder.getActiveCell().draw();
+			// TODO: move to more appropriate place, if one
+		}
 	});
 
 	gridder.updateHTML();
@@ -442,6 +451,7 @@ var MAIN_IMAGE;
 var COMP_IMG;
 var CELL_CANVAS;
 var gridder;
+var controlGridder;
 var WRAP_CELLCANVAS;
 var GRADE_DATA = {
 	grades: {},
@@ -456,13 +466,20 @@ var GRADE_DATA = {
 var GRADE_CELL_TIMESTART;
 var GRADE_CELL_TIMEEND;
 var SELECTED_INPUT_CLASSES = 'checkbox-selected button-selected';
-var CONTROL_IMGS = null;
+var CONTROL_IMGS = [];
 var CURRENT_CONTROL;
 var CURRENT_CONTROL_IDX = 0;
+var CONTROL_CANVAS;
 
 
 
 $('document').ready(function(){
+	CELL_CANVAS = document.getElementById('cellViewCanvas');
+	CONTROL_CANVAS = document.getElementById('normalCellViewCanvas');
+	MAIN_IMAGE = document.getElementById('mainFA_image');
+
+	WRAP_CELLCANVAS = $('#wrap-cellCanvas');
+	WRAP_CONTROLCANVAS = $('#wrapNormalComparisons .maintain-ratio-full');
 
 	$.ajax({
 		url: '/api/v1/image',
@@ -482,28 +499,48 @@ $('document').ready(function(){
 		}
 	});
 
-	CELL_CANVAS = document.getElementById('cellViewCanvas');
-	MAIN_IMAGE = document.getElementById('mainFA_image');
-	WRAP_CELLCANVAS = $('#wrap-cellCanvas');
+	
 
 	var ctx = CELL_CANVAS.getContext('2d');
 	ctx.canvas.height = WRAP_CELLCANVAS.width();
 	ctx.canvas.width = WRAP_CELLCANVAS.height();
 
+	var ctx2 = CONTROL_CANVAS.getContext('2d');
+	ctx2.canvas.height = WRAP_CONTROLCANVAS.width();
+	ctx2.canvas.width = WRAP_CONTROLCANVAS.height();
+
 	COMP_IMG = $('#normalImg');
 
 	getControlIds(MAIN_IMAGE.getAttribute('data-eye-side'));
+
+	$('#normalImg').on('load', function(){
+		var img = document.getElementById('normalImg');
+		controlGridder = new RegionDivider(img, CONTROL_CELL_COORDS);
+	
+		controlGridder.onDrawCell([CONTROL_CANVAS, img], function(outCanvas, img, cellInstance){
+			defaulDraw(outCanvas, img, cellInstance);
+		});
+	
+		controlGridder.activeCell = gridder.activeCell;
+		controlGridder.getActiveCell().draw();
+	});
+
+	
 });
 
 
 function resize()
 {
+	// TODO: condense
 	gridder.resize();
+	controlGridder.resize();
 	
 	CELL_CANVAS.width = WRAP_CELLCANVAS.width();
 	CELL_CANVAS.height = WRAP_CELLCANVAS.height();
-
+	CONTROL_CANVAS.width = WRAP_CONTROLCANVAS.width();
+	CONTROL_CANVAS.height = WRAP_CONTROLCANVAS.height();
 	gridder.getActiveCell().draw();
+	controlGridder.getActiveCell().draw();
 }
 
 
@@ -699,6 +736,7 @@ function loadPreviousGrades()
 	$('#form-popup').hide();
 }
 
+
 // saves grades to server
 function sendGradesToServer()
 {
@@ -832,7 +870,7 @@ function getControlIds(eyeSide)
 			// turn into an array for easier indexing in getNextControl
 			
 			for (var key in response)
-				CONTROL_IMGS.push(response[key]);
+				CONTROL_IMGS.push(response[key].imgData);
 
 		},
 		error: function(error) {
@@ -841,15 +879,10 @@ function getControlIds(eyeSide)
 	});
 }
 
+
 // Effects: Selects a normal image to be used for grading comparison
 function getNextControl(direction) //, side
 {
-	if (CONTROL_IMGS == null)
-	{
-		print('Control images not loaded');
-		return;
-	}
-
 	if (CONTROL_IMGS.length == 0)
 	{
 		// TODO: gui message
@@ -857,14 +890,13 @@ function getNextControl(direction) //, side
 		return;
 	}
 
-	CURRENT_CONTROL
 	CURRENT_CONTROL_IDX = (CURRENT_CONTROL_IDX + direction) % CONTROL_IMGS.length;
 	CURRENT_CONTROL = CONTROL_IMGS[CURRENT_CONTROL_IDX];
 
 	$.ajax({
 		url: '/api/v1/image',
 		data: {
-			id: CURRENT_CONTROL.id,
+			id: CURRENT_CONTROL.imgId,
 			selection: ['coordinates'],
 		},
 		type: 'GET',
@@ -878,17 +910,10 @@ function getNextControl(direction) //, side
 		}
 	});
 
-	$('#normalCellViewCanvas').css('opacity', 0);
+	//$('#normalCellViewCanvas').css('opacity', 0);
 
 }
 
-$('#normalImg').load(function(){
-	var img = $('#normalImg');
-	controlGridder = new RegionDivider(img, CONTROL_CELL_COORDS);
-	// TODO: default drawers
-	controlGridder.activeCell = gridder.activeCell;			
-	controlGridder.update();
-});
 
 
 // Keyboard shortcuts #####################################
