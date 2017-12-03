@@ -28,13 +28,15 @@ def getOptionExamples(optionType):
 	return cursor.fetchall()
 
 # Effects: Runs a MySQL query that returns all images in the database
-def getImages(itype, side=None):
-	args = (itype,)
-	extra = ''
-	if side:
-		extra = ' AND side=? '
-		args = (*args, side)
-	cursor.execute('SELECT * FROM images WHERE type=?' + extra + 'ORDER BY uploadDate DESC', args)
+def getImages(**kwargs):
+	selector = ''
+	if len(kwargs) > 0:
+		selector += 'WHERE '
+		params = ['{}=?'.format(p) for p in kwargs.keys()]
+		params = ' AND '.join(params) # only ands for now :(
+		selector += params
+	args = tuple(kwargs.values())
+	cursor.execute('SELECT * FROM images ' + selector + ' ORDER BY uploadDate DESC', args)
 	results = cursor.fetchall()
 	return results
 

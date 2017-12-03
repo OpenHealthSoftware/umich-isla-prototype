@@ -52,8 +52,8 @@
 				{% set faSrc = url_for('static', filename='images/uploads/' + img['imgId'] + '.' + img['format']) %}
 				{% set gridSrc = url_for('static', filename='images/uploads/grid_' + img['imgId'] + '.' + img['format']) %}
 				<div style="position:relative;" id="wrap-mainImg">
-					<img  id="mainFA_image" class="pic" src="{{faSrc}}">
-					<img src="{{gridSrc}}" id="grid" class="pic overlay grid" usemap="#map" style="display:block">
+					<img  id="mainFA_image" class="pic" src="{{faSrc}}" data-eye-side="{{img['side']}}">
+					<img src="{{gridSrc}}" id="grid" class="pic overlay grid" usemap="#wrap-mainImg_gridMap" style="display:block">
 					<!-- <canvas id="mainFA_canvas" class="traceCanvas" width="0" height="0"></canvas> -->
 				</div>
 				<div id="mainNormal">
@@ -145,8 +145,8 @@
 								<p style="position:absolute">Loading...</p>	
 								<canvas id="normalCellViewCanvas" class="cellCanvas" width="0" height="0"></canvas>
 						</div>
-						<div onclick="getNormal(-1)" class="select-image select-image-prev"></div>												
-						<div onclick="getNormal(1)" class="select-image select-image-next"></div>												
+						<div onclick="getNextControl(-1)" class="select-image select-image-prev"></div>												
+						<div onclick="getNextControl(1)" class="select-image select-image-next"></div>												
 					</div>
 					<h2>Normal/Control Cell</h2>
 				</div>

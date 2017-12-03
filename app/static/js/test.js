@@ -235,10 +235,16 @@ class RegionDivider
 	// adds the grid/cell html to the page
 	makeHTML(containerDiv, order, template)
 	{
-		for (var c in this.cells)
-			this.cells[c].makeHTML(containerDiv, order, JSON.parse(JSON.stringify(template)));
+		// containerDiv = where the map div and canvas div will be placed
 
-		this.html = containerDiv;
+		var mapName = containerDiv.attr('id') + '_gridMap';
+		var mapDiv = $('<map>', {id: mapName, name: mapName});
+		for (var c in this.cells)
+			this.cells[c].makeHTML(mapDiv, order, JSON.parse(JSON.stringify(template)));
+
+		containerDiv.append(mapDiv);
+		this.mainJq = containerDiv;
+		this.mapJq = mapDiv;
 
 		this.makeCanvas();
 	}
@@ -246,15 +252,17 @@ class RegionDivider
 
 	makeCanvas()
 	{
+		// creates the canvas that covers the whole image
 		if (arguments.length !== 0)
 			return;
 			// TODO: support custom
 		
-		var canvas = $('<canvas/>', {class: 'traceCanvas', id: 'mainFA_canvas'});
+		var canvas = $('<canvas/>', {class: 'traceCanvas', id: this.mainJq.attr('id') + '_canvas'});
 		canvas[0].width = this.img.width;
 		canvas[0].height = this.img.height;
 		this.canvas = canvas;
-		$('#wrap-mainImg').append(canvas);
+		this.mainJq.append(canvas);
+		this.canvasJq = canvas;
 	}
 
 
@@ -359,7 +367,7 @@ function init()
 	gridder = new RegionDivider(MAIN_IMAGE, GRID_CELL_COORDS);
 	var htmlTemplate = { elType: '<area>', id: 'cell_?', shape: 'poly', coords: null};
 
-	gridder.makeHTML($('#gridMap'), 'append', htmlTemplate);
+	gridder.makeHTML($('#wrap-mainImg'), 'append', htmlTemplate);
 
 	gridder.onDrawCell([CELL_CANVAS, MAIN_IMAGE], function(outCanvas, img, cellInstance){
 		var t = cellInstance;
@@ -448,6 +456,9 @@ var GRADE_DATA = {
 var GRADE_CELL_TIMESTART;
 var GRADE_CELL_TIMEEND;
 var SELECTED_INPUT_CLASSES = 'checkbox-selected button-selected';
+var CONTROL_IMGS = null;
+var CURRENT_CONTROL;
+var CURRENT_CONTROL_IDX = 0;
 
 
 
@@ -461,6 +472,7 @@ $('document').ready(function(){
 		},
 		type: 'GET',
 		success: function(response) {
+			print('Init image resp:', response);
 			GRID_CELL_COORDS = response.coordinates;
 			GRADE_DATA.globals.totalCells = GRID_CELL_COORDS.length;
 			init();
@@ -480,6 +492,7 @@ $('document').ready(function(){
 
 	COMP_IMG = $('#normalImg');
 
+	getControlIds(MAIN_IMAGE.getAttribute('data-eye-side'));
 });
 
 
@@ -592,7 +605,7 @@ function updateGrades(gradeData)
 			jqObj.attr('value', g.value);
 
 		updateGradesCSS(jqObj);
-	}	
+	}
 }
 
 
@@ -656,6 +669,7 @@ function updateGradesCSS(inputEl)
 		}
 	}
 }
+
 
 // load grades from server
 function loadPreviousGrades()
@@ -802,6 +816,79 @@ function exportCSV()
 
 
 // Control comparison #####################################
+
+function getControlIds(eyeSide)
+{
+	$.ajax({
+		url: '/api/v1/image',
+		data: {
+			selection: ['imgData'],
+			side: eyeSide,
+			type: 'normal'
+		},
+		type: 'GET',
+		success: function(response) {
+			print('Get normals list', response);
+			// turn into an array for easier indexing in getNextControl
+			
+			for (var key in response)
+				CONTROL_IMGS.push(response[key]);
+
+		},
+		error: function(error) {
+			print(error);
+		}
+	});
+}
+
+// Effects: Selects a normal image to be used for grading comparison
+function getNextControl(direction) //, side
+{
+	if (CONTROL_IMGS == null)
+	{
+		print('Control images not loaded');
+		return;
+	}
+
+	if (CONTROL_IMGS.length == 0)
+	{
+		// TODO: gui message
+		print('No control images available');
+		return;
+	}
+
+	CURRENT_CONTROL
+	CURRENT_CONTROL_IDX = (CURRENT_CONTROL_IDX + direction) % CONTROL_IMGS.length;
+	CURRENT_CONTROL = CONTROL_IMGS[CURRENT_CONTROL_IDX];
+
+	$.ajax({
+		url: '/api/v1/image',
+		data: {
+			id: CURRENT_CONTROL.id,
+			selection: ['coordinates'],
+		},
+		type: 'GET',
+		success: function(response) {
+			CONTROL_CELL_COORDS = response.coordinates;
+			$('#normalImg').attr('src', CURRENT_CONTROL.src);
+			// will fire load event
+		},
+		error: function(error) {
+			print(error);
+		}
+	});
+
+	$('#normalCellViewCanvas').css('opacity', 0);
+
+}
+
+$('#normalImg').load(function(){
+	var img = $('#normalImg');
+	controlGridder = new RegionDivider(img, CONTROL_CELL_COORDS);
+	// TODO: default drawers
+	controlGridder.activeCell = gridder.activeCell;			
+	controlGridder.update();
+});
 
 
 // Keyboard shortcuts #####################################

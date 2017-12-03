@@ -21,9 +21,9 @@ def main_route():
 
 	images = []
 	if uploadType:
-		images = getImages(uploadType)
+		images = getImages(type=uploadType)
 	else:
-		images = getImages('patient')
+		images = getImages(type='patient')
 
 	imageGrades = {}
 	currentImageGrades = {}

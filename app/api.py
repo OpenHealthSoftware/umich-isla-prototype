@@ -44,11 +44,11 @@ def normal_route():
 		if direction != 1 or direction != -1:
 			direction = 1
 
-		kwargs = {}
+		kwargs = {'type': 'normal'}
 		if 'side' in request.args:
 			kwargs = {'side': request.args['side']}
 
-		imgList = sql.getImages('normal', **kwargs)
+		imgList = sql.getImages(**kwargs)
 		if not imgList:
 			return jsonify({'error': 'no normal images'})
 		
@@ -79,7 +79,30 @@ def normal_route():
 
 		return jsonify(response)
 
-		
+
+
+
+def image_info_helper(imgId, request):
+	
+	
+	# TODO: this isn't correct for some reason
+	if not request.args.getlist('selection[]'):
+		selection = ['imgData', 'gridData', 'gradeData']
+	else: 
+		selection = request.args.getlist('selection[]')
+
+	response = {}
+
+	if 'imgData' in selection:
+		response['imgData'] = sql.getImageData(imgId)
+	if 'gridData' in selection:
+		response['gridData'] = sql.getGridData(imgId)
+	if 'gradeData' in selection:
+		response['gradeData'] = sql.getGradesFromId(imgId)
+	if 'coordinates' in selection:
+		response['coordinates'] = calculateCoordinates(imgId)
+	return response
+
 
 
 @api.route(urlPrefix + 'image', methods = ['GET'])
@@ -91,28 +114,28 @@ def image_info():
 
 	if request.method != 'GET':
 		return jsonify({ 'error': 'invalid request type' })
-	elif 'id' not in request.args:
-		return jsonify({'error': 'id must be specified'})
-
-
-	response = {}
-	imgId = request.args['id']
 	
+	response = []
+	
+	
+	if 'id' not in request.args:
+		filters = {}
+		if 'side' in request.args:
+			filters['side'] = request.args['side']
+		if 'type' in request.args:
+			filters['type'] = request.args['type']
 
-	# TODO: this isn't correct for some reason
-	if not request.args.getlist('selection[]'):
-		selection = ['imgData', 'gridData', 'gradeData']
-	else: selection = request.args.getlist('selection[]')
+		imgs = sql.getImages(**filters)
+		for i in imgs:
+			response.append(image_info_helper(i['id'], request))
+	else:
+		response = image_info_helper(request.args['id'], request)
 
-
-	if 'imgData' in selection:
-		response['imgData'] = sql.getImageData(imgId)
-	if 'gridData' in selection:
-		response['gridData'] = sql.getGridData(imgId)
-	if 'gradeData' in selection:
-		response['gradeData'] = sql.getGradesFromId(imgId)
-	if 'coordinates' in selection:
-		response['coordinates'] = calculateCoordinates(imgId)
+	# add urls for images
+	for x in response:
+		if 'imgData' in x:
+			img = x['imgData']
+			img['src'] = url_for('static', filename='images/' + img['type'] + '/' + img['imgId'] + '.' + img['format'])
 
 	return jsonify(response)
 	# TODO: don't prepend file path, save data
