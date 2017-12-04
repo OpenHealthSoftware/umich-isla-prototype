@@ -17,7 +17,7 @@
 			<div id="menuDropdownCont" class="wrap-drop-down">
 				<div id="menuDropdown" class="drop-down">
 					<a href="{{ url_for('main.main_route', gallery='patient') }}" class="patient-shade-1">Patients</a>
-					<a href="{{ url_for('main.main_route', gallery='control') }}" class="normal-shade-1">Controls</a>
+					<a href="{{ url_for('main.main_route', gallery='control') }}" class="control-shade-1">Controls</a>
 					<a href="{{ url_for('uploads.main_route') }}">Upload</a>
 					<a href="{{ url_for('docs.main_route') }}">Help / Info</a>
 				</div>
@@ -26,7 +26,7 @@
 
 		<div id="toolbar" class="wrap-menu">
 			<div class="toolbarEl btn-seperator-right">
-				<button id="showNormalBtn" class="toolbarEl">Show Control</button>
+				<button id="showControlBtn" class="toolbarEl">Show Control</button>
 				<span class="tooltip">Hold down to show the control image</span>
 			</div><!--
 			--><div class="toolbarEl btn-seperator-right">
@@ -54,9 +54,9 @@
 					<img src="{{ gridSrc }}" id="grid" class="pic overlay grid" usemap="#wrap-mainImg_gridMap" style="display:block">
 					<!-- <canvas id="mainFA_canvas" class="traceCanvas" width="0" height="0"></canvas> -->
 				</div>
-				<div id="mainNormal">
-					<img id="normalImg" class="pic" src="">
-					<!--<img id="normalGrid" class="pic overlay grid" src="" >-->
+				<div id="mainControl">
+					<img id="controlImg" class="pic" src="">
+					<!--<img id="controlGrid" class="pic overlay grid" src="" >-->
 					<canvas id="norm_canvas" class="traceCanvas" width="0" height="0"></canvas>
 					<h2 style="position:absolute;color:white;top:10px;">Control Image</h2>										
 				</div>
@@ -137,11 +137,11 @@
 			<div class="seperator-vertical"></div>
 
 			<div id="wrapComparisons">
-				<div id="wrapNormalComparisons" class="half-height">
+				<div id="wrapControlComparisons" class="half-height">
 					<div class="maintain-ratio-full" style="background-color:#1d1d1d">
-						<div id="normalCell" class="cellControlModule">
+						<div id="controlCell" class="cellControlModule">
 								<p style="position:absolute">Loading...</p>	
-								<canvas id="normalCellViewCanvas" class="cellCanvas" width="0" height="0"></canvas>
+								<canvas id="controlCellViewCanvas" class="cellCanvas" width="0" height="0"></canvas>
 						</div>
 						<div onclick="getNextControl(-1)" class="select-image select-image-prev"></div>												
 						<div onclick="getNextControl(1)" class="select-image select-image-next"></div>												

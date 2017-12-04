@@ -1,7 +1,7 @@
 :root
 {
-	--normal-shade-1: #0E96F1;
-	--normal-shade-2: #8befff;
+	--control-shade-1: #0E96F1;
+	--control-shade-2: #8befff;
 	--patient-shade-1:#F1C40F;
 	--patient-shade-2:#f8e187;
 	--background-shade: #343434;
@@ -13,8 +13,8 @@
 }
 .patient-shade-1{ background-color: var(--patient-shade-1); }
 .patient-shade-2{ background-color: var(--patient-shade-2); }
-.normal-shade-1{ background-color: var(--normal-shade-1); }
-.normal-shade-2{ background-color: var(--normal-shade-2); }
+.control-shade-1{ background-color: var(--control-shade-1); }
+.control-shade-2{ background-color: var(--control-shade-2); }
 
 html, body, #fullwrap
 {
@@ -85,7 +85,7 @@ html, body, #fullwrap
 	pointer-events: none;
 }
 
-#mainNormal
+#mainControl
 {
 	position: absolute;
 	top: 0;
@@ -224,9 +224,9 @@ html, body, #fullwrap
 	filter: contrast(100%);
 }
 /*#cellViewCanvas{ border:5px solid var(--patient-shade-1); }*/
-/*#normalCellViewCanvas { border: 5px solid var(--normal-shade-1); }*/
+/*#controlCellViewCanvas { border: 5px solid var(--control-shade-1); }*/
 #mainCellFlippedCanvas { border: 5px dashed var(--patient-shade-2); }
-#normalCellFlippedCanvas { border: 5px dashed var(--normal-shade-2); }
+#controlCellFlippedCanvas { border: 5px dashed var(--control-shade-2); }
 
 .cellRow
 {
@@ -304,7 +304,7 @@ input[type=button]:hover, input[type=submit]:hover, input[type=reset]:hover, but
 
 .selected
 {
-	border: 3px solid var(--normal-shade-1);
+	border: 3px solid var(--control-shade-1);
 	box-sizing: border-box;
 }
 
@@ -660,7 +660,7 @@ input[type=button]:hover, input[type=submit]:hover, input[type=reset]:hover, but
 
 #wrapGradeSubmit { width: 100%; }
 
-#wrapNormalComparisons
+#wrapControlComparisons
 {
 	text-align: center;
 	color: white;
@@ -713,7 +713,7 @@ asscFtNameExampleInfo:hover
 }
 #asscFtNameExampleInfo:hover > p{
 	overflow: visible;
-	white-space: normal;
+	white-space: control;
 }*/
 .selectedAssociatedFeature
 {

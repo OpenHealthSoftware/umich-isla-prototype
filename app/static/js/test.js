@@ -477,11 +477,11 @@ var CONTROL_CANVAS;
 
 $('document').ready(function(){
 	CELL_CANVAS = document.getElementById('cellViewCanvas');
-	CONTROL_CANVAS = document.getElementById('normalCellViewCanvas');
+	CONTROL_CANVAS = document.getElementById('controlCellViewCanvas');
 	MAIN_IMAGE = document.getElementById('mainFA_image');
 
 	WRAP_CELLCANVAS = $('#wrap-cellCanvas');
-	WRAP_CONTROLCANVAS = $('#wrapNormalComparisons .maintain-ratio-full');
+	WRAP_CONTROLCANVAS = $('#wrapControlComparisons .maintain-ratio-full');
 
 	$.ajax({
 		url: '/api/v1/image',
@@ -511,12 +511,12 @@ $('document').ready(function(){
 	ctx2.canvas.height = WRAP_CONTROLCANVAS.width();
 	ctx2.canvas.width = WRAP_CONTROLCANVAS.height();
 
-	COMP_IMG = $('#normalImg');
+	COMP_IMG = $('#controlImg');
 
 	getControlIds(MAIN_IMAGE.getAttribute('data-eye-side'));
 
-	$('#normalImg').on('load', function(){
-		var img = document.getElementById('normalImg');
+	$('#controlImg').on('load', function(){
+		var img = document.getElementById('controlImg');
 		controlGridder = new RegionDivider(img, CONTROL_CELL_COORDS);
 	
 		controlGridder.onDrawCell([CONTROL_CANVAS, img], function(outCanvas, img, cellInstance){
@@ -904,7 +904,7 @@ function getNextControl(direction) //, side
 		type: 'GET',
 		success: function(response) {
 			CONTROL_CELL_COORDS = response.coordinates;
-			$('#normalImg').attr('src', CURRENT_CONTROL.src);
+			$('#controlImg').attr('src', CURRENT_CONTROL.src);
 			// will fire load event
 		},
 		error: function(error) {
@@ -912,7 +912,7 @@ function getNextControl(direction) //, side
 		}
 	});
 
-	//$('#normalCellViewCanvas').css('opacity', 0);
+	//$('#controlCellViewCanvas').css('opacity', 0);
 
 }
 
@@ -923,5 +923,5 @@ function getNextControl(direction) //, side
 
 // Menu tools #############################################
 // show/hide grid
-// show normal
+// show control
 // toggle grade indicator
