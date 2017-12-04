@@ -381,6 +381,8 @@ function defaulDraw(outCanvas, img, cellInstance){
 
 	var ctx = outCanvas.getContext('2d');
 
+	ctx.clearRect(0, 0, outCanvas.width, outCanvas.height);
+
 	var minX = t.getOrigMaxMin().min.x;
 	var minY = t.getOrigMaxMin().min.y;
 	var cellWidth = t.getOrigDimensions().x;
