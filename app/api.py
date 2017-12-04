@@ -20,7 +20,7 @@ def library_example(name):
 		
 		imgs = []
 		for i in examples:
-			path = os.path.join(conf.LIBRARY_PATH, i['filename'] + '.' + i['format'])
+			path = os.path.join(conf.FILE_PATHS['library'], i['filename'] + '.' + i['format'])
 			# TODO: url_for
 			imgs.append(path)
 
@@ -33,26 +33,26 @@ def library_example(name):
 		return jsonify(response)
 		# TODO: don't prepend file path, save data
 
-# normal?id=
-@api.route(urlPrefix + 'normal', methods = ['GET'])
-def normal_route():
+# control?id=
+@api.route(urlPrefix + 'control', methods = ['GET'])
+def control_route():
 
-	# grabs the next or prev normal image
+	# grabs the next or prev control image
 	if request.method == 'GET':
 		normId = request.args['id']
 		direction = int(request.args['dir'])
 		if direction != 1 or direction != -1:
 			direction = 1
 
-		kwargs = {'type': 'normal'}
+		kwargs = {'category': conf.imgCategories['control']}
 		if 'side' in request.args:
 			kwargs = {'side': request.args['side']}
 
 		imgList = sql.getImages(**kwargs)
 		if not imgList:
-			return jsonify({'error': 'no normal images'})
+			return jsonify({'error': 'no control images'})
 		
-		# find where the normal is in the list
+		# find where the control is in the list
 		currentIndex = 0
 		for i in range(len(imgList)):
 			if imgList[i]['imgId'] == normId:
@@ -68,9 +68,11 @@ def normal_route():
 
 		# get grid data
 		qr = sql.getGridData(img['imgId'])
+
+		src = os.path.join(conf.FILE_PATHS['control'], img['imgId'] + '.' + img['format'])
 		
 		response = {
-			'src' : url_for('static', filename='images/normals/' + img['imgId'] + '.' + img['format']),
+			'src' : url_for('content', filename=src),
 			'id' : img['imgId'],
 			'x' : qr['xOffsetPerc'], 
 			'y' : qr['yOffsetPerc'],
@@ -122,8 +124,8 @@ def image_info():
 		filters = {}
 		if 'side' in request.args:
 			filters['side'] = request.args['side']
-		if 'type' in request.args:
-			filters['type'] = request.args['type']
+		if 'category' in request.args:
+			filters['category'] = request.args['category']
 
 		imgs = sql.getImages(**filters)
 		for i in imgs:
@@ -135,7 +137,8 @@ def image_info():
 	for x in response:
 		if 'imgData' in x:
 			img = x['imgData']
-			img['src'] = url_for('static', filename='images/' + img['type'] + '/' + img['imgId'] + '.' + img['format'])
+			src = os.path.join(conf.FILE_PATHS[img['category']], img['imgId'] + '.' + img['format'])
+			img['src'] = url_for('content', filename=src)
 
 	return jsonify(response)
 	# TODO: don't prepend file path, save data
@@ -176,7 +179,7 @@ def save_grade():
 	
 	gradeFilename = filenameTemp.format(date, imgId, user, sessionId)
 
-	with open(os.path.join(conf.GRADES_PATH, gradeFilename), 'w') as f:
+	with open(os.path.join(conf.FILE_PATHS['grades'], gradeFilename), 'w') as f:
 		f.write(json.dumps(data))
 	return jsonify({'sessionId': sessionId, 'user': user})
 	# TODO: ^^^ unneccesary response data after first request
@@ -193,7 +196,7 @@ def load_grade_route():
 		
 
 	gradeRow = sql.getGradeInfo(rargs['imgId'], user, rargs['sessionId'])
-	filepath = os.path.join(conf.GRADES_PATH, gradeRow['gradeFile'])
+	filepath = os.path.join(conf.FILE_PATHS['grades'], gradeRow['gradeFile'])
 
 	if os.path.isfile(filepath) == False:
 		return jsonify({'error': 'Grade file not found - ' + filepath})
@@ -202,16 +205,13 @@ def load_grade_route():
 	return jsonify(gradeJSON)
 
 
-import config
-C_GRID_PATH = config.C_GRID_PATH
-
 
 # calculates coordinates for the grid position on a given image
 def calculateCoordinates(imgId):
 
 	# TODO: cut out cells not on image
 
-	startCoords = imageProcessing.processImageGrid(C_GRID_PATH)
+	startCoords = imageProcessing.processImageGrid(conf.FILE_PATHS['grid']['analysis'])
 	translated = []
 	gridData = sql.getGridData(imgId)
 	xOff = gridData['xOffset']

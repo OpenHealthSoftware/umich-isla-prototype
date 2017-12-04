@@ -17,7 +17,7 @@
 			<div id="menuDropdownCont" class="wrap-drop-down">
 				<div id="menuDropdown" class="drop-down">
 					<a href="{{ url_for('main.main_route', gallery='patient') }}" class="patient-shade-1">Patients</a>
-					<a href="{{ url_for('main.main_route', gallery='normal') }}" class="normal-shade-1">Normals</a>
+					<a href="{{ url_for('main.main_route', gallery='control') }}" class="normal-shade-1">Controls</a>
 					<a href="{{ url_for('uploads.main_route') }}">Upload</a>
 					<a href="{{ url_for('docs.main_route') }}">Help / Info</a>
 				</div>
@@ -26,8 +26,8 @@
 
 		<div id="toolbar" class="wrap-menu">
 			<div class="toolbarEl btn-seperator-right">
-				<button id="showNormalBtn" class="toolbarEl">Show normal</button>
-				<span class="tooltip">Hold down to show the normal/control image</span>
+				<button id="showNormalBtn" class="toolbarEl">Show Control</button>
+				<span class="tooltip">Hold down to show the control image</span>
 			</div><!--
 			--><div class="toolbarEl btn-seperator-right">
 				<button id="toggleGridsBtn" class="toolbarEl" onclick="toggleGrids()">Hide grid</button>
@@ -49,18 +49,16 @@
 						<a href="{{ url_for('uploads.main_route') }}" class="btn-large">Click to Upload a New Control or Patient Image</a>
 				{%  else %}
 
-				{% set faSrc = url_for('static', filename='images/uploads/' + img['imgId'] + '.' + img['format']) %}
-				{% set gridSrc = url_for('static', filename='images/uploads/grid_' + img['imgId'] + '.' + img['format']) %}
 				<div style="position:relative;" id="wrap-mainImg">
-					<img  id="mainFA_image" class="pic" src="{{faSrc}}" data-eye-side="{{img['side']}}">
-					<img src="{{gridSrc}}" id="grid" class="pic overlay grid" usemap="#wrap-mainImg_gridMap" style="display:block">
+					<img  id="mainFA_image" class="pic" src="{{ imgSrc }}" data-eye-side="{{img['side']}}">
+					<img src="{{ gridSrc }}" id="grid" class="pic overlay grid" usemap="#wrap-mainImg_gridMap" style="display:block">
 					<!-- <canvas id="mainFA_canvas" class="traceCanvas" width="0" height="0"></canvas> -->
 				</div>
 				<div id="mainNormal">
 					<img id="normalImg" class="pic" src="">
 					<!--<img id="normalGrid" class="pic overlay grid" src="" >-->
 					<canvas id="norm_canvas" class="traceCanvas" width="0" height="0"></canvas>
-					<h2 style="position:absolute;color:white;top:10px;">Normal Image</h2>										
+					<h2 style="position:absolute;color:white;top:10px;">Control Image</h2>										
 				</div>
 				{% endif %}
 			</div>
@@ -148,7 +146,7 @@
 						<div onclick="getNextControl(-1)" class="select-image select-image-prev"></div>												
 						<div onclick="getNextControl(1)" class="select-image select-image-next"></div>												
 					</div>
-					<h2>Normal/Control Cell</h2>
+					<h2>Control Cell</h2>
 				</div>
 
 				<div id="wrapAssociatedFeatureExamples" class="half-height">

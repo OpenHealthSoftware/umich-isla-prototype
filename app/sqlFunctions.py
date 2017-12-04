@@ -1,5 +1,6 @@
 from flask import *
 import sqlite3
+import config as C
 #from extensions import db
 
 def dict_factory(cursor, row):
@@ -48,7 +49,7 @@ def getImageData(imgId):
 	return results
 
 def getControlsFromDb(side):
-	cursor.execute('SELECT * FROM images WHERE side=? and type="normal"', (side,) )
+	cursor.execute('SELECT * FROM images WHERE side=? and category=?', (side, C.imgCategories['control']) )
 	results = cursor.fetchall()
 	return results
 
@@ -95,9 +96,9 @@ def getCurrentGraders(imgId):
 
 # Effects: Runs a MySQL query that inserts a photo into the photo table
 # returns true if successful
-def insertImageToDB(inFormat, imgId, refName, side, comments, type):
-	cursor.execute('INSERT INTO images (format, imgId, referenceName, side, comments, type)' + 
-		'VALUES (?,?,?,?,?,?)', (inFormat, imgId, refName, side, comments, type) )
+def insertImageToDB(inFormat, imgId, refName, side, comments, category):
+	cursor.execute('INSERT INTO images (format, imgId, referenceName, side, comments, category)' + 
+		'VALUES (?,?,?,?,?,?)', (inFormat, imgId, refName, side, comments, category) )
 	conn.commit()
 	if (cursor.fetchall()):
 		return True

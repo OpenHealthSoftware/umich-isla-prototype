@@ -1,5 +1,5 @@
 import argparse
-
+import os
 
 # Create and handle command line arguments
 parser = argparse.ArgumentParser(description='Kellogg Eye Web App')
@@ -24,16 +24,24 @@ env = dict(
 VERSION_FILE = './version.txt'
 
 # For file uploads
+imgCategories = {
+    'patient': 'patient',
+    'control': 'control'
+}
 STATIC_PATH = 'static'
-F_UPLOAD_FOLDER_P = STATIC_PATH + '/images/uploads/'
-F_UPLOAD_FOLDER_NORM = STATIC_PATH +'/images/normals/'
-F_THUMBNAIL_PATH = STATIC_PATH + '/images/thumbnails/'
-LIBRARY_PATH = STATIC_PATH + '/images/library/'
-UPLOAD_FOLDER_P = 'images/uploads/' # from static
-UPLOAD_FOLDER_NORM = 'images/normals/' # from static
-THUMBNAIL_PATH = 'images/thumbnails/' # from static
+UPLOAD_PATH = 'uploads'
+
+FILE_PATHS = {
+    'patient': os.path.join(UPLOAD_PATH, imgCategories['patient']),
+    'thumbnails': os.path.join(UPLOAD_PATH, 'thumbnails'),
+    'control': os.path.join(UPLOAD_PATH, imgCategories['control']),
+    'library': os.path.join(STATIC_PATH, 'images', 'library'),
+    'grid': {
+        'display': os.path.join(STATIC_PATH, 'images', 'grid.png'),
+        'analysis': os.path.join(STATIC_PATH, 'images', 'grid.jpg') 
+    },
+    'grades': os.path.join(UPLOAD_PATH, 'grades')
+}
+
 ALLOWED_EXTENSIONS = set(['png', 'jpg', 'jpeg', 'bmp', 'gif'])
-GRID_PATH = STATIC_PATH + '/images/grid.png'
-C_GRID_PATH = STATIC_PATH + '/images/grid.jpg' #for contout need nonalpha
 GRID_PREFIX = 'grid_' # prefix that grid images will begin with
-GRADES_PATH = STATIC_PATH + '/grades/'

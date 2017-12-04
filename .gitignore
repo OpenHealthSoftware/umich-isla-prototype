@@ -1,9 +1,4 @@
-public/static/images/normals/
-public/static/images/uploads/
-public/static/images/thumbnails/
-app/static/images/normals/*
-app/static/images/uploads/*
-app/static/images/thumbnails/*
+app/uploads/*
 *.pyc
 
 **/venv/

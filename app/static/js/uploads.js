@@ -124,7 +124,7 @@ function submitPositionClick()
 		var ringPosX = Math.floor(x * (uploadMainImg.get(0).naturalWidth / uploadMainImg.width()));
 		var ringPosY = Math.floor(y * (uploadMainImg.get(0).naturalHeight / uploadMainImg.height()));
 		
-		var type = $('#type').val();
+		var category = $('#category').val();
 
 		if (opticDiskSubmit == false)
 		{
@@ -160,7 +160,7 @@ function submitPositionClick()
 							'foveaY' : fovY, 
 							'xPerc' : xOffsetPercent_up, 
 							'yPerc': yOffsetPercent_up, 
-							'type': type, 
+							'category': category, 
 							'discX' : xGridOffset, 
 							'discY' : yGridOffset
 						},

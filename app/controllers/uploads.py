@@ -6,27 +6,20 @@ import os
 from os import listdir
 from os.path import isfile, join
 from PIL import Image
-import config
+import config as C
 import math
 import uuid
 
 uploads = Blueprint('uploads', __name__)
 
-UPLOAD_FOLDER_P = config.UPLOAD_FOLDER_P
-UPLOAD_FOLDER_NORM = config.UPLOAD_FOLDER_NORM
-F_UPLOAD_FOLDER_P = config.F_UPLOAD_FOLDER_P
-F_UPLOAD_FOLDER_NORM = config.F_UPLOAD_FOLDER_NORM
-THUMBNAIL_PATH = config.F_THUMBNAIL_PATH
-GRID_PATH = config.GRID_PATH
-C_GRID_PATH = config.C_GRID_PATH
-GRID_PREFIX = config.GRID_PREFIX
-GRADES_PATH = config.GRADES_PATH
+
+THUMBNAIL_PATH = C.FILE_PATHS['thumbnails']
 
 
 # Effects: returns a extension name if it is valid
 def getExtension(filename):
 	ext = filename.rsplit('.', 1)[1]
-	if ext.lower() in config.ALLOWED_EXTENSIONS:
+	if ext.lower() in C.ALLOWED_EXTENSIONS:
 		return ext
 	else:
 		return ''
@@ -44,27 +37,27 @@ def getFilePathsForImage(imgId):
 	paths = {}
 	imgData = getImageData(imgId)
 	baseImgFilename = imgId + '.' + imgData['format']
-	if imgData['type'] == 'normal':
-		paths['img'] = os.path.join(F_UPLOAD_FOLDER_NORM, baseImgFilename)
-	elif imgData['type'] == 'patient':
-		paths['img'] = os.path.join(F_UPLOAD_FOLDER_P, baseImgFilename)
-		paths['grid'] = os.path.join(F_UPLOAD_FOLDER_P, GRID_PREFIX + baseImgFilename)
+	if imgData['category'] == C.imgCategories['control']:
+		paths['img'] = os.path.join(C.FILE_PATHS['control'], baseImgFilename)
+	elif imgData['category'] == C.imgCategories['patient']:
+		paths['img'] = os.path.join(C.FILE_PATHS['patient'], baseImgFilename)
+		paths['grid'] = os.path.join(C.FILE_PATHS['patient'], C.GRID_PREFIX + baseImgFilename)
 		gradeFiles = getGradeFilesFromImgId(imgId) #sql returns list of tuples
-		grades = [os.path.join(GRADES_PATH, i[0]) for i in gradeFiles]
+		grades = [os.path.join(C.FILE_PATHS['grades'], i[0]) for i in gradeFiles]
 		paths['grades'] = grades
 	paths['thumbnail'] = os.path.join(THUMBNAIL_PATH, baseImgFilename)
 	return paths
 	
 # Requires: request object, type of img upload (patient or normal)
 # Effects: Uploads valid file to server and updates database
-def uploadImg(request, uType):
+def uploadImg(request, category):
 	form = request.form
 	upFolder = ''
 	# type
-	if uType == 'normal':
-		upFolder = F_UPLOAD_FOLDER_NORM
-	elif uType == 'patient':
-		 upFolder = F_UPLOAD_FOLDER_P
+	if category == C.imgCategories['control']:
+		upFolder = C.FILE_PATHS['control']
+	elif category == C.imgCategories['patient']:
+		 upFolder = C.FILE_PATHS['patient']
 
 	# check if the post request has the file part
 	if 'img' not in request.files:
@@ -90,7 +83,7 @@ def uploadImg(request, uType):
 
 
 		# save to database
-		insertImageToDB(fileExt, filename, refName, side, comments, uType)
+		insertImageToDB(fileExt, filename, refName, side, comments, category)
 		# save to server
 		fileObj.save(os.path.join(upFolder, filename + '.' + fileExt))
 		
@@ -98,7 +91,7 @@ def uploadImg(request, uType):
 		thumb = Image.open(os.path.join(upFolder, filename + '.' + fileExt))
 		thumb.thumbnail((500,500), Image.ANTIALIAS)
 		thumb.save(os.path.join(THUMBNAIL_PATH, filename + '.' + fileExt))
-		print('Successful image upload:', filename, uType)
+		print('Successful image upload:', filename, category)
 	return filename + '.' + fileExt
 
 
@@ -106,7 +99,7 @@ def deleteImg(imgId):
 
 	paths = getFilePathsForImage(imgId)
 	deleteEntry('grids', 'imgId', imgId) #TODO: cascade doesnt seem to be working properly
-	deleteEntry('grades', 'imgId', imgId)
+	deleteEntry('gradeFiles', 'imgId', imgId)
 	deleteEntry('images', 'imgId', imgId)
 
 	for pathType in paths:
@@ -128,35 +121,37 @@ def deleteImg(imgId):
 
 @uploads.route('/uploads', methods=['GET', 'POST'])
 def main_route():
+
+
 	isUploaded = False
-	uploadType = ''
+	category = ''
 	folderPath = ''
 	imgFilename = ''
 	form = ''
 	
 	if request.method == 'GET':
 		if request.args:
-			uploadType = request.args['type']
+			category = request.args['category']
 	# Add or delete album
 	if request.method == 'POST':
 		form = request.form
 		
 		if request.files:
 			operation = form['op']
-			uploadType = form['type']
+			category = form['category']
 			if operation == 'add':
 				isUploaded = True
 				try:
-					imgFilename = uploadImg(request, uploadType)
+					imgFilename = uploadImg(request, category)
 				except IOError as e:
 					isUploaded = False
 					print(e)
-					print('Error uploading file of type', uploadType)
+					print('Error uploading file of category', category)
 
-				if uploadType == 'patient':
-					folderPath = UPLOAD_FOLDER_P
-				elif uploadType == 'normal':
-					folderPath = UPLOAD_FOLDER_NORM
+				if category == C.imgCategories['patient']:
+					folderPath = C.FILE_PATHS['patient']
+				elif category == C.imgCategories['control']:
+					folderPath = C.FILE_PATHS['control']
 		elif 'op' in form and form['op'] == 'delete':
 			deleteImg(form['imgId'])
 			return redirect(url_for('gradeView.main_route'))
@@ -164,10 +159,9 @@ def main_route():
 
 
 	data = {
-		'type' : uploadType,
+		'category' : category,
 		'uploaded' : isUploaded,
-		'typePath' : folderPath,
-		'imgSrc' : folderPath + imgFilename,
+		'imgSrc' : os.path.join(folderPath, imgFilename),
 		'imgId' : imgFilename.rsplit('.', 1)[0]
 	}
 
@@ -218,18 +212,19 @@ def rotateImage(img, foveaCoords, discCoords):
 # img file format, and the percentage offsets created by the user positioning data
 # Effects: puts the center of the grid on the specified location of the FA image, and scales grid
 # according to opticDisk <--> fovea position
-def createGriddedImage(foveaCoords, discCoords, imgName, iFormat, xPerc, yPerc, uType):
+def createGriddedImage(foveaCoords, discCoords, imgName, iFormat, xPerc, yPerc, category):
 
 	# Load images
-	if uType == 'normal':
-		uploadPath = F_UPLOAD_FOLDER_NORM
+	if category == C.imgCategories['control']:
+		uploadPath = C.FILE_PATHS['control']
 	else:
-		uploadPath = F_UPLOAD_FOLDER_P
+		uploadPath = C.FILE_PATHS['patient']
 
-	grid = Image.open(GRID_PATH, 'r')
-	faImg = Image.open(uploadPath + imgName + iFormat)
+	filepath = os.path.join(uploadPath, imgName + iFormat)
+	grid = Image.open(C.FILE_PATHS['grid']['display'], 'r')
+	faImg = Image.open(filepath)
 	faImg, degrees = rotateImage(faImg, foveaCoords, discCoords)
-	faImg.save(uploadPath + imgName + iFormat)
+	faImg.save(filepath)
 	fa_w, fa_h = faImg.size
 
 	# Scale grid
@@ -257,11 +252,11 @@ def createGriddedImage(foveaCoords, discCoords, imgName, iFormat, xPerc, yPerc, 
 	croppedGrid = Image.new('RGBA', (fa_w, fa_h))
 	croppedGrid.paste(grid, offset, mask=alpha)
 
-	gridId = GRID_PREFIX + imgName + iFormat
+	gridId = C.GRID_PREFIX + imgName + iFormat
 	insertGridToDB(gridId, offset[0], offset[1], imgName, scaleRatio, discCoords[0], discCoords[1], 
 		foveaCoords[0], foveaCoords[1])
 	png_info = grid.info
-	croppedGrid.save(uploadPath + gridId, **png_info)
+	croppedGrid.save(os.path.join(uploadPath, gridId), **png_info)
 
 	print('Success processing image and grid:', gridId, 'degrees=', degrees, 'scaleRatio=', scaleRatio)
 
@@ -284,7 +279,7 @@ def upload_position_route():
 	discCoords = list(map(int, [rForm['discX'], rForm['discY']]))
 
 	newImgPath = createGriddedImage(foveaCoords, discCoords, imgName, '.' + image['format'], 
-		rForm['xPerc'], rForm['yPerc'], rForm['type'])
+		rForm['xPerc'], rForm['yPerc'], rForm['category'])
 
 	return jsonify({'success': 'sucess'})
 

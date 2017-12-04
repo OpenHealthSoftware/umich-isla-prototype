@@ -11,7 +11,7 @@
 		
 		<div id="normalPrev">
 			<div id="uploadImgCont">
-				<img id="nImg" src="{{url_for('static', filename=imgSrc)}}" alt="{{imgId}}">
+				<img id="nImg" src="{{url_for('content', filename=imgSrc)}}" alt="{{imgId}}">
 			</div>
 
 			<h2 id="instruct">Center the red dot on the optic disk.<br/>Use the up/down arrow keys to 
@@ -23,13 +23,13 @@
 			</svg>
 
 			<button id="submitPosition">Submit Optic Disk Position</button>
-			<input type="hidden" id="type" value="{{type}}">
+			<input type="hidden" id="category" value="{{ category }}">
 			
 			<div id="loading">Processing...</div>
 
 			<div id="continueOptions">
 				<a href={{ url_for('uploads.main_route') }}>Back to Uploading</button>
-				{% if type != 'normal' %}
+				{% if category != 'control' %}
 				<a href="{{url_for('gradeView.main_route', p=imgId)}}"><button>Grade Uploaded Image</button></a>
 				{% endif %}
 			</div>
@@ -46,10 +46,10 @@
 					<label for="fileField" id="fileFieldLabel"><div id="fileInner"><img src="{{ico}}"><span id="fSpan">Choose a file...<span></div></label>
 				</div>
 				<div id="popHalfFirst" class="popUpSection pop-half">
-					<label for="imgType">Type: </label>
-					<select id="imgType" name="type" required>
+					<label for="category">Category: </label>
+					<select id="imgType" name="category" required>
 						<option value="patient">Patient Image (for grading)</option>
-						<option value="normal">Normal Image</option>
+						<option value="control">Control Image</option>
 					</select>
 				</div>
 				<div id="" class="popUpSection pop-half">

@@ -1,4 +1,4 @@
-from flask import Flask, render_template, session, request
+from flask import Flask, render_template, session, request, send_from_directory
 import controllers
 import config
 import sys
@@ -20,12 +20,11 @@ app.register_blueprint(controllers.docs)
 #app.register_blueprint(controllers.account)
 app.register_blueprint(api.api)
 
-# Config
-app.config['UPLOAD_FOLDER_P'] = config.UPLOAD_FOLDER_P
-app.config['UPLOAD_FOLDER_NORM'] = config.UPLOAD_FOLDER_NORM
-app.config['GRID_PREFIX'] = config.GRID_PREFIX
-app.config['C_GRID_PATH'] = config.C_GRID_PATH
-app.config['GRID_PATH'] = config.GRID_PATH
+
+# Custom static data
+@app.route('/content/<path:filename>')
+def content(filename):
+	return send_from_directory(app.root_path, filename)
 
 
 

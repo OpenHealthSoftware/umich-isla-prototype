@@ -25,7 +25,6 @@ def processImageGrid(imgRelPath):
 # eg: [	cell1[x1,y1,x2,y2,...], cell2[], ]
 def getCoordinateList(contours):
 	coordList = []
-	print(len(contours))
 	# Loop through the nested arrays
 	for npCell in contours:
 		cellCoords = []

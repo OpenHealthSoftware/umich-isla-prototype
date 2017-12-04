@@ -433,6 +433,8 @@ function init()
 		
 	});
 
+	gridder.getActiveCell().triggerClick();
+
 	// TODO: use promises instead cause this is hard to follow
 	$('#loadGradeBtn')[0].disabled = false;
 	$('#loadGradeBtn').click(function(){
@@ -862,16 +864,16 @@ function getControlIds(eyeSide)
 		data: {
 			selection: ['imgData'],
 			side: eyeSide,
-			type: 'normal'
+			category: 'control'
 		},
 		type: 'GET',
 		success: function(response) {
-			print('Get normals list', response);
+			print('Get controls list', response);
 			// turn into an array for easier indexing in getNextControl
 			
 			for (var key in response)
 				CONTROL_IMGS.push(response[key].imgData);
-
+			getNextControl(1);
 		},
 		error: function(error) {
 			print(error);
@@ -880,7 +882,7 @@ function getControlIds(eyeSide)
 }
 
 
-// Effects: Selects a normal image to be used for grading comparison
+// Effects: Selects a control image to be used for grading comparison
 function getNextControl(direction) //, side
 {
 	if (CONTROL_IMGS.length == 0)
