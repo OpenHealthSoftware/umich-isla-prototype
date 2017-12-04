@@ -305,6 +305,20 @@ class RegionDivider
 		// TODO: option for ref or val
 	}
 
+	activateCell(targetCell)
+	{
+		var dir;
+		if (targetCell === 'prev')
+			dir = -1;
+		else if (targetCell === 'next')
+			dir = 1;
+
+		if (dir)
+			this.activeCell = (parseInt(this.activeCell) + dir) % this.cells.length;
+		else
+			this.activeCell = targetCell % this.cells.length;
+	}
+
 
 	highlightCell(cellId=this.activeCell, color='#fff', strokeWidth=2)
 	{
@@ -402,11 +416,11 @@ function init()
 
 	
 	window.addEventListener('gridClicked', function(e){
-		gridder.activeCell = e.detail.id;
+		gridder.activeCell = parseInt(e.detail.id);
 		gridder.highlightCell(e.detail.id, '#F1C40F', 3);
 		if (controlGridder && controlGridder.cells)
 		{
-			controlGridder.activeCell = e.detail.id;
+			controlGridder.activeCell = parseInt(e.detail.id);
 			controlGridder.getActiveCell().draw();
 			// TODO: move to more appropriate place, if one
 		}
@@ -554,6 +568,12 @@ function focusCell(cell)
 }
 
 
+function gotoCell(targetCell)
+{
+	gridder.activateCell(targetCell);
+	gridder.getActiveCell().triggerClick();
+}
+
 
 // GRADING ############################################
 
@@ -608,7 +628,7 @@ submitGradeBtn.click(function()
 
 	sendGradesToServer();
 
-	//TODO: gridder.nextCell();
+	gotoCell('next');
 });
 
 
@@ -727,7 +747,6 @@ function loadPreviousGrades()
 			{
 				print('LOAD GRADE RESP', resp);
 
-				//numCellsGraded = Object.keys(resp.grades).length;
 				GRADE_DATA.grades = resp.grades;
 				GRADE_DATA.globals.grader = resp.globals.grader;
 				gridder.loadCellGrades(GRADE_DATA.grades);
@@ -770,8 +789,6 @@ function generateCSV()
 	
 	// first get all the possible headers
 	var headers = {};
-	var exId = Object.keys(GRADE_DATA.grades)[0];
-	var cellEx = GRADE_DATA.grades[exId];
 	var allGrades = GRADE_DATA.grades;
 	for (var i in allGrades)
 	{
@@ -779,13 +796,12 @@ function generateCSV()
 			headers[allGrades[i].grades[j].headerName] = null;
 	}
 
-
 	var csvStr = '';
-	var allGrades = GRADE_DATA.grades;
-	for (var i in allGrades)
+	var gridCellGrades = GRADE_DATA.grades;
+	for (var cell in allGrades)
 	{
-		cellGrades = allGrades[i].grades;
-		cellMeta = allGrades[i].meta;
+		cellGrades = gridCellGrades[cell].grades;
+		cellMeta = gridCellGrades[cell].meta;
 
 		var row = [];
 
@@ -803,7 +819,6 @@ function generateCSV()
 			}
 			if (!found)
 				row.push('');
-			
 		});
 
 		// add meta
