@@ -83,14 +83,16 @@
 								<button id="prevCell" class="half-width btn-row-el btn-seperator-right" onclick="gotoCell('prev')">Prev Cell</button>						
 								<button id="nextCell" class="half-width btn-row-el" onclick="gotoCell('next')">Next Cell</button>
 							</div>
-							<div id="wrap-brightness-control" class="margin-bottom-small">
-								<div id="brightness-slider-label">
-									<p>Contrast: <span id="brightness-value">100</span>%</p>
+
+							<div id="wrap-control-brightness" class="wrap-slider margin-bottom-small">
+								<div class="slideLabel">
+									<p>Brightness: <span id="brightness-value">100</span>%</p>
 								</div>
-								<div id="wrap-brightness-slider">
-									<div id="brightness-slider" class=""></div><div id="cSlidFix"></div>
+								<div class="slideBG">
+									<div id="brightness-slider" class="slider"></div>
 								</div>
 							</div>
+
 							<div id="wrapCellStats">
 								<p id="cellNumberP">Cell: <span id="cellNumber"></span></p>
 								<p id="gradeStatus"></p>

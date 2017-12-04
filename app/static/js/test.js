@@ -488,6 +488,7 @@ var CONTROL_IMGS = [];
 var CURRENT_CONTROL;
 var CURRENT_CONTROL_IDX = 0;
 var CONTROL_CANVAS;
+var BRIGHT_SLIDE;
 
 
 
@@ -543,6 +544,8 @@ $('document').ready(function(){
 		controlGridder.getActiveCell().draw();
 	});
 
+	BRIGHT_SLIDE = $('#brightness-slider');
+	initSliders();
 	
 });
 
@@ -641,7 +644,7 @@ function getMetaData()
 
 	var d = {
 		comparisonImg: COMP_IMG.attr('src'),
-		brightness:  100,// TODO: $('#brightness-slider').slider('value'),
+		brightness:  BRIGHT_SLIDE.slider('value'),
 		time: gradingTime
 	}
 	return d;
@@ -865,10 +868,23 @@ function exportCSV()
 
 
 // Cell Controller ########################################
-// brightness
 // cell info
 // invert
-//
+
+function initSliders()
+{
+	BRIGHT_SLIDE = $('#brightness-slider');
+	BRIGHT_SLIDE.slider({max: 250, min: 100, value: 100, range: 'min'});
+	// add styling now because these aren't made until line above
+	BRIGHT_SLIDE.children().first().addClass('slideBG');
+	BRIGHT_SLIDE.children().first().next().addClass('slideHandle');
+	BRIGHT_SLIDE.slider({slide: function(event, ui){changeFilter(event, ui, 'brightness')}});
+}
+function changeFilter(event, ui, f)
+{
+	$('#' + f + '-value').html(ui.value);
+	$('.cellCanvas').css('filter', f + '(' + ui.value + '%)');
+}
 
 
 
