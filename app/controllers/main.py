@@ -1,6 +1,6 @@
 from flask import *
 import json
-import imageProcessing
+import gridProcessing
 from sqlFunctions import *
 import config as C
 import hashlib

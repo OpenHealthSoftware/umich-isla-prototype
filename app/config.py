@@ -37,8 +37,8 @@ FILE_PATHS = {
     'control': os.path.join(UPLOAD_PATH, imgCategories['control']),
     'library': os.path.join(STATIC_PATH, 'images', 'library'),
     'grid': {
-        'display': os.path.join(STATIC_PATH, 'images', 'grid.png'),
-        'analysis': os.path.join(STATIC_PATH, 'images', 'grid.jpg') 
+        'display': os.path.join(STATIC_PATH, 'images', 'grid2.png'),
+        'analysis': os.path.join(STATIC_PATH, 'images', 'grid2.jpg') 
     },
     'grades': os.path.join(UPLOAD_PATH, 'grades')
 }

@@ -5,7 +5,7 @@ import urllib
 import util
 import config as conf
 import datetime
-import imageProcessing
+import gridProcessing
 
 api = Blueprint('api', __name__)
 
@@ -211,20 +211,24 @@ def calculateCoordinates(imgId):
 
 	# TODO: cut out cells not on image
 
-	startCoords = imageProcessing.processImageGrid(conf.FILE_PATHS['grid']['analysis'])
+	startCoords = gridProcessing.processImageGrid(conf.FILE_PATHS['grid']['analysis'])
 	translated = []
 	gridData = sql.getGridData(imgId)
 	xOff = gridData['xOffset']
 	yOff = gridData['yOffset']
 	ratio = gridData['scaleRatio']
+	print(gridData)
 
 	for cell in startCoords:
 		tc = []
+
 		for i in range(0, len(cell), 2):
-			x = cell[i] * ratio + xOff
-			y = cell[i+1] * ratio + yOff
+
+			x = (cell[i] * ratio) + xOff
+			y = (cell[i+1] *ratio) + yOff
 			tc.append(round(x, 3))
 			tc.append(round(y, 3))
+			
 		translated.append(tc)
 
 	return translated

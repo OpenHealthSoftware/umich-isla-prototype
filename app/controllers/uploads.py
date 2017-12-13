@@ -1,5 +1,5 @@
 from flask import *
-from imageProcessing import *
+from gridProcessing import *
 from sqlFunctions import *
 import hashlib
 import os
@@ -232,20 +232,20 @@ def createGriddedImage(foveaCoords, discCoords, imgName, iFormat, xPerc, yPerc, 
 	foveaToDisk = 4.0 #mm
 	eyeWidth = 24.0 #mm, typical eye diameter
 	percentDist = (foveaToDisk / eyeWidth) * .57
-	# distance = fov - disk = 16% of grid
+
 	distance = abs(foveaCoords[0] - discCoords[0])
 	gridWidth = distance / percentDist
 	gridHeight = (gridWidth / grid.size[0]) * grid.size[1]
 	gridHeight = int(gridHeight)
 	gridWidth = int(gridWidth)
 	scaleRatio = gridWidth / float(grid.size[0])
+
 	grid = grid.resize((gridWidth, gridHeight), Image.ANTIALIAS)
-
 	
-
+	
 	# Calculate where grid goes and paste
-	grid_w, grid_h = grid.size
-	offset = (int(foveaCoords[0] - (grid_w  / 2)), int(foveaCoords[1] - (grid_h  / 2)))
+	offset = (int(foveaCoords[0] - (gridWidth / 2)), int(foveaCoords[1] - (gridHeight  / 2)))
+	# ^^ offsetting the scaled grid, so using gridWidth and gridHeight
 	rgba = grid.split()
 	alpha = rgba[len(rgba)-1]
 

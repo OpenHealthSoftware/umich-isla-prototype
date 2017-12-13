@@ -77,9 +77,9 @@ class Cell
 		for (var c in coords)
 		{
 			// a cells coordinates are defined as [x1,y1, x2,y2...]			
-			var offset = xOffset;
+			var offset = yOffset;
 			if (c % 2)
-				offset = yOffset;
+				offset = xOffset;
 
 			var newVal;
 			if (orderOfOp === 'multiply')
@@ -380,7 +380,7 @@ function defaulDraw(outCanvas, img, cellInstance){
 	print('Drawing cell:', t.id);		
 
 	var ctx = outCanvas.getContext('2d');
-
+	
 	ctx.clearRect(0, 0, outCanvas.width, outCanvas.height);
 
 	var minX = t.getOrigMaxMin().min.x;
@@ -390,9 +390,22 @@ function defaulDraw(outCanvas, img, cellInstance){
 
 	var coords = t.getOriginalCoords();
 
-	//print(img, coords[0], coords[1], cellWidth, cellHeight, 0,0, outCanvas.width, outCanvas.height);
+	var coordsToCanvasRatio = ctx.canvas.width / cellWidth;	
+	ctx.save();
+	//make a clipping path that is the shape of the cell and fits in the canvas
+	ctx.moveTo(coords[0]* coordsToCanvasRatio, coords[1]* coordsToCanvasRatio);
+	ctx.beginPath();
+	for (var i = 0; i < coords.length; i += 2)
+	{
+		var x = (coords[i]-minX) * coordsToCanvasRatio;
+		var  y = (coords[i+1]-minY) * coordsToCanvasRatio;
+		ctx.lineTo(x, y);
+	}
+	ctx.closePath();
+	ctx.clip();
 
 	ctx.drawImage(img, coords[0], coords[1], cellWidth, cellHeight, 0,0, outCanvas.width, outCanvas.height);
+	ctx.restore(); // reset the clip, ctx.resetClip()
 }
 
 
@@ -452,11 +465,13 @@ function init()
 	gridder.getActiveCell().triggerClick();
 
 	// TODO: use promises instead cause this is hard to follow
-	$('#loadGradeBtn')[0].disabled = false;
-	$('#loadGradeBtn').click(function(){
-		loadPreviousGrades();
-	});
-
+	if ($('#loadGradeBtn').length > 0)
+	{
+		$('#loadGradeBtn')[0].disabled = false;
+		$('#loadGradeBtn').click(function(){
+			loadPreviousGrades();
+		});
+	}
 	// TODO: select and grade multiple cells at once
 }
 
@@ -489,7 +504,6 @@ var CURRENT_CONTROL;
 var CURRENT_CONTROL_IDX = 0;
 var CONTROL_CANVAS;
 var BRIGHT_SLIDE;
-
 
 
 $('document').ready(function(){
@@ -530,7 +544,7 @@ $('document').ready(function(){
 
 	COMP_IMG = $('#controlImg');
 
-	getControlIds(MAIN_IMAGE.getAttribute('data-eye-side'));
+	//getControlIds(MAIN_IMAGE.getAttribute('data-eye-side'));
 
 	$('#controlImg').on('load', function(){
 		var img = document.getElementById('controlImg');

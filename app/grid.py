@@ -96,7 +96,7 @@ def generateGridSvg(ringCoords):
 	svg_code = []
 	largestRadius = ringCoords[len(ringCoords)-1][0]['radius']
 	t_svg_circle = """<circle id="{}" r="{}" cx="{}" cy="{}" stroke-width="3" fill="none" stroke="#000"></circle>"""
-	t_svg_path = """<path id="{}" d="{}" stroke="red" stroke-width="1"></path>"""
+	t_svg_path = """<path id="{}" d="{}" stroke="#000" stroke-width="3"></path>"""
 	cx = largestRadius
 	cy = largestRadius
 
