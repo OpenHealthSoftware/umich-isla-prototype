@@ -23,140 +23,118 @@ def generateCellCount(N, p):
 	return cellsPerRing
 
 
+def polarToCartesian(centerX, centerY, radius, angleInDegrees):
+	angleInRadians = math.radians(angleInDegrees)
 
-def generateCellPoints(cellsPerRing, radius, deltaRadius):
-	"""
-	Generates the coordinates on the perimeter of a ring that
-	which are the ending point of where the ring is divided
+	return {
+		'x': centerX + (radius * math.cos(angleInRadians)),
+		'y': centerY + (radius * math.sin(angleInRadians))
+	}
 
-	eg. two coordinate pairs from here defined the the outer arc of 1 cell
+
+def describeArc(x, y, radius, startAngle, endAngle):
 	"""
-	r = radius
-	ringCoords = []
+	thanks to Ahtenus - https://stackoverflow.com/a/24569190
+	"""
+	start = polarToCartesian(x, y, radius, endAngle)
+	end = polarToCartesian(x, y, radius, startAngle)
+
+	arcSweep = None
+	if endAngle - startAngle <= 180:
+		arcSweep = 0
+	else:
+		arcSweep = 1
 	
-	for i in range(1, len(cellsPerRing)):
+	d = [
+		'M', start['x'], start['y'],
+		'A', radius, radius, 0, arcSweep, 0, end['x'], end['y']
+	]
+	d = [str(i) for i in d]
 	
-		divisions = cellsPerRing[i] - cellsPerRing[i-1]
-
-		coords = []
-
-		angle = 0
-		divisionAngle = 360 / divisions
-		while angle <= 360:
-			angle += divisionAngle 
-			theta = math.radians(angle)
-			y = r * math.sin(theta)
-			x = r * math.cos(theta)
-			coords.append({ 'x': x, 'y': y, 'angle': theta, 'radius': r})
-
-		ringCoords.append(coords)
-		r += deltaRadius
-
-	return ringCoords
+	return {
+		'start': str(start['x']) + ',' + str(start['y']),
+		'end': str(end['x']) + ',' + str(end['y']),
+		'str': ' '.join(d)
+	}
 
 
-
-def _calculateConcentricPath(innerCircleCoords, outerCircleCoords, translateX, translateY):
+def genSlicePath(cx, cy, innerRadius, outerRadius, startAngle, endAngle):
 	"""
-	Creates an svg path that divides two concentric rings
-	i.e. makes cells for two concentric circles
-	i.e. draw divider lines from ring i-1 perimeter to ring i perimeter
+	Creates the path for a chunk of a tube/ring.
+	returns the d attribute for a svg path
 	"""
+	path = ""
+	innerArc = describeArc(cx, cy, innerRadius, startAngle, endAngle)
+	outerArc = describeArc(cx, cy, outerRadius, startAngle, endAngle)
 
-	path = ''
 
-	for j in range(0, len(outerCircleCoords)):
-
-		currentAngle = outerCircleCoords[j]['angle']
-		innerCircleRadius = innerCircleCoords[0]['radius']
-		innerCircleY = innerCircleRadius * math.sin(currentAngle)
-		innerCircleX = innerCircleRadius * math.cos(currentAngle)
-		
-		# draw to coord of new ring
-		path += 'M' + str(innerCircleX + translateX) + ',' + str(innerCircleY + translateY) + ' '
-		path += 'L' + str(outerCircleCoords[j]['x'] + translateX) + ',' + str(outerCircleCoords[j]['y'] + translateY) + ' '
+	path += innerArc['str']
+	# cursor is now at innerArc['end']
+	path += ' L ' + outerArc['end'] # outarc.end.x,outarc.end.y
+	path += ' ' + outerArc['str']
+	path += ' M ' + outerArc['start']
+	path += ' L ' + innerArc['start']
 
 	return path
 
 
 
-def generateGridSvg(ringCoords):
-
+def generateRing(cx, cy, r1, r2, numCells):
 	"""
-	Generates the svg code based on ringCoords, where ringCoords is
-	ringsCoords[
-		[{'x': x, 'y': y, 'angle': ang, 'radius', r}, ..., {}], #ring 1
-		[.....],
-		...,
-		[...] # ring N	
-	]
-	ordering of ringCoords matters. [r1, r2, r3...rN]
+	Creates all the svg paths needs to define the cells in two concentric circles
+	returns list of svg paths
 	"""
 
-	svg_code = []
-	largestRadius = ringCoords[len(ringCoords)-1][0]['radius']
-	width = largestRadius
+	t_svg_path = """<path d="{}" stroke="green" stroke-width="3" stroke-linecap="square" fill="none"></path>"""
 	
-	# if largestRadius < (1360/2):
-	# 	width = int(1360/2) # this was for making same sized images
-	t_svg_circle = """<circle id="{}" r="{}" cx="{}" cy="{}" stroke-width="3" fill="none" stroke="green"></circle>"""
-	t_svg_path = """<path id="{}" d="{}" stroke="green" stroke-width="3"></path>"""
-	cx = width
-	cy = width
+	paths = []
 
-	# add first circle
-	firstRadius = ringCoords[0][0]['radius']
-	svg_code.append(t_svg_circle.format('ring_1', firstRadius, width, width))
+	sliceAngle = 360 / numCells
+	startAngle = 0
+	while startAngle < 360:
 
-	for i in range(1, len(ringCoords)):
+		endAngle = startAngle + sliceAngle
+		if endAngle >= 360:
+			endAngle = 0
 
-		coords = ringCoords[i]
+		d = genSlicePath(cx, cy, r1, r2, startAngle, endAngle)
+		p = t_svg_path.format(d)
+		startAngle += sliceAngle
+		paths.append(p)
 
-		# draw divider lines from ring i-1 perimeter to ring i perimeter
-		path = _calculateConcentricPath(ringCoords[i-1], coords, cx, cy)
-
-		radius = coords[0]['radius']
-		svg_circle = t_svg_circle.format('ring_' + str(i), radius, cx, cy)
-		svg_path = t_svg_path.format('ring_' + str(i) + '_path', path)
-
-		svg_code.append(svg_circle)
-		svg_code.append(svg_path)
-
-	return svg_code
+	return paths
 
 
-def generateGrid(radius, deltaRadius, numberOfRings, outputFile=None):
 
-	"""
-	Required
-		radius: starting radius
-		deltaRadius: increase in radius value for each ring
-		numberOfRings: number of donuts formed, or can think of number of rows in a standard grid
-		
-	Optional
-		outputFile: where to write the svg code. overwrites existing file
 
-	Returns
-		the svg code for the grid
-	"""
+def generateGrid(startRadius, deltaRadius, numberOfRings, outputFile=None):
 
-	cellsPerRing = generateCellCount(numberOfRings - 1, 4)
-	ringCoords = generateCellPoints(cellsPerRing, radius, deltaRadius)
-	svg_code = generateGridSvg(ringCoords)
 
-	largestRadius = ringCoords[len(ringCoords)-1][0]['radius']
+	totalCellsAtRing = generateCellCount(numberOfRings-1,4)
 
-	innerCode = '\n'.join(svg_code)
+	allPaths = ""
+	deltaR = deltaRadius
+	x = numberOfRings * deltaR + startRadius
+	y = x
+
+	for i in range(1, len(totalCellsAtRing)-1):
+		r1 = startRadius + (i-1) * deltaR
+		r2 = startRadius + (i) * deltaR
+
+		if r1 == 0 or r2 == 0:
+			continue
+
+		numCells = totalCellsAtRing[i+1] - totalCellsAtRing[i]
+		pathList =  generateRing(x,y,r1,r2,numCells)
+		allPaths += '\n'.join(pathList)
+
 	svg = """
 	<svg width="{}" height="{}">
 		{}
 	</svg>
 	"""
-	
-	width = largestRadius * 2
-	if width < 1360:
-		width = 1360
-	full_svg = svg.format(width, width, innerCode)
+	width = numberOfRings * deltaR * 2 + startRadius * 2
+	full_svg = svg.format(width, width, allPaths)
 
 	if outputFile:
 		with open(outputFile, 'w') as f:
@@ -164,4 +142,4 @@ def generateGrid(radius, deltaRadius, numberOfRings, outputFile=None):
 	return full_svg
 
 
-# Ex: generateGrid(25, 50, 9, outputFile='test2.html')
+#generateGrid(40,80,3, outputFile='grid.svg')

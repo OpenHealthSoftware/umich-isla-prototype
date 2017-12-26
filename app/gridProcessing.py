@@ -40,7 +40,6 @@ def getCoordinateList(contours):
 
 
 
-
 # TODO:
 # store coords to var or file
 # crop cells that arent fully on image
