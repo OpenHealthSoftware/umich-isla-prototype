@@ -97,8 +97,8 @@ def generateGridSvg(ringCoords):
 	largestRadius = ringCoords[len(ringCoords)-1][0]['radius']
 	width = largestRadius
 	
-	if largestRadius < (1360/2):
-		width = int(1360/2)
+	# if largestRadius < (1360/2):
+	# 	width = int(1360/2) # this was for making same sized images
 	t_svg_circle = """<circle id="{}" r="{}" cx="{}" cy="{}" stroke-width="3" fill="none" stroke="green"></circle>"""
 	t_svg_path = """<path id="{}" d="{}" stroke="green" stroke-width="3"></path>"""
 	cx = width
