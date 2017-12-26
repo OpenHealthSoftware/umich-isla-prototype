@@ -40,6 +40,26 @@ class Cell
 	}
 
 
+	getTopLeft(src)
+	{
+		// get the top left coordinate of a cell
+		var c = this.coords;
+		if (src === 'orig')
+			c = this._ORIG_COORDS;
+
+		var minX = c[0];
+		var minY = c[1]
+		for (var i = 0; i < c.length; i += 2)
+		{
+			if (c[i] < minX)
+				minX = c[i];
+			if (c[i+1] < minY)
+				minY = c[i+1];
+		}
+
+		return [minX, minY];
+	}
+
 	triggerClick(){ this.jq.trigger('click'); }
 
 
@@ -390,21 +410,22 @@ function defaulDraw(outCanvas, img, cellInstance){
 
 	var coords = t.getOriginalCoords();
 
-	var coordsToCanvasRatio = ctx.canvas.width / cellWidth;	
-	ctx.save();
-	//make a clipping path that is the shape of the cell and fits in the canvas
-	ctx.moveTo(coords[0]* coordsToCanvasRatio, coords[1]* coordsToCanvasRatio);
-	ctx.beginPath();
-	for (var i = 0; i < coords.length; i += 2)
-	{
-		var x = (coords[i]-minX) * coordsToCanvasRatio;
-		var  y = (coords[i+1]-minY) * coordsToCanvasRatio;
-		ctx.lineTo(x, y);
-	}
-	ctx.closePath();
-	ctx.clip();
+		var coordsToCanvasRatio = ctx.canvas.width / cellWidth;	
+		ctx.save();
+		//make a clipping path that is the shape of the cell and fits in the canvas
+		ctx.moveTo(coords[0]* coordsToCanvasRatio, coords[1]* coordsToCanvasRatio);
+		ctx.beginPath();
+		for (var i = 0; i < coords.length; i += 2)
+		{
+			var x = (coords[i]-minX) * coordsToCanvasRatio;
+			var  y = (coords[i+1]-minY) * coordsToCanvasRatio;
+			ctx.lineTo(x, y);
+		}
+		ctx.closePath();
+		ctx.clip();
 
-	ctx.drawImage(img, coords[0], coords[1], cellWidth, cellHeight, 0,0, outCanvas.width, outCanvas.height);
+	var topleft = t.getTopLeft('orig');
+	ctx.drawImage(img, topleft[0], topleft[1], cellWidth, cellHeight, 0,0, outCanvas.width, outCanvas.height);
 	ctx.restore(); // reset the clip, ctx.resetClip()
 }
 
@@ -568,7 +589,7 @@ function resize()
 {
 	// TODO: condense
 	gridder.resize();
-	controlGridder.resize();
+	//controlGridder.resize();
 	
 	CELL_CANVAS.width = WRAP_CELLCANVAS.width();
 	CELL_CANVAS.height = WRAP_CELLCANVAS.height();

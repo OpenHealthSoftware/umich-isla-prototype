@@ -95,14 +95,18 @@ def generateGridSvg(ringCoords):
 
 	svg_code = []
 	largestRadius = ringCoords[len(ringCoords)-1][0]['radius']
-	t_svg_circle = """<circle id="{}" r="{}" cx="{}" cy="{}" stroke-width="3" fill="none" stroke="#000"></circle>"""
-	t_svg_path = """<path id="{}" d="{}" stroke="#000" stroke-width="3"></path>"""
-	cx = largestRadius
-	cy = largestRadius
+	width = largestRadius
+	
+	if largestRadius < (1360/2):
+		width = int(1360/2)
+	t_svg_circle = """<circle id="{}" r="{}" cx="{}" cy="{}" stroke-width="3" fill="none" stroke="green"></circle>"""
+	t_svg_path = """<path id="{}" d="{}" stroke="green" stroke-width="3"></path>"""
+	cx = width
+	cy = width
 
 	# add first circle
 	firstRadius = ringCoords[0][0]['radius']
-	svg_code.append(t_svg_circle.format('ring_1', firstRadius, largestRadius, largestRadius))
+	svg_code.append(t_svg_circle.format('ring_1', firstRadius, width, width))
 
 	for i in range(1, len(ringCoords)):
 
@@ -149,7 +153,10 @@ def generateGrid(radius, deltaRadius, numberOfRings, outputFile=None):
 	</svg>
 	"""
 	
-	full_svg = svg.format(largestRadius*2, largestRadius*2, innerCode)
+	width = largestRadius * 2
+	if width < 1360:
+		width = 1360
+	full_svg = svg.format(width, width, innerCode)
 
 	if outputFile:
 		with open(outputFile, 'w') as f:

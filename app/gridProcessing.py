@@ -46,9 +46,11 @@ def getCoordinateList(contours):
 # crop cells that arent fully on image
 
 # import subprocess as sp
-# grid.generateGrid(40, 80, 9, outputFile='grid.svg')
+# grid.generateGrid(35, 70, 8, outputFile='grid.svg')
 # sp.check_output(['inkscape', '-z', '--export-dpi', '300', '-e', C.FILE_PATHS['grid']['display'], 'grid.svg'])
-# sp.check_output(['convert',  C.FILE_PATHS['grid']['display'], '-alpha', 'remove', '-threshold', str(0), '-interpolate', 'nearest', '-set', 'colorspace', 'Gray', '-separate', '-average', C.FILE_PATHS['grid']['analysis']])
+# sp.check_output(['convert',  C.FILE_PATHS['grid']['display'], '-alpha', 'remove', '-threshold', '99%', '-interpolate', 'nearest', '-set', 'colorspace', 'Gray', '-separate', '-average', C.FILE_PATHS['grid']['analysis']])
+
+
 
 #sp.check_output(['convert', '-units', 'PixelsPerInch', 'grid.svg', '-density', str(300), '-alpha', 'opaque', '-threshold', str(0), '-interpolate', 'nearest', 'temp.jpg'])
 #sp.check_output(['convert', 'temp.jpg', '-quality', '100', '-set', 'colorspace', 'Gray', '-separate', '-average', C.FILE_PATHS['grid']['analysis']])
