@@ -13,34 +13,13 @@ function uploadFileLabeUpdater()
 
 }
 
-function handleUploadSubmit()
+function getFileExtension(str)
 {
-	$('form#uploadForm').submit(function(e){
-		var formData = new FormData($(this)[0]);
-
-
-		$.ajax({
-			url: "uploads",
-			data: formData,
-			dataType: 'json',
-			type: 'POST',
-			async: false,
-			success: function(response) {
-				$('#closeBtn').prop('disabled', true);
-
-			},
-			error: function(error) {
-				console.log(error);
-			},
-			cache: false,
-       		contentType: false,
-       		processData: false
-		});
-		e.preventDefault();
-		return false;
-	});
+	return str.split('.').pop();
 }
-	
+
+
+
 $('document').ready(function(){
 
 	if ($('#focusRing').length !== 0){
@@ -51,6 +30,39 @@ $('document').ready(function(){
 	}
 
 	uploadFileLabeUpdater();
+
+
+	$('form#uploadForm').submit(function(e){
+		var formData = new FormData($(this)[0]);
+
+		// check file
+		var ext = getFileExtension($('#fileField').val());
+		if (ext.toUpperCase() !== 'PNG')
+		{
+			alert('Image must be a .png file');
+			e.preventDefault();
+			return false;
+		}
+		
+		$.ajax({
+			url: "uploads",
+			data: formData,
+			dataType: 'json',
+			type: 'POST',
+			success: function(response) {
+				$('#closeBtn').prop('disabled', true);
+			},
+			error: function(error) {
+				console.log(error);
+			},
+			cache: false,
+       		contentType: false,
+       		processData: false
+		});
+
+		$('#uploading').show();
+
+	});
 
 });
 
