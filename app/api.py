@@ -6,6 +6,7 @@ import util
 import config as conf
 import datetime
 import gridProcessing
+from PIL import Image
 
 api = Blueprint('api', __name__)
 
@@ -209,9 +210,12 @@ def load_grade_route():
 # calculates coordinates for the grid position on a given image
 def calculateCoordinates(imgId):
 
-	# TODO: cut out cells not on image
-
 	startCoords = gridProcessing.processImageGrid(conf.FILE_PATHS['grid']['analysis'])
+
+	imgSize = None
+	with Image.open(util.getImagePath(imgId)[0], 'r') as img:
+		imgSize = img.size
+
 	translated = []
 	gridData = sql.getGridData(imgId)
 	xOff = gridData['xOffset']
@@ -226,9 +230,16 @@ def calculateCoordinates(imgId):
 
 			x = (cell[i] * ratio) + xOff
 			y = (cell[i+1] *ratio) + yOff
+
+			# cut out cells not on image
+			if x > imgSize[0] or y > imgSize[1] or x < 0 or y < 0:
+				tc = []
+				break
+
 			tc.append(round(x, 3))
 			tc.append(round(y, 3))
-			
-		translated.append(tc)
+		
+		if len(tc) > 0:
+			translated.append(tc)
 
 	return translated

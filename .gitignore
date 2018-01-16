@@ -9,6 +9,7 @@ app/database.db
 *.lock
 app/version.txt
 temp/*
+tmp/
 
 
 ### editor ###

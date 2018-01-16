@@ -42,7 +42,6 @@ def getCoordinateList(contours):
 
 # TODO:
 # store coords to var or file
-# crop cells that arent fully on image
 
 # import subprocess as sp
 # grid.generateGrid(40, 80, 9, outputFile='grid.svg')
