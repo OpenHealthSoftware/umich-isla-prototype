@@ -2,7 +2,6 @@ from flask import *
 from gridProcessing import *
 from sqlFunctions import *
 from os import listdir
-from os.path import isfile, join
 from PIL import Image
 import os
 import config as C
@@ -30,8 +29,7 @@ def getPageData(imgId):
 	gradeSession = getGradesFromUser(user, imgId)
 	associatedFeatures = getOptions()
 
-	imgSrc = os.path.join(C.FILE_PATHS['patient'], imgId + '.' + image['format'])
-	gridSrc = os.path.join(C.FILE_PATHS['patient'], C.GRID_PREFIX + imgId + '.PNG') # grid has to be .png. TODO
+	imgSrc, gridSrc = util.getImagePath(imgId)
 
 	data = {
 		'img' : image,

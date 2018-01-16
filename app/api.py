@@ -70,7 +70,7 @@ def control_route():
 		# get grid data
 		qr = sql.getGridData(img['imgId'])
 
-		src = os.path.join(conf.FILE_PATHS['control'], img['imgId'] + '.' + img['format'])
+		src = util.getImagePath(img['imgId'])
 		
 		response = {
 			'src' : url_for('content', filename=src),
@@ -138,7 +138,7 @@ def image_info():
 	for x in response:
 		if 'imgData' in x:
 			img = x['imgData']
-			src = os.path.join(conf.FILE_PATHS[img['category']], img['imgId'] + '.' + img['format'])
+			src = util.getImagePath(img['imgId'])
 			img['src'] = url_for('content', filename=src)
 
 	return jsonify(response)
