@@ -340,12 +340,14 @@ class RegionDivider
 	}
 
 
-	highlightCell(cellId=this.activeCell, color='#fff', strokeWidth=2)
+
+	highlightCell(cellId=this.activeCell, color='#fff', strokeWidth=2, clear=true)
 	{
 		var cell = this.cells[cellId];
 		var canv = this.canvas[0];
 		var c = canv.getContext('2d');
-		c.clearRect(0,0, canv.width, canv.height);
+		if (clear === true)
+			c.clearRect(0,0, canv.width, canv.height);
 
 		c.beginPath();
 		var coords = cell.getCoordinates();
@@ -355,6 +357,15 @@ class RegionDivider
 		c.lineWidth = strokeWidth;
 		c.strokeStyle = color;
 		c.stroke();
+	}
+	
+	highlightUngraded()
+	{
+		for (var i in this.cells)
+		{
+			if (!this.cells[i].grades)
+				this.highlightCell(i, '#ff0000', 1, false);
+		}
 	}
 
 
@@ -494,6 +505,10 @@ function init()
 		});
 	}
 	// TODO: select and grade multiple cells at once
+
+	$('#highlight').click(function(){
+		gridder.highlightUngraded();
+	});
 }
 
 
