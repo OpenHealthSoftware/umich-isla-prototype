@@ -25,6 +25,11 @@ class Cell
 		this._ORIG_COORDS = coordinates.slice(); //clone. maybe uneccessary
 		this.active = false;
 		this.canvas = null;
+		
+		this.validCell = true;
+		var c = this._ORIG_COORDS;
+		if (c.length === 2 && c[0] === -1 && c[1] === -1)
+			this.validCell = false; // invalid cell (off the image), but needed for cell ordering
 	}
 	
 	
@@ -219,12 +224,9 @@ class Cell
 			template[x] = template[x].replace('?', this.id);
 		}
 		this.jq = $(elType, template);
-		var c = this._ORIG_COORDS;
-		if (c.length === 2 && c[0] === -1 && c[1] === -1)
-			1+1; // invalid cell (off the image), but needed for cell ordering
-		else
+		
+		if (this.validCell === true)
 			this.jq.attr('coords', this.coords.join(','));
-		//this.jq.attr('coords', this.coords.join(','));
 
 		if (order === 'append')
 			containerDiv.append(this.jq);
@@ -339,7 +341,13 @@ class RegionDivider
 			dir = 1;
 
 		if (dir)
-			this.activeCell = (parseInt(this.activeCell) + dir) % this.cells.length;
+		{
+			var newCell = this.activeCell + dir;
+			while (this.cells[newCell].validCell === false)
+				newCell = (parseInt(newCell) + dir) % this.cells.length;
+			
+			this.activeCell = newCell;
+		}
 		else
 			this.activeCell = targetCell % this.cells.length;
 	}
@@ -1001,6 +1009,7 @@ function getNextControl(direction) //, side
 
 	CURRENT_CONTROL_IDX = (CURRENT_CONTROL_IDX + direction) % CONTROL_IMGS.length;
 	CURRENT_CONTROL = CONTROL_IMGS[CURRENT_CONTROL_IDX];
+	$('#controlCellStatus').css('opacity', 1);	
 
 	$.ajax({
 		url: '/api/v1/image',
@@ -1013,14 +1022,13 @@ function getNextControl(direction) //, side
 			CONTROL_CELL_COORDS = response.coordinates;
 			print(decodeURIComponent(CURRENT_CONTROL.src));
 			$('#controlImg').attr('src', decodeURIComponent(CURRENT_CONTROL.src));
+			$('#controlCellStatus').css('opacity', 0);
 			// will fire load event
 		},
 		error: function(error) {
 			print(error);
 		}
 	});
-
-	//$('#controlCellViewCanvas').css('opacity', 0);
 
 }
 
