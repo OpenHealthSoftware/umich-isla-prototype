@@ -73,7 +73,7 @@ def main_route():
 		}
 		return render_template('gradeView.html', **data)
 
-	
+
 	return render_template('gradeView.html', **data)
 
 

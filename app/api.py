@@ -138,7 +138,7 @@ def image_info():
 	for x in response:
 		if 'imgData' in x:
 			img = x['imgData']
-			src = util.getImagePath(img['imgId'])
+			src = util.getImagePath(img['imgId'])[0]
 			img['src'] = url_for('content', filename=src)
 
 	return jsonify(response)
@@ -247,5 +247,7 @@ def calculateCoordinates(imgId):
 		
 		if len(tc) > 0:
 			translated.append(tc)
+		else: # Cells that have coordinates off the image will all equal [-1,-1]
+			translated.append([-1,-1])
 
 	return translated

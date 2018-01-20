@@ -219,7 +219,12 @@ class Cell
 			template[x] = template[x].replace('?', this.id);
 		}
 		this.jq = $(elType, template);
-		this.jq.attr('coords', this.coords.join(','));
+		var c = this._ORIG_COORDS;
+		if (c.length === 2 && c[0] === -1 && c[1] === -1)
+			1+1; // invalid cell (off the image), but needed for cell ordering
+		else
+			this.jq.attr('coords', this.coords.join(','));
+		//this.jq.attr('coords', this.coords.join(','));
 
 		if (order === 'append')
 			containerDiv.append(this.jq);
@@ -494,6 +499,18 @@ function init()
 		
 	});
 
+	// for (var i in gridder.cells.length)
+	// {
+		
+	// 	var nullGrade = 
+	// 		{
+	// 		"grades":[{"inputId":"gradeNA","value":"NA","headerName":"Perfusion Value"}],
+	// 		"meta":{"comparisonImg":"","brightness":100,"time":0}
+	// 		};
+	// 	grider.cells[i].grades = nullGrade;
+	// 	GRADE_DATA.grades[i] = nullGrade;
+	// }
+
 	gridder.getActiveCell().triggerClick();
 
 	// TODO: use promises instead cause this is hard to follow
@@ -580,7 +597,7 @@ $('document').ready(function(){
 
 	COMP_IMG = $('#controlImg');
 
-	//getControlIds(MAIN_IMAGE.getAttribute('data-eye-side'));
+	getControlIds(MAIN_IMAGE.getAttribute('data-eye-side'));
 
 	$('#controlImg').on('load', function(){
 		var img = document.getElementById('controlImg');
@@ -809,6 +826,13 @@ function loadPreviousGrades()
 			error: function(err){ print('Load grade error', err); },
 		});
 	}
+	// else
+	// {
+	// 	// init all cells to ungradable
+	// 	for (var i in GRADE_DATA.globals.totalCells){
+	// 		GRADE_DATA
+	// 	}
+	// }
 	$('#form-popup').hide();
 }
 
@@ -987,7 +1011,8 @@ function getNextControl(direction) //, side
 		type: 'GET',
 		success: function(response) {
 			CONTROL_CELL_COORDS = response.coordinates;
-			$('#controlImg').attr('src', CURRENT_CONTROL.src);
+			print(decodeURIComponent(CURRENT_CONTROL.src));
+			$('#controlImg').attr('src', decodeURIComponent(CURRENT_CONTROL.src));
 			// will fire load event
 		},
 		error: function(error) {
