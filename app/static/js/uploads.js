@@ -44,22 +44,6 @@ $('document').ready(function(){
 			return false;
 		}
 		
-		$.ajax({
-			url: "uploads",
-			data: formData,
-			dataType: 'json',
-			type: 'POST',
-			success: function(response) {
-				$('#closeBtn').prop('disabled', true);
-			},
-			error: function(error) {
-				console.log(error);
-			},
-			cache: false,
-       		contentType: false,
-       		processData: false
-		});
-
 		$('#uploading').show();
 
 	});

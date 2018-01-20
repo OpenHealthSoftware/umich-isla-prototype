@@ -209,11 +209,17 @@ def load_grade_route():
 
 # calculates coordinates for the grid position on a given image
 def calculateCoordinates(imgId):
-
+	if imgId == None:
+		print('No image id was given to calculate the coordinates')
+		return
 	startCoords = gridProcessing.processImageGrid(conf.FILE_PATHS['grid']['analysis'])
 
 	imgSize = None
-	with Image.open(util.getImagePath(imgId)[0], 'r') as img:
+	imgPath = util.getImagePath(imgId)
+	if imgPath == False:
+		print('Image does not exist:', imgId)
+		return
+	with Image.open(imgPath[0], 'r') as img:
 		imgSize = img.size
 
 	translated = []

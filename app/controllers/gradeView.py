@@ -30,7 +30,7 @@ def getPageData(imgId):
 	associatedFeatures = getOptions()
 
 	imgSrc, gridSrc = util.getImagePath(imgId)
-
+	print(imgSrc, gridSrc)
 	data = {
 		'img' : image,
 		'imgSrc': url_for('content', filename=imgSrc),

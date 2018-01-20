@@ -26,7 +26,7 @@ def getImagePath(imgId):
 	basePath = config.FILE_PATHS[image['category']]
 		
 	imgPath = os.path.join(basePath, imgId + '.' + image['format'])
-	gridPath = os.path.join(basePath, config.GRID_PREFIX + imgId + '.PNG') # grid has to be .png. TODO
+	gridPath = os.path.join(basePath, config.GRID_PREFIX + imgId + config.GRID_FORMAT)
 
 	if isfile(imgPath) == False:
 		imgPath = None

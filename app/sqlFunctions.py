@@ -1,6 +1,7 @@
 from flask import *
 import sqlite3
 import config as C
+from os.path import isfile
 #from extensions import db
 
 def dict_factory(cursor, row):
@@ -8,7 +9,19 @@ def dict_factory(cursor, row):
 	for idx, col in enumerate(cursor.description):
 		d[col[0]] = row[idx]
 	return d
-	
+DATABASE_PATH = 'database.db'
+
+
+if isfile(DATABASE_PATH) == False:
+	import subprocess as sp
+	print('No database found at:', DATABASE_PATH)
+	print('Running database creation commands')
+	sqlite = 'sqlite3'
+	with open('sql/databasecreate.sql', 'r') as f:
+		sp.call([sqlite, DATABASE_PATH], stdin=f)
+	with open('sql/datastarter.sql', 'r') as f:
+		sp.call([sqlite, DATABASE_PATH], stdin=f)
+
 conn = sqlite3.connect('database.db', check_same_thread=False)
 conn.row_factory = dict_factory
 cursor = conn.cursor()
@@ -41,6 +54,11 @@ def getImages(**kwargs):
 	results = cursor.fetchall()
 	return results
 
+def getGrids():
+	selector = ''
+	cursor.execute('SELECT grids.*, images.category FROM grids INNER JOIN images on grids.imgId = images.imgId')
+	results = cursor.fetchall()
+	return results
 
 # Effects: Runs a MySQL query that returns a specific image in the database
 def getImageData(imgId):

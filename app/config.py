@@ -22,6 +22,7 @@ env = dict(
 )
 
 VERSION_FILE = './version.txt'
+DATABASE_PATH = 'database.db'
 
 # For file uploads
 imgCategories = {
@@ -45,3 +46,4 @@ FILE_PATHS = {
 
 ALLOWED_EXTENSIONS = set(['png', 'jpg', 'jpeg', 'bmp', 'gif'])
 GRID_PREFIX = 'grid_' # prefix that grid images will begin with
+GRID_FORMAT = '.png'

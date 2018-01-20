@@ -9,6 +9,7 @@ from PIL import Image
 import config as C
 import math
 import uuid
+import util
 
 uploads = Blueprint('uploads', __name__)
 
@@ -85,14 +86,15 @@ def uploadImg(request, category):
 		# save to database
 		insertImageToDB(fileExt, filename, refName, side, comments, category)
 		# save to server
-		fileObj.save(os.path.join(upFolder, filename + '.' + fileExt))
+		filepath = os.path.join(upFolder, filename + '.' + fileExt)
+		fileObj.save(filepath)
 		
 		# make thumbnail
 		thumb = Image.open(os.path.join(upFolder, filename + '.' + fileExt))
 		thumb.thumbnail((500,500), Image.ANTIALIAS)
 		thumb.save(os.path.join(THUMBNAIL_PATH, filename + '.' + fileExt))
 		print('Successful image upload:', filename, category)
-	return filename + '.' + fileExt
+	return filepath, filename
 
 
 def deleteImg(imgId):
@@ -126,8 +128,9 @@ def main_route():
 	isUploaded = False
 	category = ''
 	folderPath = ''
-	imgFilename = ''
-	form = ''
+	imgPath = ''
+	imgId = ''
+	form = None
 	
 	if request.method == 'GET':
 		if request.args:
@@ -142,7 +145,7 @@ def main_route():
 			if operation == 'add':
 				isUploaded = True
 				try:
-					imgFilename = uploadImg(request, category)
+					imgPath, imgId = uploadImg(request, category)
 				except IOError as e:
 					isUploaded = False
 					print(e)
@@ -161,8 +164,8 @@ def main_route():
 	data = {
 		'category' : category,
 		'uploaded' : isUploaded,
-		'imgSrc' : os.path.join(folderPath, imgFilename),
-		'imgId' : imgFilename.rsplit('.', 1)[0]
+		'imgSrc' : imgPath,
+		'imgId' : imgId
 	}
 
 
@@ -212,20 +215,18 @@ def rotateImage(img, foveaCoords, discCoords):
 # img file format, and the percentage offsets created by the user positioning data
 # Effects: puts the center of the grid on the specified location of the FA image, and scales grid
 # according to opticDisk <--> fovea position
-def createGriddedImage(foveaCoords, discCoords, imgName, iFormat, xPerc, yPerc, category):
+def createGriddedImage(foveaCoords, discCoords, imgId, category, insertToDB=True):
 
-	# Load images
+	# Determine save path
 	if category == C.imgCategories['control']:
 		uploadPath = C.FILE_PATHS['control']
 	else:
 		uploadPath = C.FILE_PATHS['patient']
 
-	filepath = os.path.join(uploadPath, imgName + iFormat)
-	grid = Image.open(C.FILE_PATHS['grid']['display'], 'r')
+	filepath = util.getImagePath(imgId)[0]
 	faImg = Image.open(filepath)
-	faImg, degrees = rotateImage(faImg, foveaCoords, discCoords)
-	faImg.save(filepath)
 	fa_w, fa_h = faImg.size
+	grid = Image.open(C.FILE_PATHS['grid']['display'], 'r')
 
 	# Scale grid
 	# currently arbitrary, but works relative to all uploads
@@ -252,13 +253,14 @@ def createGriddedImage(foveaCoords, discCoords, imgName, iFormat, xPerc, yPerc, 
 	croppedGrid = Image.new('RGBA', (fa_w, fa_h))
 	croppedGrid.paste(grid, offset, mask=alpha)
 
-	gridId = C.GRID_PREFIX + imgName + iFormat
-	insertGridToDB(gridId, offset[0], offset[1], imgName, scaleRatio, discCoords[0], discCoords[1], 
-		foveaCoords[0], foveaCoords[1])
+	gridId = C.GRID_PREFIX + imgId + C.GRID_FORMAT
+	if insertToDB == True:
+		insertGridToDB(gridId, offset[0], offset[1], imgId, scaleRatio, discCoords[0], 
+			discCoords[1], foveaCoords[0], foveaCoords[1])
 	png_info = grid.info
 	croppedGrid.save(os.path.join(uploadPath, gridId), **png_info)
 
-	print('Success processing image and grid:', gridId, 'degrees=', degrees, 'scaleRatio=', scaleRatio)
+	print('Success processing image and grid:', gridId, 'scaleRatio=', scaleRatio)
 
 	# save version of grid for OpenCV contours
 	#contourGrid = Image.new('RGB', faImg.size, (255,255,255))
@@ -266,20 +268,26 @@ def createGriddedImage(foveaCoords, discCoords, imgName, iFormat, xPerc, yPerc, 
 	#contourGrid = contourGrid.convert('L') # convert to grayscale
 	#contourGrid = contourGrid.point(lambda x: 0 if x<200 else 255, '1') #convert to black and white
 	#contourGrid.save(C_GRID_PATH, 'JPEG')
-	return uploadPath + gridId
+	return os.path.join(uploadPath, gridId)
 
 
 @uploads.route('/uploads/position', methods=['GET', 'POST'])
 def upload_position_route():
 	rForm = request.form
-	imgName = rForm['picName']
-	image = getImageData(imgName)
+	imgId = rForm['picName']
+	image = getImageData(imgId)
 	foveaCoords = [rForm['foveaX'], rForm['foveaY']]
 	foveaCoords = list(map(int, foveaCoords))
 	discCoords = list(map(int, [rForm['discX'], rForm['discY']]))
 
-	newImgPath = createGriddedImage(foveaCoords, discCoords, imgName, '.' + image['format'], 
-		rForm['xPerc'], rForm['yPerc'], rForm['category'])
+	#TODO: reduce database calls / img opens
+
+	filepath = util.getImagePath(imgId)[0]
+	faImg = Image.open(filepath)
+	faImg, degrees = rotateImage(faImg, foveaCoords, discCoords)
+	faImg.save(filepath)
+
+	newImgPath = createGriddedImage(foveaCoords, discCoords, imgId, rForm['category'])
 
 	return jsonify({'success': 'sucess'})
 
