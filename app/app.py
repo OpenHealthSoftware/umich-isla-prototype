@@ -30,12 +30,15 @@ def content(filename):
 
 # Use when running locally so you generates thumbnails for images only uploaded to server
 def updateThumbnails():
-	files = os.listdir(config.UPLOAD_FOLDER_NORM)
-	for image in files:
-		path = os.path.join(config.UPLOAD_FOLDER_NORM, image)
+	files = os.listdir(config.FILE_PATHS['patient'])
+	files = [os.path.join(config.FILE_PATHS['patient'], f) for f in files]
+	files2 = os.listdir(config.FILE_PATHS['control'])
+	files2 = [os.path.join(config.FILE_PATHS['control'], f) for f in files2]
+	files = files + files2
+	for path in files:
 		i = Image.open(path)
 		i.thumbnail((500,500), Image.ANTIALIAS)
-		i.save(os.path.join(config.THUMBNAIL_PATH, image))
+		i.save(os.path.join(config.FILE_PATHS['thumbnails'], os.path.basename(path)))
 
 
 # Listen on external IPs

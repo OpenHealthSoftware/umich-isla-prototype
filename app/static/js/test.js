@@ -239,6 +239,18 @@ class Cell
 	{
 		this.jq.attr('coords', this.coords.join(','));	
 	}
+
+	getCenter()
+	{
+		var sumX = 0;
+		var sumY = 0;
+		for (var i = 0; i <= this.coords.length-1; i+=2){
+			sumX += this.coords[i];
+			sumY += this.coords[i+1];
+		}
+		var n = this.coords.length / 2;
+		return {x: sumX / n, y: sumY / n};
+	}
 }
 
 
@@ -252,10 +264,17 @@ class RegionDivider
 		// coords is a 2d vector
 		// [ cell0coords[x1,y10,x10,y10, x10, y1], cell1coords[] ]
 		this.cells = [];
+		this.numValidCells = 0;
 		for(var c in coords)
-			this.cells.push(new Cell(coords[c], c, false))
+		{
+			var cell = new Cell(coords[c], c, false);
+			this.cells.push(cell);
+			if (cell.validCell === true)
+				this.numValidCells += 1;
+		}
 
 		this.activeCell = parseInt(this.cells.length / 2);
+		this.numCellsGraded = 0;
 	}
 
 
@@ -371,6 +390,28 @@ class RegionDivider
 		c.strokeStyle = color;
 		c.stroke();
 	}
+
+	markCell(cellId, clear=false){
+		var w = 8;
+		var h = 8;
+		var center = this.cells[cellId].getCenter();
+		var canv = this.canvas[0];
+		var c = canv.getContext('2d');
+		if (clear === true)
+			c.clearRect(0,0, canv.width, canv.height);
+
+		c.fillStyle = '#4caf5080';
+		c.fillRect(center.x - (w/2), center.y - (h/2), w, h);
+	}
+
+	highlightGraded()
+	{
+		for (var i in this.cells)
+		{
+			if (this.cells[i].grades)
+				this.markCell(i);
+		}
+	}
 	
 	highlightUngraded()
 	{
@@ -412,7 +453,10 @@ class RegionDivider
 	{
 		// loads grades from GRADE_DATA into respective cells
 		for (var i in gradeData)
+		{
 			this.cells[i].grades = gradeData[i].grades;
+			this.numCellsGraded += 1;
+		}
 	}
 }
 
@@ -708,7 +752,20 @@ submitGradeBtn.click(function()
 
 	sendGradesToServer();
 
+	gridder.numCellsGraded += 1;
+	if (gridder.numCellsGraded === gridder.numValidCells)
+	{
+		alert('Grading completed. Click the "Export grade" button in the upper right of the interface');
+		return;
+	}
+
 	gotoCell('next');
+
+
+	// TODO: move
+	gridder.highlightGraded();
+	$('#cellNumber').html(gridder.activeCell.toString());
+	$('#numGraded').html(gridder.numCellsGraded.toString() + '/' + gridder.numValidCells.toString());
 });
 
 
