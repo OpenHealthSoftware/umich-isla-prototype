@@ -12,6 +12,61 @@ function gup(name) {
 		return unescape(results[1]);
 }
 
+// Keys for listener
+var KEYS = {
+	one: 49,
+	two: 50,
+	three: 51,
+	four: 52,
+	left: 37,
+	right: 39,
+	shift: 16,
+	spacebar: 32,
+	enter: 13
+}
+
+function keydownRouter(e)
+{
+	switch (e.which) 
+	{
+		case KEYS.one:
+			selectPrimaryGrade(0);
+			break;
+		case KEYS.two:
+			selectPrimaryGrade(1);
+			break;
+		case KEYS.three:
+			selectPrimaryGrade(2);
+			break;
+		case KEYS.four:
+			selectPrimaryGrade(3);
+			break;
+		case KEYS.left:
+			gotoCell('prev');
+			break;
+		case KEYS.right:
+			gotoCell('next');
+			break;
+		case KEYS.enter:
+			submitGrade();
+			break;
+		case KEYS.shift:
+			break;
+		case KEYS.spacebar:
+			break;
+	}
+}
+
+// Effects: selects the radio button at index optionIndex and submits that as the grade
+function selectPrimaryGrade(optionIndex)
+{
+	var radioForm = $('input[name=grade]');
+	if (optionIndex < 0 || optionIndex >= radioForm.length)
+		return;
+	radioForm[optionIndex].click();
+}
+
+
 
 class Cell
 {
@@ -665,6 +720,9 @@ $('document').ready(function(){
 
 	BRIGHT_SLIDE = $('#brightness-slider');
 	initSliders();
+
+	// keyboard shortcutes
+	$(window).keydown(keydownRouter);
 	
 });
 
@@ -700,9 +758,7 @@ function gotoCell(targetCell)
 
 
 // GRADING ############################################
-
-submitGradeBtn = $('#submitGrade')
-submitGradeBtn.click(function()
+function submitGrade()
 {
 	var metaData = getMetaData();
 	
@@ -766,7 +822,9 @@ submitGradeBtn.click(function()
 	gridder.highlightGraded();
 	$('#cellNumber').html(gridder.activeCell.toString());
 	$('#numGraded').html(gridder.numCellsGraded.toString() + '/' + gridder.numValidCells.toString());
-});
+}
+submitGradeBtn = $('#submitGrade');
+submitGradeBtn.click(function(){submitGrade()});
 
 
 function getMetaData()
