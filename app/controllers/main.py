@@ -32,7 +32,7 @@ def main_route():
 		imgId = i['imgId']
 		finishedGrades = sql.getFinishedGrades(imgId)
 		finishedGrades = [x['userId'] + ' - Session ' + str(x['sessionId']) + ' finished ' + x['timestamp'] for x in finishedGrades]
-		currentGraders = sql.getGradeInfo(imgId, excludeFinished=True)
+		currentGraders = sql.getGradeInfoForImage(imgId, excludeFinished=True)
 
 		currentImageGrades[imgId] = currentGraders
 		imageGrades[imgId] = finishedGrades

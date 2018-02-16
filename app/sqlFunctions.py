@@ -101,7 +101,7 @@ def getGradeInfo(imgId, user, sid):
 	results = cursor.fetchone()
 	return results
 
-def getGradeInfo(imgId, excludeFinished=None):
+def getGradeInfoForImage(imgId, excludeFinished=None):
 	optional = ''
 	if excludeFinished == True:
 		optional = ' AND finishedGrading!=1 '
