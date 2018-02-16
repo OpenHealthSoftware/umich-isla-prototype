@@ -157,20 +157,21 @@ def save_grade():
 	data = request.get_json()
 
 	totalCells = data['globals']['totalCells']
+	numValidCells = data['globals']['totalValidCells']
 	sessionId = data['globals']['sessionId']
 	imgId = data['globals']['imgId']
 	gradeData = data['grades']
 	cellsGraded = len(gradeData)
-
+	print(numValidCells, totalCells, cellsGraded)
 	finishedGrading = False
-	if cellsGraded == totalCells:
+	if cellsGraded == numValidCells:
 		finishedGrading = True
 	
 	storedGrades = sql.getGradeInfo(imgId, user, sessionId)
 	filenameTemp = '{}_uuid-{}_user-{}_session-{}.json'
 
 	if not storedGrades: # sessionId inits to -1 for first request of new session
-		sessionId = len(sql.getGradesFromUser(user, imgId)) + 1
+		sessionId = len(sql.getAllGradesFromUser(user, imgId)) + 1
 		gradeFilename = filenameTemp.format(date, imgId, user, sessionId)		
 		gradeId = sql.insertGradeToDB(gradeFilename, user, imgId, cellsGraded, finishedGrading, sessionId)
 	else:

@@ -1,7 +1,7 @@
 from flask import *
 import json
 import gridProcessing
-from sqlFunctions import *
+import sqlFunctions as sql
 import config as C
 import hashlib
 import os
@@ -21,18 +21,18 @@ def main_route():
 
 	images = []
 	if category:
-		images = getImages(category=category)
+		images = sql.getImages(category=category)
 	else:
-		images = getImages(category=C.imgCategories['patient'])
+		images = sql.getImages(category=C.imgCategories['patient'])
 
 	imageGrades = {}
 	currentImageGrades = {}
 	isImageGraded = {}
 	for i in images:
 		imgId = i['imgId']
-		finishedGrades = getFinishedGrades(imgId)
-		finishedGrades = [x['userId'] + ' - finished ' + x['timestamp'] for x in finishedGrades]
-		currentGraders = getCurrentGraders(imgId)
+		finishedGrades = sql.getFinishedGrades(imgId)
+		finishedGrades = [x['userId'] + ' - Session ' + str(x['sessionId']) + ' finished ' + x['timestamp'] for x in finishedGrades]
+		currentGraders = sql.getGradeInfo(imgId, excludeFinished=True)
 
 		currentImageGrades[imgId] = currentGraders
 		imageGrades[imgId] = finishedGrades

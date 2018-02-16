@@ -557,6 +557,7 @@ function defaulDraw(outCanvas, img, cellInstance){
 function init()
 {
 	gridder = new RegionDivider(MAIN_IMAGE, GRID_CELL_COORDS);
+	GRADE_DATA.globals.totalValidCells = gridder.numValidCells;
 	var htmlTemplate = { elType: '<area>', id: 'cell_?', shape: 'poly', coords: null};
 
 	gridder.makeHTML($('#wrap-mainImg'), 'append', htmlTemplate);
@@ -653,7 +654,8 @@ var GRADE_DATA = {
 		sessionId: -1,
 		patientInfo: [],
 		imgId: IMG_ID,
-		totalCells: 0
+		totalCells: 0,
+		totalValidCells: 0
 	}
 };
 var GRADE_CELL_TIMESTART;
@@ -800,6 +802,8 @@ function submitGrade()
 
 	var activeCell = gridder.getActiveCell();
 	activeCell.grades = cellGrades;
+	if (!activeCell.grades)
+		gridder.numCellsGraded += 1;
 
 	GRADE_DATA.grades[activeCell.id] = {
 		grades: cellGrades,
@@ -808,7 +812,6 @@ function submitGrade()
 
 	sendGradesToServer();
 
-	gridder.numCellsGraded += 1;
 	if (gridder.numCellsGraded === gridder.numValidCells)
 	{
 		alert('Grading completed. Click the "Export grade" button in the upper right of the interface');

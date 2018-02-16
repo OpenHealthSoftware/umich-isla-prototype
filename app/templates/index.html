@@ -41,14 +41,14 @@
 							<h4>Users currently grading:</h4>
 							<ul>
 								{% for g in currentGraders[p['imgId']] %}
-								<li>{{ g }}</li>
+								<li>{{ g['userId'] }} - Session {{ g['sessionId']}}</li>
 								{% endfor %}
 							</ul>
 							{% if finishedGraders[p['imgId']] %}
 							<h4>Users finished grading:</h4>
 							<ul>
 								{% for g in finishedGraders[p['imgId']] %}
-								<li>{{g['userId']}}</li>
+								<li>{{g}}</li>
 								{% endfor %}
 							</ul>
 							{% endif %}

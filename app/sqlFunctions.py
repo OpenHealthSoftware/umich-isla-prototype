@@ -77,7 +77,15 @@ def getGridData(imgId):
 		results = cursor.fetchone()
 		return results
 
-def getGradesFromUser(userId, imgId):
+# Sqlite bools are stored as 1 = True, 0 = False
+def getAllGradesFromUser(userId, imgId):
+	cursor.execute('SELECT * FROM gradeFiles WHERE userId=? AND imgId=? ORDER BY gradeId ASC', 
+		(userId, imgId))
+	results = cursor.fetchall()
+	return results
+
+def getUnfinishedGradesFromUser(userId, imgId):
+	optional = ' AND finishedGrading=0'
 	cursor.execute('SELECT * FROM gradeFiles WHERE userId=? AND imgId=? AND finishedGrading=0 ORDER BY gradeId ASC', 
 		(userId, imgId))
 	results = cursor.fetchall()
@@ -93,21 +101,29 @@ def getGradeInfo(imgId, user, sid):
 	results = cursor.fetchone()
 	return results
 
+def getGradeInfo(imgId, excludeFinished=None):
+	optional = ''
+	if excludeFinished == True:
+		optional = ' AND finishedGrading!=1 '
+	cursor.execute('SELECT * FROM gradeFiles where imgId=?' + optional, (imgId,))
+	results = cursor.fetchall()
+	return results
+
 def getGradeFilesFromImgId(imgId):
 	cursor.execute('SELECT gradeFile FROM gradeFiles where imgId=?', (imgId,))
 	results = cursor.fetchall()
 	return results
 
 def getFinishedGrades(imgId):
-	cursor.execute('SELECT * FROM gradeFiles where imgId=? AND finishedGrading="true"', (imgId,))
+	cursor.execute('SELECT * FROM gradeFiles where imgId=? AND finishedGrading=1', (imgId,))
 	#cursor.execute('SELECT * FROM gradeFiles where imgId=? GROUP BY userId', (imgId,))
 	results = cursor.fetchall()
 	return results
 
-
+# Sqlite bools are stored as 1 = True, 0 = False
 # returns the unique graders who have started grading an image, but have not finished
 def getCurrentGraders(imgId):
-	cursor.execute('SELECT userId FROM gradeFiles where imgId=? and finishedGrading="false" GROUP BY userId', (imgId,))
+	cursor.execute('SELECT userId FROM gradeFiles where imgId=? and finishedGrading=0 GROUP BY userId', (imgId,))
 	results = cursor.fetchall()
 	userList = [i['userId'] for i in results]
 	return userList

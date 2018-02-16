@@ -26,11 +26,11 @@ def getPageData(imgId):
 	if image is None:
 		return False
 	gridData = getGridData(imgId)
-	gradeSession = getGradesFromUser(user, imgId)
+	gradeSession = getUnfinishedGradesFromUser(user, imgId)
 	associatedFeatures = getOptions()
 
 	imgSrc, gridSrc = util.getImagePath(imgId)
-	print(imgSrc, gridSrc)
+	
 	data = {
 		'img' : image,
 		'imgSrc': url_for('content', filename=imgSrc),
