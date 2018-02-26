@@ -21,6 +21,7 @@ INSERT INTO "optionType" (name, description) VALUES
 ('Leakage', 'Abnormal pooling of dye from abnormal blood vessels. Seen as gradual enlargement and blurring of vessel margins.'),
 ('New vessel', 'Perfuse haze of intense hyperflorescent leakage in late-phase.'),
 ('Artifact', 'Photographic artifact i.e. lashes.'),
+('Microaneurysms', ''),
 ('Not sure', '');
 
 INSERT INTO "optionExamples" (type, filename, format) VALUES

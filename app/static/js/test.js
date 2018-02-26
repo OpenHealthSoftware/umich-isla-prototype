@@ -626,7 +626,9 @@ function init()
 	{
 		$('#loadGradeBtn')[0].disabled = false;
 		$('#loadGradeBtn').click(function(){
-			loadPreviousGrades();
+			if ($("#loadGradeForm input[type=radio]:checked").length > 0) {
+				loadPreviousGrades();
+			}
 		});
 	}
 	// TODO: select and grade multiple cells at once
@@ -916,6 +918,7 @@ function updateGradesCSS(inputEl)
 		{
 			// [class$=-selected]
 			var classy;
+			// TODO: change to custom html attr
 			if (el.hasClass('selectable-checkbox'))
 				classy = 'checkbox-selected';
 			else if (el.hasClass('selectable-button'))

@@ -16,10 +16,10 @@
 			<button id="menuBtn" class="menu-btn">Menu</button>
 			<div id="menuDropdownCont" class="wrap-drop-down">
 				<div id="menuDropdown" class="drop-down">
-					<a href="{{ url_for('main.main_route', gallery='patient') }}" class="patient-shade-1">Patients</a>
-					<a href="{{ url_for('main.main_route', gallery='control') }}" class="control-shade-1">Controls</a>
-					<a href="{{ url_for('uploads.main_route') }}">Upload</a>
-					<a href="{{ url_for('docs.main_route') }}">Help / Info</a>
+					<a href="{{ url_for('main.main_route', gallery='patient') }}"><button class="patient-shade-1">Patients</button></a>
+					<a href="{{ url_for('main.main_route', gallery='control') }}"><button class="control-shade-1">Controls</button></a>
+					<a href="{{ url_for('uploads.main_route') }}"><button>Upload</button></a>
+					<a href="{{ url_for('docs.main_route') }}"><button>Help / Info</button></a>
 				</div>
 			</div>
 		</div> <!-- END #menuBar -->
@@ -120,23 +120,25 @@
 						<input type="radio" class='input-required' name="grade" value="non-perfused" id="gradeNonPerf" data-tostyle="label[for='gradeNonPerf']" data-grade-header="Perfusion Value">
 						<input type="radio" class='input-required' name="grade" value="NA" id="gradeNA" data-tostyle="label[for='gradeNA']" data-grade-header="Perfusion Value">
 						<div class="flex-radio-row">
-						<label for="gradePerf" id="holla" class="button btn-row-el selectable-button">Perfused</label>
-						<label for="gradeHypoPerf" class="button btn-row-el selectable-button">Hypoperfused</label>
-						<label for="gradeNonPerf" class="button btn-row-el selectable-button">Non-Perfused</label>
-						<label for="gradeNA" class="button btn-row-el selectable-button">NA / Ungradeable</label>
+						<label for="gradePerf" id="holla" class="button btn-row-el selectable-button color-hl-dark">Perfused</label>
+						<label for="gradeHypoPerf" class="button btn-row-el selectable-button color-hl-dark">Hypoperfused</label>
+						<label for="gradeNonPerf" class="button btn-row-el selectable-button color-hl-dark">Non-Perfused</label>
+						<label for="gradeNA" class="button btn-row-el selectable-button color-hl-dark">NA / Ungradeable</label>
 						</div>
-						{% for a in associatedFeatures %}
-						<div class="option-box-element">
-							<input type="checkbox" id="option_{{a.optionId}}" name="associatedFeature" value="{{a.name}}" data-tostyle="#checkbox-select_{{a.optionId}}, #label_{{a.optionId}}" data-grade-header="Feature - {{a.name}}">
-							<label for="option_{{a.optionId}}" class="checkbox"><div class="check-select selectable-checkbox" id="checkbox-select_{{a.optionId}}"></div></label>
-							<label for="option_{{a.optionId}}" class="options-label selectable-button" id="label_{{a.optionId}}">{{a.name}}</label>
-							<div class="selectExampleBtn" onclick="toggleExample(this, '{{a.name}}')"><p>?</p></div>
+						<div id="wrap-associatedFeatures" class="flex-wrap-row-centered">
+							{% for a in associatedFeatures %}
+							<div class="option-box-element">
+								<input type="checkbox" id="option_{{a.optionId}}" name="associatedFeature" value="{{a.name}}" data-tostyle="#checkbox-select_{{a.optionId}}, #label_{{a.optionId}}" data-grade-header="Feature - {{a.name}}">
+								<label for="option_{{a.optionId}}" class="checkbox"><div class="check-select selectable-checkbox" id="checkbox-select_{{a.optionId}}"></div></label>
+								<label for="option_{{a.optionId}}" class="options-label selectable-button" id="label_{{a.optionId}}">{{a.name}}</label>
+								<div class="selectExampleBtn" onclick="toggleExample(this, '{{a.name}}')"><p>?</p></div>
+							</div>
+							{% endfor %}
 						</div>
-						{% endfor %}
 
 					</div>
 
-					<button id="submitGrade">Submit</button>
+					<button id="submitGrade" class="color-hl-light">Submit</button>
 				
 				</div><!--END #wrap-grades -->
 
@@ -148,8 +150,8 @@
 				<div id="wrapControlComparisons" class="half-height">
 					<div class="maintain-ratio-full" style="background-color:#1d1d1d">
 						<div id="controlCell" class="cellControlModule">
-								<p style="position:absolute" id="controlCellStatus">Loading...</p>	
 								<canvas id="controlCellViewCanvas" class="cellCanvas" width="0" height="0"></canvas>
+								<p style="position:absolute" id="controlCellStatus">Loading...</p>	
 						</div>
 						<div onclick="getNextControl(-1)" class="select-image select-image-prev"></div>												
 						<div onclick="getNextControl(1)" class="select-image select-image-next"></div>												
@@ -205,7 +207,7 @@
 			<input type="radio" name="gradeSession" value="-1" id="newOption">
 			<label for="newOption">New grading session</label>
 		</form>
-		<button id="loadGradeBtn" disabled>Select</button>
+		<button id="loadGradeBtn" class="color-hl-light" disabled>Select</button>
 		</div>
 	</div>
 	{% endif %}

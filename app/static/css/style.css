@@ -10,6 +10,17 @@
 	--slim-el-height: 35px;
 	--dark-button: #1c1c1c;
 	--dark-button-selected: #464646;
+
+	--highlight-pop: #e27312;
+	--highlight-normal: #b25e07;
+	--highlight-dark: #8a4a07;
+	--highlight-pop-white: rgba(255, 194, 142, 0.847);
+	
+	--highlight-pop-alpha-7: rgba(226, 115, 18, .7);
+	--highlight-pop-alpha-3: rgba(226, 115, 18, .3);
+
+	--pop-out: #d3e212;
+
 }
 .patient-shade-1{ background-color: var(--patient-shade-1); }
 .patient-shade-2{ background-color: var(--patient-shade-2); }
@@ -228,6 +239,15 @@ html, body, #fullwrap
 #mainCellFlippedCanvas { border: 5px dashed var(--patient-shade-2); }
 #controlCellFlippedCanvas { border: 5px dashed var(--control-shade-2); }
 
+#controlCellStatus{
+	position: absolute;
+	width: 100%;
+	top: 50%;
+	text-align: center;
+	background-color: rgba(255,0,0,.5);
+	padding: 10px 0 10px 0;
+}
+
 .cellRow
 {
 	width: 100%;
@@ -256,11 +276,13 @@ html, body, #fullwrap
 	color: #fff;
 }
 
-
+.color-hl-dark { background-color: var(--highlight-dark) !important; }
+.color-hl-norm { background-color: var(--highlight-normal) !important; }
+.color-hl-light { background-color: var(--highlight-pop) !important;}
 
 input[type=button], input[type=submit], input[type=reset], button, .button
 {
-    background-color: var(--dark-button);
+    background-color: var(--highlight-normal);
     width: calc(100% - 4px);
     border: none;
     color: white;
@@ -274,7 +296,7 @@ input[type=button], input[type=submit], input[type=reset], button, .button
 }
 input[type=button]:active, input[type=submit]:active, input[type=reset]:active, button:active
 {
-	background-color: var(--dark-button-selected);
+	background-color: var(--highlight-pop);
 }
 /* To match non-button elements*/
 .button 
@@ -286,7 +308,7 @@ input[type=button]:active, input[type=submit]:active, input[type=reset]:active, 
 }
 .button-selected
 {
-	background-color: var(--dark-button-selected) !important;
+	background-color: var(--highlight-pop) !important;	
 }
 
 .btn-large
@@ -297,7 +319,7 @@ input[type=button]:active, input[type=submit]:active, input[type=reset]:active, 
 
 input[type=button]:hover, input[type=submit]:hover, input[type=reset]:hover, button:hover, .button:hover
 {
-	box-shadow: inset 0 0 0 3px rgba(0,0,0,.2);
+	box-shadow: inset 0 0 0 3px var(--highlight-pop-white);
 }
 
 
@@ -374,7 +396,7 @@ input[type=button]:hover, input[type=submit]:hover, input[type=reset]:hover, but
 {
 	border: none !important;
 	border-radius: 9px !important;
-    background-color: #4CAF50 !important;
+    background-color: var(--pop-out) !important;
 	width: 18px !important;
 	height: 18px !important;
 	cursor: pointer !important;
@@ -456,7 +478,7 @@ input[type=button]:hover, input[type=submit]:hover, input[type=reset]:hover, but
 	width: 21px;
 	height: 21px;
 	margin: 3px;
-	background-color: #808080;	
+	background-color: var(--highlight-pop);
 	z-index: 6;
 }
 
@@ -514,7 +536,7 @@ input[type=button]:hover, input[type=submit]:hover, input[type=reset]:hover, but
 #wrapCellControl
 {
 	width: 100%;
-	max-height: 300px;
+	max-height: 348px;
 }
 .cellBlockBorder
 {
@@ -542,6 +564,14 @@ input[type=button]:hover, input[type=submit]:hover, input[type=reset]:hover, but
 	margin-right: -1%;
 	margin-bottom: 5px;
 }
+
+.flex-wrap-row-centered
+{
+	display: flex;
+	flex-wrap: wrap;
+	justify-content: space-between;
+}
+
 .btn-row-el
 {
 	margin: 1% 1% 0 0;
@@ -594,7 +624,7 @@ input[type=button]:hover, input[type=submit]:hover, input[type=reset]:hover, but
 
 #wrap-grades
 {
-	height: calc(100% - 376px);
+	height: calc(100% - 430px);
 	width: 100%;
 	color: white;
 }
@@ -611,8 +641,8 @@ input[type=button]:hover, input[type=submit]:hover, input[type=reset]:hover, but
 {
 	position: relative;
 	height: var(--slim-el-height);
-	width: 100%;
-	margin-bottom: 5px;
+	width: 49%;
+	margin-bottom: 10px;
 	float: left;
 	background-color:var(--dark-button);
 }
