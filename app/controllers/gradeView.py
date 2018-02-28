@@ -65,16 +65,8 @@ def main_route():
 
 
 	if not request.args or data == False: #data == false means no imgid found in db
-		data = {
-			'coords' : [],
-			'img' : {'imgId' : '', 'format' : ''},
-			'grid' : '',
-			'numPrev' : NUM_NORM_PREV, #number of control images to show at once
-			'xOffset' : 0,
-			'yOffset' : 0,
-			'gridScaleRatio' : 1,
-		}
-		return render_template('gradeView.html', **data)
+		
+		return redirect(url_for('main.main_route'))
 
 
 	return render_template('gradeView.html', **data)

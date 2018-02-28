@@ -26,12 +26,13 @@
 {% block content %}
 
 	<div id="wrapMainScreen">
-		<div id="leftScreen" class="split split-horizontal" >
+		
+		{% if gradeSessions %}
+		{% set lock = 'lock' %}
+		{% endif %}
+
+		<div id="leftScreen" class="split split-horizontal {{lock}}" >
 			<div id="fullView">
-				{% if not img['imgId'] %}
-						<a href="{{ url_for('main.main_route', gallery='patient') }}" class="patient-shade-1 btn-large">Click to Grade an Existing Image</a>
-						<a href="{{ url_for('uploads.main_route') }}" class="btn-large">Click to Upload a New Control or Patient Image</a>
-				{%  else %}
 
 				<div style="position:relative;" id="wrap-mainImg">
 					<img  id="mainFA_image" class="pic" src="{{ imgSrc }}" data-eye-side="{{img['side']}}">
@@ -44,13 +45,11 @@
 					<canvas id="norm_canvas" class="traceCanvas" width="0" height="0"></canvas>
 					<h2 style="position:absolute;color:white;top:10px;">Control Image</h2>										
 				</div>
-				{% endif %}
+
 			</div>
 		</div>
 
-		{% if not img['imgId'] %}
-		{% set lock = 'lock' %}
-		{% endif %}
+		
 		<div id="rightScreen" class="split split-horizontal {{lock}}" >
 			<div id="wrap-cell-controlAndGrades">
 				

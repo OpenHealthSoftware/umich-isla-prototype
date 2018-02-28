@@ -628,6 +628,8 @@ function init()
 		$('#loadGradeBtn').click(function(){
 			if ($("#loadGradeForm input[type=radio]:checked").length > 0) {
 				loadPreviousGrades();
+				// allow access to interface
+				$('.lock').removeClass('lock');
 			}
 		});
 	}
