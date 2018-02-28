@@ -12,11 +12,26 @@
 
 <body>
 	  <div id="fullwrap">
-		{% block topmenu %}
+
 		<div id ="topmenu">
-			{% include "topmenu.html" %}
+			<div class="wrap-men-el">
+				<a class="men-el" href="{{ url_for('main.main_route') }}">Home</a>
+				<a class="men-el" href="{{ url_for('main.gallery_route', category='patient') }}">Grade</a>
+				<a class="men-el" href="{{ url_for('uploads.main_route') }}">Upload</a>
+			</div>
+	
+			<div class="wrap-men-el" id="topmenu-tools">
+				<div id="toolbarLabel"><span>Toolbar:</span></div>
+				{% block toolbar %}
+				{% endblock %}
+			</div>
+	
+			<div class="wrap-men-el">
+				<a class="men-el" href="{{ url_for('user.main_route') }}">Account</a>
+				<a class="men-el" href="{{ url_for('user.logout_route') }}">Logout</a>
+			</div>
 		</div>
-		{% endblock %}
+
 		<div id="content">
 			{% block content %}{% endblock %}
 		</div>

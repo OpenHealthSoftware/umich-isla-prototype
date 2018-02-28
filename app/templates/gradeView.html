@@ -4,47 +4,26 @@
 <link rel="stylesheet" href="{{url_for('static', filename='css/split.css')}}"/>
 <link rel="stylesheet" href="{{url_for('static', filename='css/index.css')}}"/>
 {% endblock %}
-{% block headnav %}{% endblock %}
+{% block toolbar %}
+	<div class="toolbarEl">
+			<a id="showControlBtn">Show Control</a>
+			<span class="tooltip">Hold down to show the control image</span>
+		</div><!--
+		--><div class="toolbarEl">
+			<a id="toggleGridsBtn" onclick="toggleGrids()">Hide grid</a>
+			<span class="tooltip">Click to hide or show the grid</span>
+		</div><!--
+		--><div class="toolbarEl">
+			<a id="export">Export grade</a>
+			<span class="tooltip">Save the grade data to your computer</span>
+		</div>
+		<!--
+		--><div class="toolbarEl">
+			<a id="highlight">Ungraded</a>
+			<span class="tooltip">Ungraded cells will be outlined in red</span>
+		</div>
+	{% endblock %}
 {% block content %}
-	
-	
-
-	
-	
-	<div id="wrapMenuBar">
-		<div id="dropMenu1" class="wrap-menu  btn-seperator-right">
-			<button id="menuBtn" class="menu-btn">Menu</button>
-			<div id="menuDropdownCont" class="wrap-drop-down">
-				<div id="menuDropdown" class="drop-down">
-					<a href="{{ url_for('main.gallery_route', category='patient') }}"><button class="patient-shade-1">Patients</button></a>
-					<a href="{{ url_for('main.gallery_route', category='control') }}"><button class="control-shade-1">Controls</button></a>
-					<a href="{{ url_for('uploads.main_route') }}"><button>Upload</button></a>
-					<a href="{{ url_for('docs.main_route') }}"><button>Help / Info</button></a>
-				</div>
-			</div>
-		</div> <!-- END #menuBar -->
-
-		<div id="toolbar" class="wrap-menu">
-			<div class="toolbarEl btn-seperator-right">
-				<button id="showControlBtn" class="toolbarEl">Show Control</button>
-				<span class="tooltip">Hold down to show the control image</span>
-			</div><!--
-			--><div class="toolbarEl btn-seperator-right">
-				<button id="toggleGridsBtn" class="toolbarEl" onclick="toggleGrids()">Hide grid</button>
-				<span class="tooltip">Click to hide or show the grid</span>
-			</div><!--
-			--><div class="toolbarEl btn-seperator-right">
-				<button id="export" class="toolbarEl">Export grade</button>
-				<span class="tooltip">Save the grade data to your computer</span>
-			</div>
-			<!--
-			--><div class="toolbarEl btn-seperator-right">
-				<button id="highlight" class="toolbarEl">Ungraded</button>
-				<span class="tooltip">Ungraded cells will be outlined in red</span>
-			</div>
-		</div><!-- END #toolbar -->
-
-	</div><!-- END #wrapMenuBar -->
 
 	<div id="wrapMainScreen">
 		<div id="leftScreen" class="split split-horizontal" >
