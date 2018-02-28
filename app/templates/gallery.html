@@ -1,0 +1,76 @@
+{% extends "base.html" %}
+{% block css %}
+<link rel="stylesheet" href="/static/css/index.css" />
+{% endblock %}
+{% block content %}
+
+
+	{% if category %}
+	<a class="imgCont" id="uploadPrev" onclick="router('upload')">
+		<div id="uploadPrevInner">
+		Upload<br>
+		<svg id="uploadIcon" fill="#C0C0C0" height="48" viewBox="0 0 24 24" width="48">
+			<path d="M19 13h-6v6h-2v-6H5v-2h6V5h2v6h6v2z"/>
+		</svg>
+		</div>
+	</a>
+	{% else %}
+	<a  class="imgPrev" id="uploadPrev" onclick="router('upload')">
+		+
+	</a>
+	{% endif %}
+
+	{% for p in images %}
+	<div id="" class="imgCont">
+		{% set src = url_for('content', filename='uploads/thumbnails/' + p['imgId'] + '.' + p['format']) %}
+		{% if category == 'patient' %}
+		<a href="grade?p={{p['imgId']}}" class="aPrev">
+			<div id="imgPrev{{loop.index}}" class="imgPrev">
+				<img src="{{ src }}">
+			</div>
+			{% if p['referenceName'] %}
+			<p>Reference Name: {{ p['referenceName'] }}</p>
+			{% endif %}
+			<p>UUID: {{ p['imgId'] }}</p>
+		</a>
+		{% if isImageGraded[p['imgId']] %}
+				<div id="" class="wrap-menu" style="width:100%">
+					<button>Grading Info</button>
+					<div id="" class="wrap-drop-down" style="background-color:#eee">
+						<div class="drop-down"><!-- TODO: remove inline -->
+							<h4>Users currently grading:</h4>
+							<ul>
+								{% for g in currentGraders[p['imgId']] %}
+								<li>{{ g['userId'] }} - Session {{ g['sessionId']}}</li>
+								{% endfor %}
+							</ul>
+							{% if finishedGraders[p['imgId']] %}
+							<h4>Users finished grading:</h4>
+							<ul>
+								{% for g in finishedGraders[p['imgId']] %}
+								<li>{{g}}</li>
+								{% endfor %}
+							</ul>
+							{% endif %}
+						</div> <!-- END .wrap-graders-dropdown-list -->
+					</div>
+				
+				</div>
+			{% else %}
+				<button>No grading data</button>
+			{% endif %}
+		{% else %}
+			<div id="imgPrev{{loop.index}}" class="imgPrev">
+				<img src="{{ src }}">
+			</div>
+		{% endif %}
+
+		<form action="{{ url_for('uploads.main_route') }}" method="POST" enctype="multipart/form-data">
+			<input type="hidden" name="op" value="delete">
+			<input type="hidden" name="imgId" value="{{p['imgId']}}">
+			<button disabled>Delete</button>
+			<input type="submit" value="X" style="position:relative;background-color:#ca0b0b;top:-50px;width:25%;right:-75%;"><!-- TODO: quick hack-->
+		</form>
+	</div>
+	{% endfor %}
+{% endblock %}

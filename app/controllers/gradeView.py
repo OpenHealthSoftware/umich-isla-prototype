@@ -20,7 +20,7 @@ NUM_NORM_PREV = 5
 # Effects: forms list of data needs for a page
 def getPageData(imgId):
 
-	user = util.get_current_user()
+	user = session['username']
 	
 	image = getImageData(imgId)
 	if image is None:
@@ -84,6 +84,6 @@ def main_route():
 def get_user_route():
 	rForm = request.form
 	if request.form['caller'] == 'exportGrade':
-		user = util.get_current_user()
+		user = session['username']
 		return jsonify({'user': user})
 	else: return jsonify({'user':'error'})

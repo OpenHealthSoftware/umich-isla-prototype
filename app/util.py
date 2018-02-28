@@ -6,11 +6,6 @@ import sqlFunctions as sql
 import os
 from os.path import isfile
 
-def get_current_user():
-	if config.USER is '':
-		return request.environ['REMOTE_USER'] #valid with cosign login
-	return config.USER
-
 
 def getImagePath(imgId):
 	"""

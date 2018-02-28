@@ -20,7 +20,9 @@ app.register_blueprint(controllers.docs)
 #app.register_blueprint(controllers.account)
 app.register_blueprint(api.api)
 app.register_blueprint(controllers.review)
+app.register_blueprint(controllers.user)
 
+app.secret_key = 'temporary'
 
 # Custom static data
 @app.route('/content/<path:filename>')

@@ -151,7 +151,7 @@ def image_info():
 
 @api.route(urlPrefix + 'grading/save', methods=['POST'])
 def save_grade():
-	user = util.get_current_user()
+	user = session['username']
 	date = datetime.datetime.today().strftime('%Y-%m-%d')
 
 	data = request.get_json()
@@ -189,7 +189,7 @@ def save_grade():
 
 @api.route(urlPrefix + 'grading/load', methods=['GET'])
 def load_grade_route():
-	user = util.get_current_user()
+	user = session['username']
 	rargs = request.args
 	if 'sessionId' not in rargs:
 		return jsonify({'error': 'session id not given'})

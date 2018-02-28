@@ -16,8 +16,8 @@
 			<button id="menuBtn" class="menu-btn">Menu</button>
 			<div id="menuDropdownCont" class="wrap-drop-down">
 				<div id="menuDropdown" class="drop-down">
-					<a href="{{ url_for('main.main_route', gallery='patient') }}"><button class="patient-shade-1">Patients</button></a>
-					<a href="{{ url_for('main.main_route', gallery='control') }}"><button class="control-shade-1">Controls</button></a>
+					<a href="{{ url_for('main.gallery_route', category='patient') }}"><button class="patient-shade-1">Patients</button></a>
+					<a href="{{ url_for('main.gallery_route', category='control') }}"><button class="control-shade-1">Controls</button></a>
 					<a href="{{ url_for('uploads.main_route') }}"><button>Upload</button></a>
 					<a href="{{ url_for('docs.main_route') }}"><button>Help / Info</button></a>
 				</div>

@@ -11,9 +11,9 @@ parser.add_argument('-u', default='devUser', type=str,
 args = parser.parse_args()
 
 # If app is run with development, fake a logged in user
-USER = ''
+DEV_USER = None
 if args.development and args.u:
-    USER = args.u
+    DEV_USER = args.u
 
 
 env = dict(
