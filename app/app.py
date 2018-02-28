@@ -17,10 +17,9 @@ app.register_blueprint(controllers.main)
 app.register_blueprint(controllers.gradeView)
 app.register_blueprint(controllers.uploads)
 app.register_blueprint(controllers.docs)
-#app.register_blueprint(controllers.account)
-app.register_blueprint(api.api)
 app.register_blueprint(controllers.review)
 app.register_blueprint(controllers.user)
+app.register_blueprint(api.api)
 
 app.secret_key = 'temporary'
 

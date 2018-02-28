@@ -51,6 +51,9 @@ def getPageData(imgId):
 @gradeView.route('/grade', methods=['GET', 'POST'])
 def main_route():
 
+	if 'username' not in session:
+		return redirect(url_for('user.login_route'))
+
 	gradeView = True
 	data = {}
 

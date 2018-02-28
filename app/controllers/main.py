@@ -11,17 +11,20 @@ main = Blueprint('main', __name__)
 
 @main.route('/', methods=['GET', 'POST'])
 def main_route():
-	data = {}
-
 
 	if 'username' not in session:
 		return redirect(url_for('user.login_route'))
+
+	data = {}
 
 	return render_template('index.html', **data)
 
 
 @main.route('/gallery', methods=['GET', 'POST'])
 def gallery_route():
+	if 'username' not in session:
+		return redirect(url_for('user.login_route'))
+
 	category = None
 
 	if not request.form and not request.args:
