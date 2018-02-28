@@ -26,7 +26,7 @@ def getPageData(imgId):
 	if image is None:
 		return False
 	gridData = getGridData(imgId)
-	gradeSession = getUnfinishedGradesFromUser(user, imgId)
+	gradeSession = getUnfinishedGradesFromUser(user, imgId=imgId)
 	associatedFeatures = getOptions()
 
 	imgSrc, gridSrc = util.getImagePath(imgId)

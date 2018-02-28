@@ -77,6 +77,9 @@ def getGridData(imgId):
 		results = cursor.fetchone()
 		return results
 
+# TODO: TODO: TODO:
+# FIX/CLEAN ALL THIS
+
 # Sqlite bools are stored as 1 = True, 0 = False
 def getAllGradesFromUser(userId, imgId):
 	cursor.execute('SELECT * FROM gradeFiles WHERE userId=? AND imgId=? ORDER BY gradeId ASC', 
@@ -90,6 +93,13 @@ def getUnfinishedGradesFromUser(userId, imgId):
 		(userId, imgId))
 	results = cursor.fetchall()
 	return results
+
+def getCurrentImages(userId):
+	# get all the images that a user is currently grading
+	#cursor.execute('SELECT DISTINCT * FROM gradeFiles WHERE userId=? AND finishedGrading=0', (userId,))
+	q = 'SELECT gradeFiles.*, images.* FROM gradeFiles INNER JOIN images on gradeFiles.imgId=images.imgId WHERE userId=? AND finishedGrading=0 GROUP BY images.imgId'
+	cursor.execute(q, (userId,))
+	return cursor.fetchall()
 
 def getGradesFromId(gradeId):
 	cursor.execute('SELECT * FROM gradeFiles where gradeId=? LIMIT 1', (gradeId,))

@@ -1,22 +1,38 @@
 {% extends "base.html" %}
 {% block content %}
 
-<div id="" class="">
+<div id="wrap-home" class="">
 
 	<h1>Hello, {{session['username']}}</h1>
-	# images they are currently grading
-	<h1>Continue Grading</h1>
-	<h1>Grading Shortcuts</h1>
 
-	<p>Right Arrow: Next Normal Image</p>
-	<p>Left Arrow: Previous Normal Image</p>
-	<p>On number row</p>
-	<p>1 key: Submit Grade Option 1</p>
-	<p>2 key: Submit Grade Option 2</p>
-	<p>3 Key: Submit Grade Option 3</p>
+	<div>
+		<h2>Continue Grading</h2>
+		<p>Images where you have one or more open grading sessions</p>
+		{% for x in currentImages %}
+			<a class="toGradeLink" href="{{ url_for('gradeView.main_route', p=x['imgId']) }}">{{ x['referenceName'] }}</a>
+		{% endfor %}
+	</div>
+	
+	<br>
 	<hr>
-	<h1>Tips</h1>
-	<p>To turn hover mode back on, click on the cell that is currently graded to "unlock" it</p>
+	<br>
+
+	<h2>Grading Shortcuts</h2>
+	<ul>
+		<li>Right Arrow Key: Next Cell</li>
+		<li>Left Arrow Key: Previous Cell</li>
+		<li>Up Arrow Key: Next control image</li>
+		<li>Down Arrow Key: Previous control image</li>
+		<li>Enter Key: Submit cell grade</li>
+	</ul>
+	<p>On number row</p>
+	<ul>
+		
+		<li>1 key: Select Grade Option 1</li>
+		<li>2 key: Select Grade Option 2</li>
+		<li>3 Key: Select Grade Option 3</li>
+	</ul>
+	
 	<hr>
 	<p>Git Release: {{version}}</p>
 	<p><a href="http://mavcook.com">Maverick Cook</a>, <a href="">Dr. Andrew DeOrio</a></p>

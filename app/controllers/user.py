@@ -18,7 +18,7 @@ def main_route():
 
 @user.route('/login')
 def login_route():
-    if 'REMOTE_USER' in request.environ:
+    if 'REMOTE_USER' in request.environ: # TODO: make sure they actually signed in with cosign
         session['username'] = request.environ['REMOTE_USER']
     elif C.DEV_USER:
         session['username'] = C.DEV_USER

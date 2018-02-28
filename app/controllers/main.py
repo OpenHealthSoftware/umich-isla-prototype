@@ -15,7 +15,9 @@ def main_route():
 	if 'username' not in session:
 		return redirect(url_for('user.login_route'))
 
-	data = {}
+	currentImages = sql.getCurrentImages(session['username'])
+
+	data = {'currentImages': currentImages}
 
 	return render_template('index.html', **data)
 
