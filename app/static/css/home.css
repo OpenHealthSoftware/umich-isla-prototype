@@ -94,3 +94,23 @@ html {
     background-color: #1c1c1c;
     transition: 0.3s;
 }
+
+#banner{
+    width: 100%;
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+}
+.blob {
+    
+    width: 45%;
+    margin: 2.5%;
+    text-align: center;
+    justify-content: center;
+    font-size: 2em;
+    background-color: #b25e07;
+}
+.blob a{
+    text-decoration: none;
+    color: white;
+}

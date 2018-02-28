@@ -15,6 +15,16 @@
 	
 	<br>
 	<hr>
+
+	<div id="banner">
+		<div class="blob">
+			<a href="{{ url_for('main.gallery_route', category='patient') }}"><p>Grade</p>
+		</div>
+		<div class="blob">
+			<a href="{{ url_for('uploads.main_route') }}"><p>Upload</p></a>
+		</div>
+	</div>
+
 	<br>
 
 	<h2>Grading Shortcuts</h2>
@@ -31,10 +41,11 @@
 		<li>1 key: Select Grade Option 1</li>
 		<li>2 key: Select Grade Option 2</li>
 		<li>3 Key: Select Grade Option 3</li>
+		<li>4 Key: Select Grade Option 4</li>
 	</ul>
 	
 	<hr>
 	<p>Git Release: {{version}}</p>
-	<p><a href="http://mavcook.com">Maverick Cook</a>, <a href="">Dr. Andrew DeOrio</a></p>
+	<p><a href="http://mavcook.com">Maverick Cook</a>, <a href="http://www.andrewdeorio.com/">Dr. Andrew DeOrio</a></p>
 </div>
 {% endblock %}

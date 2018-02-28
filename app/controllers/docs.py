@@ -7,12 +7,5 @@ docs = Blueprint('docs', __name__, template_folder='templates', static_folder='s
 
 @docs.route('/help', methods=['GET', 'POST'])
 def main_route():
-	gitTag = None
-	with open(VERSION_FILE, 'r') as f:
-		gitTag = f.readline()
-
-	data = {
-		'version' : gitTag
-	}
-
+	
 	return render_template('docs.html', **data)

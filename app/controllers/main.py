@@ -12,12 +12,16 @@ main = Blueprint('main', __name__)
 @main.route('/', methods=['GET', 'POST'])
 def main_route():
 
+	data = {
+		'version' : C.GIT_TAG
+	}
+
 	if 'username' not in session:
 		return redirect(url_for('user.login_route'))
 
 	currentImages = sql.getCurrentImages(session['username'])
 
-	data = {'currentImages': currentImages}
+	data['currentImages'] = currentImages
 
 	return render_template('index.html', **data)
 
