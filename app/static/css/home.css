@@ -10,7 +10,7 @@ html {
     width: 100%;
     display: flex;
     align-items: center;
-    background: red;
+    background: #1c1c1c;
 }
 
 #topmenu a { text-decoration: none;}
@@ -24,6 +24,8 @@ html {
 
 #topmenu-tools{
     flex: 1;
+    justify-content: center;
+    color: white;
 }
 
 .men-el {
@@ -32,4 +34,46 @@ html {
     background-color: #1c1c1c;
     font-size: 1.2em;
     color: white;
+    transition: 0.3s;
 }
+
+.men-el:hover{
+    background-color: #b25e07;
+}
+
+#toolbarLabel{
+    padding: 7px 25px;
+    background-color: #8a4a07;
+    display: flex;
+}
+.toolbarEl
+{
+	position: relative;
+    margin: 0;
+    padding: 7px 25px;
+    background-color: #b25e07;
+    display: flex;
+    align-items: center;
+    transition: 0.2s;
+}
+.toolbarEl:hover{
+    box-shadow: inset 0 0 0 3px rgba(255, 194, 142, 0.847);
+}
+
+.tooltip
+{
+	visibility: hidden;
+    top: 100%;
+    left: 0;
+    width: 170px;
+    background-color: rgba(128, 128, 128, .6);
+    color: #fff;
+    text-align: center;
+    padding: 5px 0;
+    border-radius: 6px;
+ 
+    position: absolute;
+    z-index: 1;
+}
+.toolbarEl:hover .tooltip { visibility: visible; }
+
