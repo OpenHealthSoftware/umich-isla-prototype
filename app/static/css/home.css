@@ -55,6 +55,7 @@ html {
     display: flex;
     align-items: center;
     transition: 0.2s;
+    cursor: pointer;
 }
 .toolbarEl:hover{
     box-shadow: inset 0 0 0 3px rgba(255, 194, 142, 0.847);

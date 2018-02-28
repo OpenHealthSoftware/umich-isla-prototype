@@ -53,15 +53,14 @@ html, body, #fullwrap
 {
 	position: absolute;
 	width: 100%;
-	height: 100%;
+	height: calc(100% - 32px);
 }
 
 
 
 #wrapMainScreen
 {
-	height: calc(100% - var(--menu-height) - 20px);
-	margin-top: var(--menu-height);
+	height: 100%;
 	padding: 10px;
 }
 
@@ -456,8 +455,8 @@ input[type=button]:hover, input[type=submit]:hover, input[type=reset]:hover, but
 .checkbox
 {
 	position: absolute;
-	width: calc(var(--slim-el-height) - 8px);
-	height: calc(var(--slim-el-height) - 8px);
+	width: var(--slim-el-height);
+	height: var(--slim-el-height);
 	padding: 4px;
 	background-color:#808080;
 	cursor: pointer;
@@ -624,7 +623,7 @@ input[type=button]:hover, input[type=submit]:hover, input[type=reset]:hover, but
 
 #wrap-grades
 {
-	height: calc(100% - 430px);
+	height: calc(100% - 400px);
 	width: 100%;
 	color: white;
 }
