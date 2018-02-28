@@ -1,0 +1,35 @@
+*, *:before, *:after {
+    box-sizing: inherit;
+}
+
+html {
+    box-sizing: border-box;
+}
+
+#topmenu {
+    width: 100%;
+    display: flex;
+    align-items: center;
+    background: red;
+}
+
+#topmenu a { text-decoration: none;}
+
+.wrap-men-el {
+    display: flex;
+    margin-right: 15px;
+}
+
+.wrap-men-el:last-child { margin-right: 0;}
+
+#topmenu-tools{
+    flex: 1;
+}
+
+.men-el {
+    padding: 7px 25px;
+    margin: 0;
+    background-color: #1c1c1c;
+    font-size: 1.2em;
+    color: white;
+}

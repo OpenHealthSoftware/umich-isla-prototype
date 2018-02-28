@@ -2,6 +2,7 @@
 <html lang="en">
 <head>
 	<link rel="stylesheet" href="{{url_for('static', filename='css/jquery-ui.min.css')}}"/>
+	<link rel="stylesheet" href="{{url_for('static', filename='css/home.css')}}"/>	
 	<link rel="stylesheet" href="{{url_for('static', filename='css/style.css')}}"/>
 	<link rel="stylesheet" href="{{url_for('static', filename='css/uploads.css')}}"/>
 	{% block css %}{% endblock %}
@@ -11,9 +12,9 @@
 
 <body>
 	  <div id="fullwrap">
-		  {% block headnav %}
-		<div id ="headnav">
-			{% include "headnav.html" %}
+		{% block topmenu %}
+		<div id ="topmenu">
+			{% include "topmenu.html" %}
 		</div>
 		{% endblock %}
 		<div id="content">

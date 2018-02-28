@@ -1,0 +1,20 @@
+{% block header %}
+
+		<div class="wrap-men-el">
+			<a class="men-el" href="{{ url_for('main.main_route') }}">Home</a>
+
+			<a class="men-el" href="{{ url_for('main.gallery_route', category='patient') }}">Grade</a>
+
+			<a class="men-el" href="{{ url_for('uploads.main_route') }}">Upload</a>
+		</div>
+
+		<div class="wrap-men-el" id="topmenu-tools">
+			Tools
+		</div>
+
+		<div class="wrap-men-el">
+			<a class="men-el" href="{{ url_for('user.main_route') }}">Account</a>
+			<a class="men-el" href="{{ url_for('user.logout_route') }}">Logout</a>
+		</div>
+
+{% endblock %}
