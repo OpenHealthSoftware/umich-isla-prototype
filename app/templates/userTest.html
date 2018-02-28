@@ -1,0 +1,11 @@
+{% extends "base.html" %}
+{% block content %}
+<form method="POST">
+	<input id="refName" type="text" name="refName" value="">
+	<input id="upload" type="submit" value="Upload">
+</form>
+
+{% if thing %}
+{{ thing }}
+{% endif %}
+{% endblock %}
