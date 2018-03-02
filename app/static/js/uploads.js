@@ -162,6 +162,7 @@ function submitPositionClick()
 						},
 				type: 'POST',
 				success: function(response) {
+					uncacheURL(uploadMainImg.attr('src'));
 					$('#closeBtn').prop('disabled', false);
 					$('#loading').hide();
 					$('#continueOptions').show();
@@ -179,3 +180,13 @@ function submitPositionClick()
 }
 
 
+
+
+function uncacheURL(url){
+	// once the image is uploaded, the server modifies it, and the browser doens't
+	// reflect the changes since the image gets cached
+	var xhr = new XMLHttpRequest();
+	xhr.open("GET", url, true);
+	xhr.setRequestHeader("Cache-Control", "max-age=0");
+	xhr.send();
+}
