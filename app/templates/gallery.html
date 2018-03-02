@@ -50,7 +50,7 @@
 			</div>
 		{% endif %}
 
-		<form action="{{ url_for('uploads.main_route') }}" method="POST" enctype="multipart/form-data">
+		<form class="deleteImg" action="{{ url_for('uploads.main_route') }}" method="POST" enctype="multipart/form-data">
 			<input type="hidden" name="op" value="delete">
 			<input type="hidden" name="imgId" value="{{p['imgId']}}">
 			<button disabled>Delete</button>
@@ -58,4 +58,8 @@
 		</form>
 	</div>
 	{% endfor %}
+{% endblock %}
+
+{% block js %}
+<script src="{{url_for('static', filename='js/gallery.js')}}"></script>
 {% endblock %}
