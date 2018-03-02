@@ -26,6 +26,7 @@
 .patient-shade-2{ background-color: var(--patient-shade-2); }
 .control-shade-1{ background-color: var(--control-shade-1); }
 .control-shade-2{ background-color: var(--control-shade-2); }
+.dark-button{ background-color: var(--dark-button); }
 
 html, body, #fullwrap
 {

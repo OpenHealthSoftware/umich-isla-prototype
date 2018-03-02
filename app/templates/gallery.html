@@ -6,7 +6,7 @@
 
 
 	{% for p in images %}
-	<div id="" class="imgCont">
+	<div class="imgCont">
 		{% set src = url_for('content', filename='uploads/thumbnails/' + p['imgId'] + '.' + p['format']) %}
 		{% if category == 'patient' %}
 		<form class="deleteImg" action="{{ url_for('uploads.main_route') }}" method="POST" enctype="multipart/form-data">
@@ -24,9 +24,9 @@
 			<p>UUID: {{ p['imgId'] }}</p>
 		</a>
 		{% if isImageGraded[p['imgId']] %}
-				<div id="" class="wrap-menu" style="width:100%">
-					<button>Grading Info</button>
-					<div id="" class="wrap-drop-down" style="background-color:#eee">
+				<div class="wrap-menu" style="width:100%">
+					<button class="dark-button">Grading Info</button>
+					<div class="wrap-drop-down" style="background-color:#eee">
 						<div class="drop-down"><!-- TODO: remove inline -->
 							<h4>Users currently grading:</h4>
 							<ul>
@@ -47,7 +47,7 @@
 				
 				</div>
 			{% else %}
-				<button>No grading data</button>
+				<button class="dark-button">No grading data</button>
 			{% endif %}
 		{% else %}
 			<div id="imgPrev{{loop.index}}" class="imgPrev">
