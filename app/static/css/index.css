@@ -1,5 +1,6 @@
 .imgCont
 {
+	position: relative;
 	width: 25.33%;
 	float: left;
 	margin: 4%;
@@ -60,4 +61,21 @@
 {
 	height: 100px;
 	overflow-y: auto;
+}
+
+
+
+
+.deleteImg{
+	background-color:#ca0b0b;
+	position: absolute;
+	width: 30px;
+	top: 0;
+	right: 0;
+}
+.deleteImg input{
+	margin: 0;
+	width: inherit;
+	padding: 0;
+	background-color: inherit !important;
 }

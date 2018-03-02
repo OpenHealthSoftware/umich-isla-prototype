@@ -9,6 +9,11 @@
 	<div id="" class="imgCont">
 		{% set src = url_for('content', filename='uploads/thumbnails/' + p['imgId'] + '.' + p['format']) %}
 		{% if category == 'patient' %}
+		<form class="deleteImg" action="{{ url_for('uploads.main_route') }}" method="POST" enctype="multipart/form-data">
+			<input type="hidden" name="op" value="delete">
+			<input type="hidden" name="imgId" value="{{p['imgId']}}">
+			<input type="submit" value="X">
+		</form>
 		<a href="grade?p={{p['imgId']}}" class="aPrev">
 			<div id="imgPrev{{loop.index}}" class="imgPrev">
 				<img src="{{ src }}">
@@ -50,12 +55,7 @@
 			</div>
 		{% endif %}
 
-		<form class="deleteImg" action="{{ url_for('uploads.main_route') }}" method="POST" enctype="multipart/form-data">
-			<input type="hidden" name="op" value="delete">
-			<input type="hidden" name="imgId" value="{{p['imgId']}}">
-			<button disabled>Delete</button>
-			<input type="submit" value="X" style="position:relative;background-color:#ca0b0b;top:-50px;width:25%;right:-75%;"><!-- TODO: quick hack-->
-		</form>
+		
 	</div>
 	{% endfor %}
 {% endblock %}
