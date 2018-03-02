@@ -19,7 +19,9 @@ var KEYS = {
 	three: 51,
 	four: 52,
 	left: 37,
+	up: 38,
 	right: 39,
+	down: 40,
 	shift: 16,
 	spacebar: 32,
 	enter: 13
@@ -46,6 +48,12 @@ function keydownRouter(e)
 			break;
 		case KEYS.right:
 			gotoCell('next');
+			break;
+		case KEYS.up:
+			getNextControl(1);
+			break;
+		case KEYS.down:
+			getNextControl(-1);
 			break;
 		case KEYS.enter:
 			submitGrade();
