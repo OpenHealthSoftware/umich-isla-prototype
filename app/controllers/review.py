@@ -16,3 +16,13 @@ def main_route():
 		return redirect(url_for('user.login_route'))
 
 	return 'hello'
+
+
+@review.route('/overview', methods=['GET', 'POST'])
+def overview_route():
+	if 'username' not in session:
+		return redirect(url_for('user.login_route'))
+
+	# api, on front end: get all grade files that are finished
+
+	return 'hello'

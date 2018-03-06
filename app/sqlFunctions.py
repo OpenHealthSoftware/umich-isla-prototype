@@ -111,6 +111,42 @@ def getGradeInfo(imgId, user, sid):
 	results = cursor.fetchone()
 	return results
 
+def dictionaryToQuery(**kwargs):
+	
+	# Creates data for sqlite query from a dictionary (kwargs)
+	# returns
+	# searchConditions: a list formatted for sqlite escaping. ie. [imgId=?, sessionId=?]
+	# searchVals = a list of values that corresponds to the placeholders in the query string
+	searchConditions = []
+	searchVals = []
+	for key in kwargs:
+		value = kwargs[key]
+		if isinstance(value, list):
+			for el in value:
+				searchConditions.append(str(key) + '=?')
+				searchVals.append(el)
+		else:
+			searchConditions.append(str(key) + '=?')
+			searchVals.append(value)
+
+	return searchConditions, searchVals
+			
+
+def getGradeInfoAnd(selectCols=['*'], **kwargs):
+	# allows for a chained AND query into gradeFiles table
+	# selectCols = list of columns to select
+	query = 'SELECT ' + ','.join(selectCols) + ' FROM gradeFiles'
+	searchConditions, values = dictionaryToQuery(**kwargs)
+	searchConditions = ' AND '.join(searchConditions)
+	if len(values) > 0:
+		query += ' WHERE ' + searchConditions
+
+	print('sql.getGradeInfoAnd:', kwargs, query, values)
+	
+	cursor.execute(query, tuple(values))
+	return cursor.fetchall()
+
+
 def getGradeInfoForImage(imgId, excludeFinished=None):
 	optional = ''
 	if excludeFinished == True:

@@ -187,24 +187,31 @@ def save_grade():
 	# TODO: ^^^ unneccesary response data after first request
 
 
+def getGradeJson(fileId):
+	filepath = os.path.join(conf.FILE_PATHS['grades'], fileId)
+	
+	if os.path.isfile(filepath) == False:
+		return {'error': 'Grade file not found - ' + filepath}
+
+	return json.load(open(filepath, 'r'))
+
 @api.route(urlPrefix + 'grading/load', methods=['GET'])
 def load_grade_route():
 	user = session['username']
-	rargs = request.args
-	if 'sessionId' not in rargs:
-		return jsonify({'error': 'session id not given'})
-	if 'imgId' not in rargs:
-		return jsonify({'error': 'image id not given'})
-		
+	rargs = request.args.to_dict(flat=False) # from immutable multidict
+	
+	if 'currentUser' in rargs and rargs['currentUser'][0] == 'true':
+		del rargs['currentUser']
+		rargs['userId'] = user
+	
+	grades = sql.getGradeInfoAnd(**rargs)
+	
+	response = {}
+	for entry in grades:
+		gradeJson = getGradeJson(entry['gradeFile'])
+		response[entry['gradeId']] = gradeJson
 
-	gradeRow = sql.getGradeInfo(rargs['imgId'], user, rargs['sessionId'])
-	filepath = os.path.join(conf.FILE_PATHS['grades'], gradeRow['gradeFile'])
-
-	if os.path.isfile(filepath) == False:
-		return jsonify({'error': 'Grade file not found - ' + filepath})
-
-	gradeJSON = json.load(open(filepath, 'r'))
-	return jsonify(gradeJSON)
+	return jsonify(response)
 
 
 

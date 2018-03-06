@@ -951,15 +951,15 @@ function loadPreviousGrades()
 	{
 		$.ajax({
 			url: '/api/v1/grading/load',
-			data: { sessionId : ses, imgId: IMG_ID },
+			data: { sessionId : ses, imgId: IMG_ID, currentUser: true},
 			type: 'GET',
 			dataType: 'JSON',
 			success:  function(resp)
 			{
 				print('LOAD GRADE RESP', resp);
 
-				GRADE_DATA.grades = resp.grades;
-				GRADE_DATA.globals.grader = resp.globals.grader;
+				GRADE_DATA.grades = resp[ses].grades;
+				GRADE_DATA.globals.grader = resp[ses].globals.grader;
 				gridder.loadCellGrades(GRADE_DATA.grades);
 			},
 			error: function(err){ print('Load grade error', err); },
