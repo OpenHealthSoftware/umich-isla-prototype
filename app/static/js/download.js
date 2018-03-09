@@ -1,6 +1,5 @@
 print = console.log;
 var GRADE_SESSIONS;
-var READY = false;
 
 $.ajax({
 	url: '/api/v1/grading/load',
@@ -11,7 +10,7 @@ $.ajax({
 	success: function(response) {
 		print('Load grades:', response);
 		GRADE_SESSIONS = response;
-		READY = true;
+        init();
 	},
 	error: function(error) {
 		print(error);
@@ -19,25 +18,37 @@ $.ajax({
 });
 
 
-$('#download').click(function(){init()});
+
 
 function init(){
     for (var s in GRADE_SESSIONS){
-        exportData = GRADE_SESSIONS[s];
 
-        csvs = generateCSV(exportData)
-
-        var link = document.createElement("a");
-        var encodedURI = encodeURI(csvs);
-        link.setAttribute("href", "data:application/octet-stream," + encodedURI);
-
-        var grader = exportData.globals.grader;
-        var imgId = exportData.globals.imgId;
-        var date = new Date().toISOString();
-        link.setAttribute("download", date + '_' + grader + '_' + imgId +".csv");
-
-        link.click();
+        var btn = $('<button>', {class: 'download', id: s});
+        btn.html('Download ' + GRADE_SESSIONS[s].globals.imgId);
+        btn.on('click', function(){
+            download($(this).attr('id'));
+        });
+        $('#holder').append(btn);
     }
+}
+
+
+function download(session){
+    print('Downloading session' + session.toString());
+    exportData = GRADE_SESSIONS[session];
+
+    csvs = generateCSV(exportData)
+
+    var link = document.createElement("a");
+    var encodedURI = encodeURI(csvs);
+    link.setAttribute("href", "data:application/octet-stream," + encodedURI);
+
+    var grader = exportData.globals.grader;
+    var imgId = exportData.globals.imgId;
+    var date = new Date().toISOString();
+    link.setAttribute("download", date + '_' + grader + '_' + imgId +".csv");
+
+    link.click();
 }
 
 function generateCSV(gradeData)
