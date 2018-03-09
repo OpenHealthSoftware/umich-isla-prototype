@@ -1,0 +1,12 @@
+{% extends "base.html" %}
+{% block content %}
+<div id="" class="">
+    <br/>
+    <br/>
+	<button id="download">Download</button>
+</div>
+{% endblock %}
+
+{% block js %}
+<script src="{{url_for('static', filename='js/download.js')}}"></script>
+{% endblock %}

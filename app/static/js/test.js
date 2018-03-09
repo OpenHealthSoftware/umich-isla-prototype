@@ -1010,9 +1010,21 @@ function generateCSV()
 	var allGrades = GRADE_DATA.grades;
 	for (var i in allGrades)
 	{
-		for (var j in allGrades[i].grades)
-			headers[allGrades[i].grades[j].headerName] = null;
+		grade_i = allGrades[i].grades;
+		for (var valueIdx in grade_i)
+			headers[grade_i[valueIdx].headerName] = null;
 	}
+	headers['Feature - Artifact'] = null;
+	headers['Feature - Capillary dilatation'] = null;
+	headers['Feature - Capillary loss'] = null;
+	headers['Feature - IRMA'] = null;
+	headers['Feature - Leakage'] = null;
+	headers['Feature - Microaneurysms'] = null;
+	headers['Feature - Narrowing'] = null;
+	headers['Feature - New vessel'] = null;
+	headers['Feature - Not sure'] = null;
+	headers['Feature - Pruning'] = null;
+	headers['Feature - Vessel staining'] = null;
 
 	var csvStr = '';
 	var gridCellGrades = GRADE_DATA.grades;
@@ -1022,6 +1034,9 @@ function generateCSV()
 		cellMeta = gridCellGrades[cell].meta;
 
 		var row = [];
+
+		row.push(GRADE_DATA.globals.imgId);
+		row.push(cell);
 
 		Object.keys(headers).sort().forEach(function(key, x){
 
@@ -1047,7 +1062,7 @@ function generateCSV()
 		var rowStr = row.join(',') + '\n';
 		csvStr += rowStr;
 	}
-	csvStr = Object.keys(headers).sort().join(',') + ',' + 
+	csvStr = 'ImgId,CellId,' + Object.keys(headers).sort().join(',') + ',' + 
 		Object.keys(getMetaData()).sort().join(',') + '\n' + csvStr;
 
 	// TODO: GRADE_DATA.globals values

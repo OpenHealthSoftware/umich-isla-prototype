@@ -25,4 +25,14 @@ def overview_route():
 
 	# api, on front end: get all grade files that are finished
 
-	return 'hello'
+	return render_template('overview.html')
+
+
+@review.route('/downloadFinished', methods=['GET', 'POST'])
+def download_route():
+	if 'username' not in session:
+		return redirect(url_for('user.login_route'))
+
+	# api, on front end: get all grade files that are finished
+
+	return render_template('download.html')
