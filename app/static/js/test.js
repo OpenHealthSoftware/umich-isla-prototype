@@ -772,6 +772,17 @@ function gotoCell(targetCell)
 
 
 // GRADING ############################################
+var testing = null;
+$('input[name=grade]').on('click', function(){
+	if ($(this).attr('id') === 'gradeHypoPerf')
+	{
+		$('#hypoperfused-grade-options').show();
+	}
+	else{
+		$('#hypoperfused-grade-options').hide();
+	}
+});
+
 function submitGrade()
 {
 	var metaData = getMetaData();
@@ -804,9 +815,17 @@ function submitGrade()
 	for (var i = 0; i < recordedInputs.length; i++)
 	{
 		var input = recordedInputs[i];
+		var finalValue = input.value;
+
+		// quick hack for adding hypo-perfused percentages ########################################################
+		if (input.id === 'gradeHypoPerf')
+		{
+			finalValue = $('input[name=hypo-grade]:checked').val();
+		}
+
 		var g = { 
 			inputId: input.id, 
-			value: input.value,
+			value: finalValue,
 			headerName: input.getAttribute('data-grade-header')
 		};
 		cellGrades.push(g);
@@ -881,6 +900,8 @@ function updateGrades(gradeData)
 function resetGrades()
 {
 	var inputs = $('.submit-input-container input');
+	$('input[name=hypo-grade]').prop('checked', false);
+	$('#hypoperfused-grade-options').hide();
 	// TODO: duplicated code
 
 	inputs.each(function()
@@ -890,7 +911,7 @@ function resetGrades()
 		else
 			$(this).val('');
 	});
-	$('.checkbox-selected, .button-selected').removeClass(SELECTED_INPUT_CLASSES);		
+	$('.checkbox-selected, .button-selected').removeClass(SELECTED_INPUT_CLASSES);
 }
 
 
@@ -957,9 +978,9 @@ function loadPreviousGrades()
 			success:  function(resp)
 			{
 				print('LOAD GRADE RESP', resp);
-
-				GRADE_DATA.grades = resp[ses].grades;
-				GRADE_DATA.globals.grader = resp[ses].globals.grader;
+				
+				GRADE_DATA.grades = resp.grades;
+				GRADE_DATA.globals.grader = resp.globals.grader;
 				gridder.loadCellGrades(GRADE_DATA.grades);
 			},
 			error: function(err){ print('Load grade error', err); },

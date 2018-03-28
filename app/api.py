@@ -200,6 +200,7 @@ def load_grade_route():
 	user = session['username']
 	rargs = request.args.to_dict(flat=False) # from immutable multidict
 	
+	# currentUser is a flag to load grades for whatever user sent this request
 	if 'currentUser' in rargs and rargs['currentUser'][0] == 'true':
 		del rargs['currentUser']
 		rargs['userId'] = user
@@ -210,6 +211,12 @@ def load_grade_route():
 	for entry in grades:
 		gradeJson = getGradeJson(entry['gradeFile'])
 		response[entry['gradeId']] = gradeJson
+
+	# TODO: redo this function / make well-defined api functionality
+	# this means a user is trying to load only one session, so they should get only one result
+	if 'sessionId' in rargs:
+		gradeId = list(response.keys())[0]
+		response = response[gradeId]
 
 	return jsonify(response)
 

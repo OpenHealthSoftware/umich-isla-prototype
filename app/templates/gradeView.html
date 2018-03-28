@@ -90,6 +90,20 @@
 
 				<div id="wrap-grades" class="margin-bottom-small">
 
+					<div id="hypoperfused-grade-options" style="display: flex; display: none;">
+						<input type="radio" class='input-required' name="hypo-grade" value="hypo-perfused 1-25%" id="hypo25">
+						<label for="hypo25" class="">1-25% Perfused</label>
+						
+						<input type="radio" class='input-required' name="hypo-grade" value="hypo-perfused 26-50%" id="hypo50">
+						<label for="hypo50" class="">26-50% Perfused</label>
+						
+						<input type="radio" class='input-required' name="hypo-grade" value="hypo-perfused 51-75%" id="hypo75">
+						<label for="hypo75" class="">51-75% Perfused</label>
+						
+						<input type="radio" class='input-required' name="hypo-grade" value="hypo-perfused 76-100%" id="hypo100">
+						<label for="hypo100" class="">76-100% Perfused</label>
+					</div>
+
 					<div class="wrap-grades-input submit-input-container">
 						
 						
@@ -98,10 +112,10 @@
 						<input type="radio" class='input-required' name="grade" value="non-perfused" id="gradeNonPerf" data-tostyle="label[for='gradeNonPerf']" data-grade-header="Perfusion Value">
 						<input type="radio" class='input-required' name="grade" value="NA" id="gradeNA" data-tostyle="label[for='gradeNA']" data-grade-header="Perfusion Value">
 						<div class="flex-radio-row">
-						<label for="gradePerf" id="holla" class="button btn-row-el selectable-button color-hl-dark">Perfused</label>
-						<label for="gradeHypoPerf" class="button btn-row-el selectable-button color-hl-dark">Hypoperfused</label>
-						<label for="gradeNonPerf" class="button btn-row-el selectable-button color-hl-dark">Non-Perfused</label>
-						<label for="gradeNA" class="button btn-row-el selectable-button color-hl-dark">NA / Ungradeable</label>
+							<label for="gradePerf" id="holla" class="button btn-row-el selectable-button color-hl-dark">Perfused</label>
+							<label for="gradeHypoPerf" class="button btn-row-el selectable-button color-hl-dark">Hypo-perfused</label>
+							<label for="gradeNonPerf" class="button btn-row-el selectable-button color-hl-dark">Non-Perfused</label>
+							<label for="gradeNA" class="button btn-row-el selectable-button color-hl-dark">NA / Ungradeable</label>
 						</div>
 						<div id="wrap-associatedFeatures" class="flex-wrap-row-centered">
 							{% for a in associatedFeatures %}
@@ -115,7 +129,7 @@
 						</div>
 
 					</div>
-
+					
 					<button id="submitGrade" class="color-hl-light">Submit</button>
 				
 				</div><!--END #wrap-grades -->
@@ -179,8 +193,8 @@
 		<h3>It looks like you have graded this image before. You can select from some of your saved data or start a new session.</h3>
 		<form id="loadGradeForm">
 			{% for g in gradeSessions %}
-			<input type="radio" name="gradeSession" value={{g['gradeId']}} id="{{g['gradeId']}}">
-			<label for="{{g['gradeId']}}">Time: {{g['timestamp']}} UTC  |  Cells Graded: {{g['cellsGraded']}}  |  Session: {{g['sessionId']}}</label><br/>
+			<input type="radio" name="gradeSession" value={{g['sessionId']}} id="{{g['sessionId']}}">
+			<label for="{{g['sessionId']}}">Time: {{g['timestamp']}} UTC  |  Cells Graded: {{g['cellsGraded']}}  |  Session: {{g['sessionId']}}</label><br/>
 			{% endfor %}
 			<input type="radio" name="gradeSession" value="-1" id="newOption">
 			<label for="newOption">New grading session</label>
