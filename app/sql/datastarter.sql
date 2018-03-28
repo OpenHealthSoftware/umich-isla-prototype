@@ -15,13 +15,14 @@ INSERT INTO "optionType" (name, description) VALUES
 ('Capillary loss', 'Patches of absent capillary net. Should be in sharp contrast to nearby clearly visible capillary nets.'),
 ('Capillary dilatation', 'Broadening of the vessel caliber.'),
 ('IRMA', 'Abnormally branched vessels which appear as shunts for poorly perfused areas.'),
-('Narrowing', 'Decreased vessel caliber with short.'),
+('Vessel Narrowing', 'Decreased vessel caliber with short.'),
 ('Pruning', 'Terminal perpendicular side branches.'),
 ('Vessel staining', 'Increased permeability of vessel wall visible when the arteriolar segment appears more hyperflorescent than adjacent segments. Margins remain distinct.'),
 ('Leakage', 'Abnormal pooling of dye from abnormal blood vessels. Seen as gradual enlargement and blurring of vessel margins.'),
 ('New vessel', 'Perfuse haze of intense hyperflorescent leakage in late-phase.'),
 ('Artifact', 'Photographic artifact i.e. lashes.'),
 ('Microaneurysms', ''),
+('Venous beading', ''),
 ('Not sure', '');
 
 INSERT INTO "optionExamples" (type, filename, format) VALUES
