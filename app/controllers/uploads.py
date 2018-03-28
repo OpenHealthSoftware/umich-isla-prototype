@@ -31,7 +31,7 @@ def getExtension(filename):
 # Effects: returns filename in the format [username]_[albumname]_[md5(prevString)]
 #TODO: doesnt do effects above?
 def generateFilename(filename):
-	return str(uuid.uuid4())
+	return str(uuid.uuid4())[:13]
 
 # TODO: move more appropriate
 # Effects: returns the related file paths for a given image id

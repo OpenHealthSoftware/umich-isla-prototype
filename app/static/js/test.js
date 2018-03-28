@@ -874,9 +874,12 @@ function getMetaData()
 {
 	GRADE_CELL_TIMEEND = new Date().getTime();
 	var gradingTime = (GRADE_CELL_TIMEEND - GRADE_CELL_TIMESTART) / 1000; // unit=seconds
+	var controlSrc = COMP_IMG.attr('src');
+	controlSrc = controlSrc.split('/');
+	controlSrc = controlSrc[controlSrc.length - 1];
 
 	var d = {
-		comparisonImg: COMP_IMG.attr('src'),
+		comparisonImg: controlSrc,
 		brightness:  BRIGHT_SLIDE.slider('value'),
 		time: gradingTime
 	}
