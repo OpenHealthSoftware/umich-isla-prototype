@@ -10,6 +10,7 @@ import config as C
 import math
 import uuid
 import util
+import shutil
 
 uploads = Blueprint('uploads', __name__)
 
@@ -88,6 +89,8 @@ def uploadImg(request, category):
 		# save to server
 		filepath = os.path.join(upFolder, filename + '.' + fileExt)
 		fileObj.save(filepath)
+		# backup of original
+		shutil.copy(filepath, os.path.join(upFolder, 'original'))
 		
 		# make thumbnail
 		thumb = Image.open(os.path.join(upFolder, filename + '.' + fileExt))
@@ -236,7 +239,7 @@ def createGriddedImage(foveaCoords, discCoords, imgId, category, insertToDB=True
 	eyeWidth = 24.0 #mm, typical eye diameter
 	percentDist = (foveaToDisk / eyeWidth) * .57
 
-	distance = abs(foveaCoords[0] - discCoords[0])
+	distance = abs(math.hypot(foveaCoords[0] - discCoords[0], foveaCoords[1] - discCoords[1]))	
 	gridWidth = distance / percentDist
 	gridHeight = (gridWidth / grid.size[0]) * grid.size[1]
 	gridHeight = int(gridHeight)

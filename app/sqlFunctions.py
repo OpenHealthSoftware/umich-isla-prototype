@@ -22,7 +22,7 @@ if isfile(DATABASE_PATH) == False:
 	with open('sql/datastarter.sql', 'r') as f:
 		sp.call([sqlite, DATABASE_PATH], stdin=f)
 
-conn = sqlite3.connect('database.db', check_same_thread=False)
+conn = sqlite3.connect(DATABASE_PATH, check_same_thread=False)
 conn.row_factory = dict_factory
 cursor = conn.cursor()
 conn.execute('PRAGMA foreign_keys = ON')
