@@ -664,6 +664,7 @@ var GRADE_DATA = {
 	globals: {
 		grader: '',
 		sessionId: -1,
+		gradeId: -1,
 		patientInfo: [],
 		imgId: IMG_ID,
 		totalCells: 0,
@@ -974,7 +975,9 @@ function updateGradesCSS(inputEl)
 function loadPreviousGrades()
 {
 	var ses = $('#loadGradeForm input[name=gradeSession]:checked').val();
+	var gradeUUID = $('#loadGradeForm input[name=gradeSession]:checked').attr('data-grade-uuid');
 	GRADE_DATA.globals.sessionId = ses;
+	GRADE_DATA.globals.gradeId = gradeUUID;
 
 	if (ses != -1) // load grade
 	{
@@ -987,8 +990,8 @@ function loadPreviousGrades()
 			{
 				print('LOAD GRADE RESP', resp);
 				
-				GRADE_DATA.grades = resp.grades;
-				GRADE_DATA.globals.grader = resp.globals.grader;
+				GRADE_DATA.grades = resp[gradeUUID].grades;
+				GRADE_DATA.globals.grader = resp[gradeUUID].globals.grader;
 				gridder.loadCellGrades(GRADE_DATA.grades);
 			},
 			error: function(err){ print('Load grade error', err); },

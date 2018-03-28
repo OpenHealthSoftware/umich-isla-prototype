@@ -193,7 +193,7 @@
 		<h3>It looks like you have graded this image before. You can select from some of your saved data or start a new session.</h3>
 		<form id="loadGradeForm">
 			{% for g in gradeSessions %}
-			<input type="radio" name="gradeSession" value={{g['sessionId']}} id="{{g['sessionId']}}">
+			<input type="radio" name="gradeSession" value={{g['sessionId']}} id="{{g['sessionId']}}" data-grade-uuid="{{g['gradeId']}}">
 			<label for="{{g['sessionId']}}">Time: {{g['timestamp']}} UTC  |  Cells Graded: {{g['cellsGraded']}}  |  Session: {{g['sessionId']}}</label><br/>
 			{% endfor %}
 			<input type="radio" name="gradeSession" value="-1" id="newOption">

@@ -212,12 +212,6 @@ def load_grade_route():
 		gradeJson = getGradeJson(entry['gradeFile'])
 		response[entry['gradeId']] = gradeJson
 
-	# TODO: redo this function / make well-defined api functionality
-	# this means a user is trying to load only one session, so they should get only one result
-	if 'sessionId' in rargs:
-		gradeId = list(response.keys())[0]
-		response = response[gradeId]
-
 	return jsonify(response)
 
 
