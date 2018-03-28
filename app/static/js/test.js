@@ -790,7 +790,15 @@ function submitGrade()
 	// check for required inputs
 	var reqRadioSelector = 'input[class=input-required]:radio';
 	var reqCheckSelector = 'input[class=input-required]:checkbox';
-	// TODO: check other input types	
+	
+	// TODO: fix quick hack
+	if ($('input[name=hypo-grade]:checked').val() == undefined && $('#gradeHypoPerf').prop('checked') === true)
+	{
+		print('Required input not filled');
+		$('#notif').html('Required input not selected!');
+		return -1;
+	}
+	// TODO: check other input types
 	if ($(reqRadioSelector).length !== 0 && $(reqRadioSelector + ':checked').length === 0)
 	{
 		print('Required input not filled');
