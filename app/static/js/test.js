@@ -1252,5 +1252,20 @@ function getNextControl(direction) //, side
 
 // Menu tools #############################################
 // show/hide grid
-// show control
+
+
+// show control image only while button is held down
+$('#showControlBtn').mousedown(function(){
+	$('#mainControl').css('opacity', '1');
+});
+$('#showControlBtn').mouseup(function(){
+	$('#mainControl').css('opacity', '0');
+});
+
 // toggle grade indicator
+$('#toggleGridsBtn').click(function(){
+	toggleGrids();
+});
+function toggleGrids(){
+	$('#grid').toggle();
+}
