@@ -50,7 +50,9 @@ def getImages(**kwargs):
 		params = ' AND '.join(params) # only ands for now :(
 		selector += params
 	args = tuple(kwargs.values())
-	cursor.execute('SELECT * FROM images ' + selector + ' ORDER BY uploadDate DESC', args)
+	#cursor.execute('SELECT * FROM images ' + selector + ' ORDER BY uploadDate DESC', args)
+	# temp for study
+	cursor.execute('SELECT * FROM images ' + selector + ' ORDER BY RANDOM()', args)
 	results = cursor.fetchall()
 	return results
 
