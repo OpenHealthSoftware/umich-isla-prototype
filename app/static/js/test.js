@@ -24,7 +24,8 @@ var KEYS = {
 	down: 40,
 	shift: 16,
 	spacebar: 32,
-	enter: 13
+	enter: 13,
+	tilde: 192
 }
 
 function keydownRouter(e)
@@ -60,7 +61,10 @@ function keydownRouter(e)
 			break;
 		case KEYS.shift:
 			break;
-		case KEYS.spacebar:
+		case KEYS.tilde:
+			cycleHypoPerfusion();
+			break;
+		case KEYS.tab:
 			break;
 	}
 }
@@ -74,6 +78,26 @@ function selectPrimaryGrade(optionIndex)
 	radioForm[optionIndex].click();
 }
 
+
+function cycleHypoPerfusion(){
+	if ($('#hypoperfused-grade-options').is(':visible') === false)
+		return;
+	
+	var radioGroup = $('input[type=radio][name=hypo-grade]');
+	var btnToCheck = null;
+	var nextOne = false;
+
+	radioGroup = radioGroup.toArray();
+	var currentIdx = 0;
+	for (var i = 0; i < radioGroup.length; i++){
+		if (radioGroup[i].checked === true)
+			currentIdx = i;
+	}
+
+	var newIdx = (currentIdx + 1) % radioGroup.length;
+	$('input[type=radio][name=hypo-grade]').blur();
+	radioGroup[newIdx].checked = true;
+}
 
 
 class Cell
@@ -782,6 +806,14 @@ $('input[name=grade]').on('click', function(){
 	else{
 		$('#hypoperfused-grade-options').hide();
 	}
+});
+
+$('.flex-radio-row label').each(function(){
+
+	$(this).on('dblclick', function(){
+		submitGrade();
+	});
+
 });
 
 function submitGrade()
