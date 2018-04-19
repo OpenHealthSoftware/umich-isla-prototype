@@ -1,6 +1,8 @@
 print = console.log;
 var GRADE_SESSIONS;
 
+// TODO: do server side instead
+
 $.ajax({
 	url: '/api/v1/grading/load',
 	data: { 
@@ -39,14 +41,15 @@ function download(session){
 
     csvs = generateCSV(exportData)
 
-    var link = document.createElement("a");
+    var link = document.createElement('a');
     var encodedURI = encodeURI(csvs);
-    link.setAttribute("href", "data:application/octet-stream," + encodedURI);
+    link.setAttribute('href', 'data:application/octet-stream,' + encodedURI);
 
     var grader = exportData.globals.grader;
     var imgId = exportData.globals.imgId;
-    var date = new Date().toISOString();
-    link.setAttribute("download", date + '_' + grader + '_' + imgId +".csv");
+	var date = new Date().toISOString();
+	date = date.split(':')[0];
+    link.setAttribute('download', date + '_' + imgId + '_' + grader + '.csv');
 
     link.click();
 }
@@ -71,11 +74,12 @@ function generateCSV(gradeData)
 	headers['Feature - IRMA'] = null;
 	headers['Feature - Leakage'] = null;
 	headers['Feature - Microaneurysms'] = null;
-	headers['Feature - Narrowing'] = null;
+	headers['Feature - Vessel Narrowing'] = null;
 	headers['Feature - New vessel'] = null;
 	headers['Feature - Not sure'] = null;
 	headers['Feature - Pruning'] = null;
 	headers['Feature - Vessel staining'] = null;
+	headers['Feature - Venous beading'] = null;
 
 	var csvStr = '';
 	var gridCellGrades = gradeData.grades;
@@ -87,6 +91,7 @@ function generateCSV(gradeData)
 		var row = [];
 
 		row.push(gradeData.globals.imgId);
+		row.push(gradeData.globals.referenceName);
 		row.push(cell);
 
 		Object.keys(headers).sort().forEach(function(key, x){
@@ -113,10 +118,9 @@ function generateCSV(gradeData)
 		var rowStr = row.join(',') + '\n';
 		csvStr += rowStr;
 	}
-	csvStr = 'ImgId,CellId,' + Object.keys(headers).sort().join(',') + ',' + 
+	csvStr = 'ImgId,Reference Name,CellId,' + Object.keys(headers).sort().join(',') + ',' + 
 		Object.keys(cellMeta).sort().join(',') + '\n' + csvStr;
 
 	// TODO: GRADE_DATA.globals values
 	return csvStr;
 }
-

@@ -160,6 +160,7 @@ def save_grade():
 	numValidCells = data['globals']['totalValidCells']
 	sessionId = data['globals']['sessionId']
 	imgId = data['globals']['imgId']
+	data['globals']['referenceName'] = sql.getImageData(imgId)['referenceName']
 	gradeData = data['grades']
 	cellsGraded = len(gradeData)
 	print(numValidCells, totalCells, cellsGraded)
@@ -194,6 +195,7 @@ def getGradeJson(fileId):
 		return {'error': 'Grade file not found - ' + filepath}
 
 	return json.load(open(filepath, 'r'))
+	
 
 @api.route(urlPrefix + 'grading/load', methods=['GET'])
 def load_grade_route():
@@ -210,6 +212,7 @@ def load_grade_route():
 	response = {}
 	for entry in grades:
 		gradeJson = getGradeJson(entry['gradeFile'])
+		gradeJson['globals']['referenceName'] = sql.getImageData(entry['imgId'])['referenceName']
 		response[entry['gradeId']] = gradeJson
 
 	return jsonify(response)
