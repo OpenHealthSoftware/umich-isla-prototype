@@ -41,20 +41,39 @@ function download(session){
 
     csvs = generateCSV(exportData)
 
-    var link = document.createElement('a');
-    var encodedURI = encodeURI(csvs);
-    link.setAttribute('href', 'data:application/octet-stream,' + encodedURI);
-
     var grader = exportData.globals.grader;
     var imgId = exportData.globals.imgId;
 	var date = new Date().toISOString();
 	date = date.split(':')[0];
-    link.setAttribute('download', date + '_' + imgId + '_' + grader + '.csv');
+   	filename = date + '_' + imgId + '_' + grader + '.csv';
+	
+	downloadFile(csvs, filename);
+}
+
+function downloadAll(){
+	fullCSV = '';
+	includeHead = true;
+	for (var s in GRADE_SESSIONS){
+		fullCSV += generateCSV(GRADE_SESSIONS[s], includeRowHeader=includeHead);
+		includeHead = false;
+	}
+	var date = new Date().toISOString();
+	date = date.split(':')[0];
+	downloadFile(fullCSV, date + '_all.csv');
+}
+
+function downloadFile(content, filename){
+	var link = document.createElement('a');
+    var encodedURI = encodeURI(content);
+    link.setAttribute('href', 'data:application/octet-stream,' + encodedURI);
+
+    link.setAttribute('download', filename);
 
     link.click();
 }
 
-function generateCSV(gradeData)
+
+function generateCSV(gradeData, includeRowHeader=true)
 {
 	// imguuid, cellid, grade1, grade2,...graden, meta1, meta2,...metan
 	// option to remove grade_data.global values in export
@@ -92,6 +111,7 @@ function generateCSV(gradeData)
 
 		row.push(gradeData.globals.imgId);
 		row.push(gradeData.globals.referenceName);
+		row.push(gradeData.globals.grader);
 		row.push(cell);
 
 		Object.keys(headers).sort().forEach(function(key, x){
@@ -118,8 +138,9 @@ function generateCSV(gradeData)
 		var rowStr = row.join(',') + '\n';
 		csvStr += rowStr;
 	}
-	csvStr = 'ImgId,Reference Name,CellId,' + Object.keys(headers).sort().join(',') + ',' + 
-		Object.keys(cellMeta).sort().join(',') + '\n' + csvStr;
+	if (includeRowHeader === true)
+		csvStr = 'ImgId,ReferenceName,Grader,CellId,' + Object.keys(headers).sort().join(',') + ',' + 
+			Object.keys(cellMeta).sort().join(',') + '\n' + csvStr;
 
 	// TODO: GRADE_DATA.globals values
 	return csvStr;
