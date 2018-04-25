@@ -6,6 +6,7 @@ import config as C
 import hashlib
 import os
 import util
+import gradeData
 
 review = Blueprint('review', __name__)
 
@@ -33,6 +34,9 @@ def download_route():
 	if 'username' not in session:
 		return redirect(url_for('user.login_route'))
 
-	# api, on front end: get all grade files that are finished
+	if 'master' in request.args:
+		filepath = gradeData.generateMasterCSV()
+		return send_file(filename_or_fp=filepath, as_attachment=True, attachment_filename=filepath.split('/')[-1])
 
+	# api, on front end: get all grade files that are finished
 	return render_template('download.html')

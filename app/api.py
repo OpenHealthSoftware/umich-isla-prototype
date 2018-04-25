@@ -7,6 +7,7 @@ import config as conf
 import datetime
 import gridProcessing
 from PIL import Image
+import gradeData
 
 api = Blueprint('api', __name__)
 
@@ -188,14 +189,7 @@ def save_grade():
 	# TODO: ^^^ unneccesary response data after first request
 
 
-def getGradeJson(fileId):
-	filepath = os.path.join(conf.FILE_PATHS['grades'], fileId)
-	
-	if os.path.isfile(filepath) == False:
-		return {'error': 'Grade file not found - ' + filepath}
 
-	return json.load(open(filepath, 'r'))
-	
 
 @api.route(urlPrefix + 'grading/load', methods=['GET'])
 def load_grade_route():
@@ -211,7 +205,7 @@ def load_grade_route():
 	
 	response = {}
 	for entry in grades:
-		gradeJson = getGradeJson(entry['gradeFile'])
+		gradeJson = gradeData.getGradeJson(entry['gradeFile'])
 		gradeJson['globals']['referenceName'] = sql.getImageData(entry['imgId'])['referenceName']
 		response[entry['gradeId']] = gradeJson
 
