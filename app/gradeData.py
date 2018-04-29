@@ -24,6 +24,8 @@ def addConstantFields(dict, gradeJson):
 	dict['imgId'] = gradeJson['globals']['imgId']
 	if 'referenceName' in gradeJson['globals']:
 		dict['referenceName'] = gradeJson['globals']['referenceName']
+	else:
+		dict['referenceName'] = sql.getImageData(dict['imgId'])['referenceName']
 	dict['grader'] = gradeJson['globals']['grader']
 	dict['sessionId'] = gradeJson['globals']['sessionId']
 
