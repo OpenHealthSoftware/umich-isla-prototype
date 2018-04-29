@@ -52,7 +52,7 @@ def createTableData(fileId):
 
 		row = rowTemplate.copy()
 		cellGrade = gradeJson['grades'][cellId]
-		
+		row['cellId'] = cellId
 		for grade in cellGrade['grades']:
 			row[grade['headerName']] = grade['value']
 		
