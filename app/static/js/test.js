@@ -345,6 +345,7 @@ function focusCell(cell)
 	cell.draw();
 	resetGrades();
 	updateGrades(cell.grades);
+	$('#cellNumber').html(cell.id);
 }
 
 

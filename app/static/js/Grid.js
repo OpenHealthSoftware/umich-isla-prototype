@@ -407,6 +407,26 @@ class RegionDivider
 		c.fillRect(center.x - (w/2), center.y - (h/2), w, h);
 	}
 
+	identifyCell(cellId, clear=false){
+		var center = this.cells[cellId].getCenter();
+		var canv = this.canvas[0];
+		var c = canv.getContext('2d');
+		if (clear === true)
+			c.clearRect(0,0, canv.width, canv.height);
+
+		c.fillStyle = 'red';
+		c.textAlign = 'center';
+		c.font = "12px Arial";
+		c.fillText(cellId,center.x, center.y);
+	}
+
+	identifyCells(){
+
+		for (var i in this.cells){
+			this.identifyCell(i);
+		}
+	}
+
 	highlightGraded()
 	{
 		for (var i in this.cells)

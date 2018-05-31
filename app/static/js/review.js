@@ -14,7 +14,7 @@ function init()
 {
 	gridder = new RegionDivider(MAIN_IMAGE, GRID_CELL_COORDS);
 	var htmlTemplate = { elType: '<area>', id: 'cell_?', shape: 'poly', coords: null};
-
+	
 	gridder.makeHTML($('#wrap-mainImg'), 'append', htmlTemplate);
 
 	gridder.updateHTML();
