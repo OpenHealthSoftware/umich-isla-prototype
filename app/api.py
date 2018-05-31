@@ -189,6 +189,11 @@ def save_grade():
 	# TODO: ^^^ unneccesary response data after first request
 
 
+# TODO: cleanup
+@api.route(urlPrefix + 'grading/loadGrid', methods=['GET'])
+def testing():
+	startCoords = gridProcessing.processImageGrid(conf.FILE_PATHS['grid']['analysis'])
+	return jsonify(startCoords)
 
 
 @api.route(urlPrefix + 'grading/load', methods=['GET'])

@@ -6,6 +6,26 @@
 		3. gradable: 
 
 </div>
+
+<!-- reload / new request-->
+<select multiple name="graders">
+	{% for grader in graders %}
+	<option value="{{ grader }}">{{grader}}</option>
+	{% endfor %}
+</select>
+
+<select multiple name="images">
+	{% for i in images %}
+	<option value="{{ i['imgId'] }}">{{i['referenceName']}}</option>
+	{% endfor %}
+</select>
+
+<!-- Live changes -->
+<!-- TODO: grade options from somewhere -->
+<input type="radio" name="grade" value="all"> Perfused<br>
+<input type="radio" name="grade" value="female"> Female<br>
+<input type="radio" name="grade" value="other"> Other
+
 {% endblock %}
 
 {% block js %}

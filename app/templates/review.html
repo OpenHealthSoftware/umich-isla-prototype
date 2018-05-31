@@ -1,0 +1,105 @@
+{% extends "base.html" %}
+{% block css %}
+<link rel="stylesheet" href="{{url_for('static', filename='css/carousel.css')}}"/>
+<link rel="stylesheet" href="{{url_for('static', filename='css/split.css')}}"/>
+<link rel="stylesheet" href="{{url_for('static', filename='css/index.css')}}"/>
+{% endblock %}
+{% block content %}
+
+	<div id="wrapMainScreen">
+		
+		{% if gradeSessions %}
+		{% set lock = 'lock' %}
+		{% endif %}
+
+		<div id="leftScreen" class="split split-horizontal {{lock}}" >
+			<div id="fullView">
+
+				<div style="position:relative;" id="wrap-mainImg">
+					<img  id="mainFA_image" class="pic" src="{{ imgSrc }}">
+					<img src="{{ gridSrc }}" id="grid" class="pic overlay grid" usemap="#wrap-mainImg_gridMap" style="display:block">
+					<!-- <canvas id="mainFA_canvas" class="traceCanvas" width="0" height="0"></canvas> -->
+				</div>
+				<div id="mainControl">
+					<img id="controlImg" class="pic" src="">
+					<!--<img id="controlGrid" class="pic overlay grid" src="" >-->
+					<canvas id="norm_canvas" class="traceCanvas" width="0" height="0"></canvas>
+					<h2 style="position:absolute;color:white;top:10px;">Control Image</h2>										
+				</div>
+
+			</div>
+		</div>
+
+		<div id="rightScreen" class="split split-horizontal {{lock}}" >
+
+			<div>
+				<h3>Grade</h3>
+					<input type="radio" name="grade" value="all" id="gradePerf">all<br>
+					<input type="radio" name="grade" value="perfused" id="gradePerf">perfused<br>
+					<input type="radio" name="grade" value="hypo-perfused 1-25%">hypo-perfused 1-25%<br>
+					<input type="radio" name="grade" value="hypo-perfused 26-50%">hypo-perfused 26-50%<br>
+					<input type="radio" name="grade" value="hypo-perfused 51-75%">hypo-perfused 51-75%<br>
+					<input type="radio" name="grade" value="hypo-perfused 76-100%">hypo-perfused 76-100%<br>
+					<input type="radio" name="grade" value="non-perfused" id="gradeNonPerf">non-perfused<br>
+					<input type="radio" name="grade" value="NA">NA<br>
+			</div>
+			<div id="wrap-graderList">
+				<h3>Grader</h3>
+				<input type="radio" name="grader" value="all">all<br>
+				
+			</div>
+		</div><!-- END #rightScreen -->
+
+		<div id="wrapSideBar"></div><!-- END #wrapSideBar -->
+	</div><!-- END #wrapMainScreen -->
+
+	<div id="wrapStatusBar"></div><!-- END #wrapStatusBar -->
+	
+	<div id="viewFrameCont" class="popup">
+		<div id="exitFrame" class="exitFrame"><button id="closeBtn">Close</button></div>
+		<div id="viewFrame" class="viewFrame"></div>
+	</div>
+
+	
+
+	
+	<map name="map" id="gridMap">
+	{# {% for i in coords %}
+		<area id="cell_{{loop.index}}" shape="poly" coords="{{i}}" >
+	{% endfor %} #}
+	</map>
+
+
+
+
+{% endblock %}
+
+
+{% block js %}
+<script src="{{url_for('static', filename='js/carousel.js')}}"></script>
+<script src="{{url_for('static', filename='js/split.min.js')}}"></script>
+<script src="{{url_for('static', filename='js/review.js')}}" type="module"></script>
+<!-- <script src="{{url_for('static', filename='js/uploads.js')}}"></script> -->
+<script>
+
+$('document').ready()
+{
+	
+	var gutterSize = 7;
+
+	var leftRightScreenSplit = Split(['#leftScreen', '#rightScreen'], { 
+		sizes : [45,55], 
+		gutterSize: gutterSize,
+		onDragEnd : function(){
+			resize();
+			// if (hasCellBeenDrawn == true)
+			// 	drawCellManager(currentCell);
+		},
+		
+	});
+
+	
+}
+</script>
+
+{% endblock %}

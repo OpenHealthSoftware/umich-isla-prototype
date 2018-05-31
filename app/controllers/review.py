@@ -16,7 +16,13 @@ def main_route():
 	if 'username' not in session:
 		return redirect(url_for('user.login_route'))
 
-	return 'hello'
+
+	data = {
+		'imgSrc': url_for('content', filename=C.FILE_PATHS['grid']['analysis']),
+		'gridSrc': ''
+	}
+
+	return render_template('review.html', **data)
 
 
 @review.route('/overview', methods=['GET', 'POST'])
