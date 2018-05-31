@@ -1,5 +1,5 @@
 var print = console.log;
-import {RegionDivider, Cell} from './Grid.js';
+// import {RegionDivider, Cell} from './Grid.js';
 
 
 // function for getting URL parameters
