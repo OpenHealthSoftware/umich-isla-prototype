@@ -68,9 +68,9 @@ $('document').ready(function(){
 	});
 
 
-	$('input').change(function(){
-		drawHeatmap();
-	});
+	// $('input').change(function(){
+	// 	drawHeatmap();
+	// });
 
 });
 
@@ -140,6 +140,9 @@ function createGraderList(gradeSessions){
 		$('#wrap-graderList').append("<br>");
 	}
 	
+	$('input').change(function(){
+		drawHeatmap();
+	});
 }
 
 
