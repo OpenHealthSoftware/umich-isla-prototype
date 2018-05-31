@@ -86,9 +86,12 @@ function drawHeatmap(grader=$('input[name=grader]:checked').val(), gradedValue=$
 
 	var drawnCells = 0;
 	var totalCells = 0;
+	
 	for (var s in GRADE_SESSIONS){
 
-		if (GRADE_SESSIONS[s].globals['grader'] !== grader && grader !== 'all')
+		if (GRADE_SESSIONS[s].globals['grader'] === grader || grader === 'all')
+			1+1;
+		else
 			continue;
 
 		for (var i in GRADE_SESSIONS[s].grades)
