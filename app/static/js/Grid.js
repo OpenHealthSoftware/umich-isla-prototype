@@ -462,4 +462,4 @@ class RegionDivider
 		}
 	}
 }
-export { RegionDivider, Cell };
+// export { RegionDivider, Cell };
