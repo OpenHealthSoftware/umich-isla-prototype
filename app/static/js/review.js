@@ -1,5 +1,6 @@
 import {RegionDivider, Cell} from './Grid.js';
 print = console.log;
+
 var GRADE_SESSIONS;
 var GRID_CELL_COORDS;
 var MAIN_IMAGE;
@@ -9,9 +10,6 @@ var WRAP_CONTROLCANVAS;
 var gridder;
 
 
-
-
-
 function init()
 {
 	gridder = new RegionDivider(MAIN_IMAGE, GRID_CELL_COORDS);
@@ -19,18 +17,11 @@ function init()
 
 	gridder.makeHTML($('#wrap-mainImg'), 'append', htmlTemplate);
 
-	
-
 	gridder.updateHTML();
-	
-	// window.onresize = function(){ resize(); };
-	
-	
-	
-	drawHeatmap();
-	
-}
+	window.onresize = function(){ resize(); };
 
+	drawHeatmap();
+}
 
 
 
@@ -77,17 +68,15 @@ $('document').ready(function(){
 	});
 
 
-	$('input').change(function()
-	{
-		var selectedGrade = $('input[name=grade]:checked').val();
-		var selectedGrader = $('input[name=grader]:checked').val();
-		drawHeatmap(selectedGrader, selectedGrade);
+	$('input').change(function(){
+		drawHeatmap();
 	});
-	
+
 });
 
 
-function drawHeatmap(grader='all', gradedValue='all'){
+
+function drawHeatmap(grader=$('input[name=grader]:checked').val(), gradedValue=$('input[name=grade]:checked').val()){
 	var numImgs = Object.keys(GRADE_SESSIONS).length;
 	var numGraders = $('input[name=grader]').length - 1;
 	var percent = 1.0 / (numImgs * numGraders);
@@ -112,7 +101,27 @@ function drawHeatmap(grader='all', gradedValue='all'){
 			}
 			totalCells += 1;
 		}
-    }
+	}
+
+	$('#info').html('Cells drawn: ' + drawnCells.toString() + '/' + totalCells.toString());
+
+	$('#canvasLegend canvas').each(function(){
+		var canv = $(this)[0];
+		var ctx = canv.getContext('2d');
+		ctx.clearRect(0,0, canv.width, canv.height);
+		ctx.beginPath();
+		ctx.fillStyle = '#fff';
+		ctx.fillRect(0,0,canv.width, canv.height);
+
+
+		percent = parseFloat($(this).attr('data-percent'));
+		var count = percent * totalCells;
+		$(this).next('span').html(count);
+		ctx.beginPath();
+		ctx.fillStyle = 'rgba(255,0,0,' + percent.toString() + ')';
+		ctx.fillRect(5,5,canv.width-10,canv.height-10);
+		
+	});
 }
 
 
@@ -130,4 +139,12 @@ function createGraderList(gradeSessions){
 		$('#wrap-graderList').append("<br>");
 	}
 	
+}
+
+
+
+function resize()
+{
+	gridder.resize();
+	drawHeatmap();
 }

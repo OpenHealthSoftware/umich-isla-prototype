@@ -31,10 +31,17 @@
 		</div>
 
 		<div id="rightScreen" class="split split-horizontal {{lock}}" >
-
+			<h2>Counts across all images</h2>
+			<div id="canvasLegend">
+				<canvas width="50" height="50" data-percent="0"></canvas><span id=""></span> cells
+				<canvas width="50" height="50" data-percent=".25"></canvas><span id=""></span> cells
+				<canvas width="50" height="50" data-percent=".5"></canvas><span id=""></span> cells
+				<canvas width="50" height="50" data-percent="1"></canvas><span id=""></span> cells
+			</div>
+			
 			<div>
 				<h3>Grade</h3>
-					<input type="radio" name="grade" value="all" id="gradePerf">all<br>
+					<input type="radio" name="grade" value="all" id="gradePerf" checked>all<br>
 					<input type="radio" name="grade" value="perfused" id="gradePerf">perfused<br>
 					<input type="radio" name="grade" value="hypo-perfused 1-25%">hypo-perfused 1-25%<br>
 					<input type="radio" name="grade" value="hypo-perfused 26-50%">hypo-perfused 26-50%<br>
@@ -45,9 +52,11 @@
 			</div>
 			<div id="wrap-graderList">
 				<h3>Grader</h3>
-				<input type="radio" name="grader" value="all">all<br>
+				<input type="radio" name="grader" value="all" checked>all<br>
 				
 			</div>
+			<hr/>
+			<p id="info"></p>
 		</div><!-- END #rightScreen -->
 
 		<div id="wrapSideBar"></div><!-- END #wrapSideBar -->
