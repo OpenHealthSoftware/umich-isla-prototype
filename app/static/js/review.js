@@ -88,18 +88,19 @@ function drawHeatmap(grader=$('input[name=grader]:checked').val(), gradedValue=$
 	var totalCells = 0;
 	for (var s in GRADE_SESSIONS){
 
-		if (GRADE_SESSIONS[s].globals['grader'] !== grader && grader !== 'all')
-			return;
+		if (GRADE_SESSIONS[s].globals['grader'] === grader || grader === 'all')
+		{
 
-		for (var i in GRADE_SESSIONS[s].grades)
-        {
-			var grade = GRADE_SESSIONS[s].grades[i].grades;
-			if (grade[0]['value'] === gradedValue || gradedValue === 'all'){
-				var colr = 'rgba(255,0,0,' + percent.toString() + ')';
-				gridder.shadeCell(i, colr, false);
-				drawnCells += 1;
+			for (var i in GRADE_SESSIONS[s].grades)
+			{
+				var grade = GRADE_SESSIONS[s].grades[i].grades;
+				if (grade[0]['value'] === gradedValue || gradedValue === 'all'){
+					var colr = 'rgba(255,0,0,' + percent.toString() + ')';
+					gridder.shadeCell(i, colr, false);
+					drawnCells += 1;
+				}
+				totalCells += 1;
 			}
-			totalCells += 1;
 		}
 	}
 
