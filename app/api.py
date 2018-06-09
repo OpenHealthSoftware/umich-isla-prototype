@@ -71,12 +71,12 @@ def control_route():
 		# get grid data
 		qr = sql.getGridData(img['imgId'])
 
-		src = util.getImagePath(img['imgId'])
+		src = util.getImagePath(img['imgId']) # TODO: this doesnt make sense
 		
 		response = {
 			'src' : url_for('content', filename=src),
 			'id' : img['imgId'],
-			'x' : qr['xOffsetPerc'], 
+			'x' : qr['xOffsetPerc'],
 			'y' : qr['yOffsetPerc'],
 			'scaleRatio': qr['scaleRatio']
 		}

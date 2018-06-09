@@ -4,23 +4,29 @@ import config as C
 from os.path import isfile
 #from extensions import db
 
+DATABASE_PATH = 'database.db'
+
 def dict_factory(cursor, row):
 	d = {}
 	for idx, col in enumerate(cursor.description):
 		d[col[0]] = row[idx]
 	return d
-DATABASE_PATH = 'database.db'
 
 
-if isfile(DATABASE_PATH) == False:
+def initDatabase():
 	import subprocess as sp
 	print('No database found at:', DATABASE_PATH)
-	print('Running database creation commands')
+	print('Running database creation commands\n\n')
 	sqlite = 'sqlite3'
 	with open('sql/databasecreate.sql', 'r') as f:
 		sp.call([sqlite, DATABASE_PATH], stdin=f)
 	with open('sql/datastarter.sql', 'r') as f:
 		sp.call([sqlite, DATABASE_PATH], stdin=f)
+	
+
+if isfile(DATABASE_PATH) == False:
+	initDatabase()
+
 
 conn = sqlite3.connect(DATABASE_PATH, check_same_thread=False)
 conn.row_factory = dict_factory

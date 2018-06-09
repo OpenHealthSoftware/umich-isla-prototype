@@ -33,23 +33,7 @@ def getExtension(filename):
 def generateFilename(filename):
 	return str(uuid.uuid4())[:13]
 
-# TODO: move more appropriate
-# Effects: returns the related file paths for a given image id
-def getFilePathsForImage(imgId):
-	paths = {}
-	imgData = getImageData(imgId)
-	baseImgFilename = imgId + '.' + imgData['format']
-	if imgData['category'] == C.imgCategories['control']:
-		paths['img'] = os.path.join(C.FILE_PATHS['control'], baseImgFilename)
-	elif imgData['category'] == C.imgCategories['patient']:
-		paths['img'] = os.path.join(C.FILE_PATHS['patient'], baseImgFilename)
-		paths['grid'] = os.path.join(C.FILE_PATHS['patient'], C.GRID_PREFIX + baseImgFilename)
-		gradeFiles = getGradeFilesFromImgId(imgId) #sql returns list of tuples
-		grades = [os.path.join(C.FILE_PATHS['grades'], i[0]) for i in gradeFiles]
-		paths['grades'] = grades
-	paths['thumbnail'] = os.path.join(THUMBNAIL_PATH, baseImgFilename)
-	return paths
-	
+
 # Requires: request object, type of img upload (patient or normal)
 # Effects: Uploads valid file to server and updates database
 def uploadImg(request, category):
@@ -100,28 +84,6 @@ def uploadImg(request, category):
 	return filepath, filename
 
 
-def deleteImg(imgId):
-
-	paths = getFilePathsForImage(imgId)
-	deleteEntry('grids', 'imgId', imgId) #TODO: cascade doesnt seem to be working properly
-	deleteEntry('gradeFiles', 'imgId', imgId)
-	deleteEntry('images', 'imgId', imgId)
-
-	for pathType in paths:
-		entry = paths[pathType]
-		if isinstance(entry, list):
-			for i in entry:
-				try:
-					os.remove(i)
-				except:
-					print('Couldn\'t delete file', i)
-		else:
-			try:
-				os.remove(entry)
-			except:
-				print('Couldn\'t delete file', entry)
-	return 0
-
 
 
 @uploads.route('/uploads', methods=['GET', 'POST'])
@@ -161,7 +123,7 @@ def main_route():
 				elif category == C.imgCategories['control']:
 					folderPath = C.FILE_PATHS['control']
 		elif 'op' in form and form['op'] == 'delete':
-			deleteImg(form['imgId'])
+			util.deleteImg(form['imgId'])
 			return redirect(url_for('gradeView.main_route'))
 			
 

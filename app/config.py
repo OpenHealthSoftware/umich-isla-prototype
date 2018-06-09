@@ -1,5 +1,6 @@
 import argparse
 import os
+import pathlib
 
 # Create and handle command line arguments
 parser = argparse.ArgumentParser(description='Kellogg Eye Web App')
@@ -50,6 +51,15 @@ GRID_FORMAT = '.png'
 
 
 
-GIT_TAG = ''
-with open(VERSION_FILE, 'r') as f:
-	GIT_TAG = f.readline()
+GIT_TAG = 'None'
+if os.path.exists(VERSION_FILE):
+    with open(VERSION_FILE, 'r') as f:
+        GIT_TAG = f.readline()
+
+
+
+def initFolders():
+    # creates all the necessary folders from a clean repo
+    for x in FILE_PATHS:
+        if x not in ['grid', 'library']:
+            pathlib.Path(FILE_PATHS[x]).mkdir(parents=True, exist_ok=True)
