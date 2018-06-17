@@ -5,6 +5,9 @@ ISLA is a web application designed for methodically labeling subdivisions (or ce
 
 Data collected from grading can then be downloaded into a CSV file for analysis.
 
+## Background
+This application was originally developed by Maverick Cook under the guide of Dr. Andrew DeOrio in collaboration with the Kellogg Eye Center. The application was an effort to create a consistent and quantifiable diagnosis for diabetic retinopathy.
+
 # Developer
 To work on this project, you should be familiar with making a basic web application. EECS-485 would provide a great understanding of the project.
 

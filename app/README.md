@@ -16,6 +16,7 @@ python initial_setup.py
 ```
 ## Running tests
 ## Contributing
+The master branch is for live deployment on the server. Do not merge code here unless it works. Development should be done on the 'dev' branch / branches off of 'dev'.
 
 
 # Grid
@@ -29,7 +30,7 @@ This app uses sqlite3 for its database, which is stored as just one file 'app/da
 All the data a grader enters for a session is saved as a json file on the server under app/uploads/grades/. These are kept track of in the database, so each file corresponds to a given grading session.
 
 # Server
-Email help@eecs.umich.edu for access, or any questions.
+**Email help@eecs.umich.edu for access, or any questions.**
 The server is running Ubuntu 16.04 for an OS. 
 
 Server: Apache, Phussion Passenger
@@ -43,6 +44,15 @@ cd /w/app
 git pull
 git describe > version.txt
 ../conf/reload.sh
+```
+
+## Python3
+To make sure the server uses python3, make python3 first in the PATH for python, or update the apache config file as shown [here](https://www.phusionpassenger.com/library/config/apache/reference/#passengerpython)
+In our case, edit '/etc/apache2/sites-available/maverick-ssl.conf'
+
+Virtualenv is a pain to set up with passenger, so if python3 is not the default python, then you will need to make sure the necessary packages are installed on the system under python3.
+```
+pip3 install -r pipreqs.txt
 ```
 
 ## Additional info
