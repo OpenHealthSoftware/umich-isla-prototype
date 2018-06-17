@@ -145,3 +145,4 @@ def generateGrid(startRadius, deltaRadius, numberOfRings, outputFile=None):
 if __name__ == '__main__':
 	# run example
 	generateGrid(40,80,3, outputFile='grid.svg')
+	

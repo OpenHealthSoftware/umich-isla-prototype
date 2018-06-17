@@ -57,6 +57,7 @@ if os.path.exists(VERSION_FILE):
         GIT_TAG = f.readline()
 
 
+STUDY_MODE = False
 
 def initFolders():
     # creates all the necessary folders from a clean repo
