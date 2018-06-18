@@ -18,6 +18,13 @@ python initial_setup.py
 ## Contributing
 The master branch is for live deployment on the server. Do not merge code here unless it works. Development should be done on the 'dev' branch / branches off of 'dev'.
 
+## Saving / Resetting
+If a round of grading has been finished, or you just want to reset the server, you should backup the following:
+```
+app/database.db
+app/uploads/*
+```
+And that should be it. Then you can delete those files and run inital_setup.py to reset.
 
 # Grid
 ## Formats
@@ -34,6 +41,7 @@ All the data a grader enters for a session is saved as a json file on the server
 The server is running Ubuntu 16.04 for an OS. 
 
 Server: Apache, Phussion Passenger
+
 Cosign: for umich user authentication (weblogin)
 
 ## Quickstart
