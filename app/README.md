@@ -46,6 +46,12 @@ git describe > version.txt
 ../conf/reload.sh
 ```
 
+## Tips
+See output of web app
+```
+sudo tail -40 /var/log/apache2/passenger.log
+```
+
 ## Python3
 To make sure the server uses python3, make python3 first in the PATH for python, or update the apache config file as shown [here](https://www.phusionpassenger.com/library/config/apache/reference/#passengerpython)
 In our case, edit '/etc/apache2/sites-available/maverick-ssl.conf'

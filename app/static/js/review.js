@@ -20,10 +20,29 @@ function init()
 	gridder.updateHTML();
 	window.onresize = function(){ resize(); };
 
+	var numSessions = Object.keys(GRADE_SESSIONS).length;
+	var imgIds = {};
+	var graders = {};
+	for (var s in GRADE_SESSIONS){
+		var info = GRADE_SESSIONS[s]['globals'];
+		imgIds[info['imgId']] = 0;
+		graders[info['grader']] = 0;
+	}
+	var numImgs = Object.keys(imgIds).length;
+	var numGraders = Object.keys(graders).length;
+	
+	$('#breakdown').html('{0} total images. {1} grade sessions among {2} graders'.format(numImgs, numSessions, numGraders));
+
 	drawHeatmap();
 }
 
-
+String.prototype.format = function() {
+	a = this;
+	for (k in arguments) {
+		a = a.replace("{" + k + "}", arguments[k])
+	}
+	return a
+}
 
 $('document').ready(function(){
 	CELL_CANVAS = document.getElementById('cellViewCanvas');
@@ -79,32 +98,56 @@ $('document').ready(function(){
 function drawHeatmap(grader=$('input[name=grader]:checked').val(), gradedValue=$('input[name=grade]:checked').val()){
 	var numImgs = Object.keys(GRADE_SESSIONS).length;
 	var numGraders = $('input[name=grader]').length - 1;
-	var percent = 1.0 / (numImgs * numGraders);
+	var totalGradeSessions = numImgs * numGraders;
+	var scale = $('input[name=scale]:checked').val();
+	countsPerCell = {};
+
+	for (var s in GRADE_SESSIONS){
+
+		if (GRADE_SESSIONS[s].globals['grader'] === grader || grader === 'all')
+		{
+			for (var i in GRADE_SESSIONS[s].grades)
+			{
+				var grade = GRADE_SESSIONS[s].grades[i].grades;
+				if (grade[0]['value'] === gradedValue || gradedValue === 'all'){
+					if (!(i in countsPerCell))
+						countsPerCell[i] = 0;
+					countsPerCell[i] = countsPerCell[i] + 1;
+				}
+			}
+		}
+	}
+	var maxCount = 0;
+	for (var i  in countsPerCell)
+	{
+		if (countsPerCell[i] > maxCount)
+			maxCount = countsPerCell[i];
+	}
+	var percent = 0;
+	if (scale === 'global')
+		percent = 1.0 / totalGradeSessions;
+	else
+		percent = 1.0 / maxCount;
+
 
 	// clear canvas
 	gridder.shadeCell(0, 'rgba(0,0,0,0)', true);
 
 	var drawnCells = 0;
-	var totalCells = 0;
-	for (var s in GRADE_SESSIONS){
-
-		if (GRADE_SESSIONS[s].globals['grader'] === grader || grader === 'all')
-		{
-
-			for (var i in GRADE_SESSIONS[s].grades)
-			{
-				var grade = GRADE_SESSIONS[s].grades[i].grades;
-				if (grade[0]['value'] === gradedValue || gradedValue === 'all'){
-					var colr = 'rgba(255,0,0,' + percent.toString() + ')';
-					gridder.shadeCell(i, colr, false);
-					drawnCells += 1;
-				}
-				totalCells += 1;
-			}
-		}
+	for (var i in countsPerCell){
+		var alpha = percent * countsPerCell[i];
+		var colr = 'rgba(255,0,0,' + alpha.toString() + ')';
+		gridder.shadeCell(i, colr, false);
+		drawnCells += countsPerCell[i];
 	}
 
-	$('#info').html('Cells drawn: ' + drawnCells.toString() + '/' + totalCells.toString());
+	var legendMax = 0
+	if (scale === 'global')
+		legendMax = totalGradeSessions;
+	else
+		legendMax = maxCount;
+
+	$('#info').html('Cells drawn: ' + drawnCells.toString());
 
 	$('#canvasLegend canvas').each(function(){
 		var canv = $(this)[0];
@@ -116,8 +159,7 @@ function drawHeatmap(grader=$('input[name=grader]:checked').val(), gradedValue=$
 
 
 		percent = parseFloat($(this).attr('data-percent'));
-		var count = percent * totalCells;
-		$(this).next('span').html(count);
+		$(this).next('span').html(percent * legendMax);
 		ctx.beginPath();
 		ctx.fillStyle = 'rgba(255,0,0,' + percent.toString() + ')';
 		ctx.fillRect(5,5,canv.width-10,canv.height-10);

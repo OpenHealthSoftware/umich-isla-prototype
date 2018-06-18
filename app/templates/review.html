@@ -31,6 +31,7 @@
 
 		<div id="rightScreen" class="split split-horizontal {{lock}}" >
 			<h2>Counts across all images</h2>
+			<p id="breakdown"></p>
 			<div id="canvasLegend">
 				<canvas width="50" height="50" data-percent="0"></canvas><span id=""></span> cells
 				<canvas width="50" height="50" data-percent=".25"></canvas><span id=""></span> cells
@@ -48,6 +49,11 @@
 					<input type="radio" name="grade" value="hypo-perfused 76-100%">hypo-perfused 76-100%<br>
 					<input type="radio" name="grade" value="non-perfused" id="gradeNonPerf">non-perfused<br>
 					<input type="radio" name="grade" value="NA">NA<br>
+			</div>
+			<div>
+				<h3>Grade scale</h3>
+				<input type="radio" name="scale" value="absolute" checked>Absolute count (ex: cell 1 was graded perfused 3 times. Cell 12 was graded perfused 15 times)<br>				
+				<input type="radio" name="scale" value="global">Global Percentage (ex: cell 1 was graded perfused 3 times out of a total of 200 grades for cell 1)<br>
 			</div>
 			<div id="wrap-graderList">
 				<h3>Grader</h3>
