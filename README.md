@@ -1,4 +1,12 @@
 # ISLA
+
+__*This is an archive of for the repository that  tracked work on the prototype ISLA web app and project. This archive has filtered out images and other potentially sensitive data. This means that this code will not work as-is due to missing files.*__
+
+__*The intent is to use this repo for a starting point / reference for an updated version of the project. The original, unfiltered repo lives at [https://github.com/mavcook/ISLA](https://github.com/mavcook/ISLA) and should only be accessed by the orignal project members, or those approved by them.*__
+
+
+<br><br><br>
+
 Image Subdivision Labeling Application
 
 ISLA is a web application designed for methodically labeling subdivisions (or cells) of an image. We would call this 'grading' and image. Images can be uploaded to the application, and split by a previously defined grid (b/w image). While grading an image, you can also see the cells of any control images uploaded for comparison.
